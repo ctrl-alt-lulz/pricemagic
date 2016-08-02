@@ -9,3 +9,4 @@ doc/
 *.sqlite3
 test/tmp/*
 .idea
+tmp/
