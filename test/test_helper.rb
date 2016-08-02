@@ -1,17 +1,10 @@
-# Configure Rails Environment
-ENV["RAILS_ENV"] = "test"
-
-require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
+ENV['RAILS_ENV'] ||= 'test'
+require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require 'mocha/setup'
-require 'byebug'
-
-# Filter out Minitest backtrace while allowing backtrace from other libraries
-# to be shown.
-Minitest.backtrace_filter = Minitest::BacktraceFilter.new
-
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 class ActiveSupport::TestCase
-  include GeneratorTestHelpers
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+  fixtures :all
+
+  # Add more helper methods to be used by all tests here...
 end
