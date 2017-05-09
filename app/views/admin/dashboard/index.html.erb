@@ -13,23 +13,4 @@
 
 		<h3>Products</h3>
 
-		<div class="container">
-			<h2>Hover Rows</h2>
-			<p>The .table-hover class enables a hover state on table rows:</p>
-			<table class="table table-hover">
-				<thead>
-				<tr>
-					<th>Product Title</th>
-					<th>Price</th>
-				</tr>
-				</thead>
-				<tbody>
-				<% @products.each do |product| %>
-					<tr>
-						<td><%= product.title %></td>
-						<td><%= product.variants[0].price %></td>
-					</tr>
-				<% end %>
-				</tbody>
-			</table>
-		</div>
+
