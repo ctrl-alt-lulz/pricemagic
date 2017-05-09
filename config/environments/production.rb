@@ -10,8 +10,8 @@ Rails.application.configure do
   config.public_url = 'PUT NGROK URL HERE';
   
   # shopify app creds
-  config.shopify_api_key = "PUT API KEY HERE"
-  config.shopify_secret = "PUT SECRET HERE"
+  config.shopify_api_key = ENV['PUBLIC_KEY']
+  config.shopify_secret = ENV['SECRET_KEY']
 
   # Code is not reloaded between requests.
   config.cache_classes = true
