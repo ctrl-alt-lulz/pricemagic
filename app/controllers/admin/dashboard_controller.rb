@@ -6,7 +6,7 @@ class Admin::DashboardController < ShopifyApp::AuthenticatedController
 
   def show
     #get the product by id
-    @product = ShopifyAPI::Product.find(params[:id])
+    #@product = ShopifyAPI::Product.find(params[:id])
 
   end
 end
