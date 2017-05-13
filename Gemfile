@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '2.2.7'
+ruby '2.3.1'
+
+# adds react
+gem "react_on_rails", "~> 7"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
