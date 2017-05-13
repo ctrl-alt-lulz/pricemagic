@@ -63,3 +63,5 @@ gem 'shopify_app'
 # Access an IRB console on exception pages or by using <%= console %> in views
 # currently needed for both development and production asset compiles for some reason
 gem 'web-console', '~> 2.0'
+
+gem 'mini_racer', platforms: :ruby

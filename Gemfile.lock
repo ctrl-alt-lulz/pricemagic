@@ -76,6 +76,7 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.6)
     jwt (1.5.1)
+    libv8 (5.3.332.38.5)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.5)
@@ -84,6 +85,8 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
+    mini_racer (0.1.9)
+      libv8 (~> 5.3)
     minitest (5.10.1)
     multi_json (1.12.1)
     multi_xml (0.6.0)
@@ -206,6 +209,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
+  mini_racer
   pg (~> 0.15)
   puma
   rails (= 4.2.6)
