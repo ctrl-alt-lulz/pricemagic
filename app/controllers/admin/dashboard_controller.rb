@@ -2,6 +2,7 @@ class Admin::DashboardController < ShopifyApp::AuthenticatedController
   # GET /admin
   # GET /admin.json
   def index
+    @hello_world_props = { name: "Stranger" }
   end
 
   def show
