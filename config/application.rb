@@ -27,5 +27,7 @@ module StarterApp
 
     # test
     config.web_console.development_only = false
+
+
   end
 end
