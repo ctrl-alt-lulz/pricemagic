@@ -4,10 +4,9 @@
 <h3> active reload <%=@product_count%> </h3>
 <h3> <%=@product_count%> </h3>
 
-
-
   <% @collections.each do |product| %>
       <li><%= product.title %></li>
   <% end %>
 
-<%= react_component("ProductCategoryRow") %>
+<%= react_component("ProductCategoryRow", props: { name: "ffs????", category: "test"}) %>
+<%= react_component("CategoryDropDown", props: { category: ["test", "neworder"]}) %>

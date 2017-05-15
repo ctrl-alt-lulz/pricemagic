@@ -2,6 +2,7 @@ class Admin::DashboardController < ShopifyApp::AuthenticatedController
   # GET /admin
   # GET /admin.json
   def index
+    @name_props = {name: "strangle"}
     @hello_world_props = { name: "Stranger" }
     @product_count = ShopifyAPI::Product.count
     #@collection_ids = ShopifyAPI::Product.find(:all)
