@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   # scope all admin controllers,
   # views and models within admin namespace
   namespace :admin do
-    resources :dashboard
+    resources :dashboard, :products
   end
 
   # Example of regular route:
