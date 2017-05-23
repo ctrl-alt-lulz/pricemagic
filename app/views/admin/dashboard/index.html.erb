@@ -1,12 +1,5 @@
-<h1>Hello World</h1>
-<%= react_component("HelloWorld", props: @hello_world_props, prerender: false) %>
-<%= react_component("CategoryContainer") %>
-<h3> active reload <%=@product_count%> </h3>
-<h3> <%=@product_count%> </h3>
+<h1>hello world</h1>
 
-  <% @collections.each do |product| %>
-      <li><%= product.title %></li>
-  <% end %>
-
-<%= react_component("ProductCategoryRow", props: { name: "ffs????", category: "test"}) %>
-<%= react_component("CategoryDropDown", props: { category: ["test", "neworder"]}) %>
+<% @products.each do |product| %>
+    <p><%= product.title %></p>
+<% end %>
