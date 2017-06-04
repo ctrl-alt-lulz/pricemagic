@@ -4,8 +4,6 @@ ruby '2.3.1'
 
 # adds react
 gem "react_on_rails", "~> 7"
-# adds pagination
-gem 'will_paginate'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
