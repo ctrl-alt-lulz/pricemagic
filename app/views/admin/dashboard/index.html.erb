@@ -1,6 +1,8 @@
 <h1>hello world</h1>
 <h2>The number of products: <%= @product_count %></h2>
 
-<% @products.each do |product| %>
+<% @paginatable_array.each do |product| %>
   <p><%= link_to product.title, admin_product_path(product) %></p>
 <% end %>
+
+<%= paginate @paginatable_array %>

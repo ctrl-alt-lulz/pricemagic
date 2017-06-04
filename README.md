@@ -21,5 +21,3 @@ http://demacmedia.com/blog/shopify-pp
 
 - turbolinks disabled by default
 - don't need all that AJAX jazz happening inside the Shopify admin panel -- messes with deep-linking
-
-# Trivial - remove me.
