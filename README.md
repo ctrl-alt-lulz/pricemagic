@@ -1,7 +1,7 @@
 
 # Starter App
 
-Used to get a quickstart on a public Shopify app. Follow instructions here: 
+Used to get a quickstart on a public Shopify app. Follow instructions here:
 
 http://demacmedia.com/blog/shopify-pp
 
@@ -21,3 +21,5 @@ http://demacmedia.com/blog/shopify-pp
 
 - turbolinks disabled by default
 - don't need all that AJAX jazz happening inside the Shopify admin panel -- messes with deep-linking
+
+# Trivial - remove me.
