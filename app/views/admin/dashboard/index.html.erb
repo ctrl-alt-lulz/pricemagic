@@ -1,15 +1,16 @@
 <h1>hello world</h1>
 <h2>The number of products: <%= @product_count %></h2>
 <table>
-<thead>
-  <th><strong>Products</strong></th>
-  <th><strong>Price</strong></th>
-</thead>
-<% @paginatable_array.each do |product| %>
-  <tr>
-    <td><%= link_to product.title, admin_product_path(product) %></td>
-    <td><%= product.variants[0].price %></td>
-  </tr>
-<% end %>
+  <thead>
+    <th><strong>Products</strong></th>
+    <th><strong>Price</strong></th>
+  </thead>
+  <% @paginatable_array.each do |product| %>
+    <tr>
+      <td><%= link_to product.title, admin_product_path(product) %></td>
+      <td><%= product.variants[0].price %></td>
+      <!-- variant [0], until all variants possibly as drop down? -->
+    </tr>
+  <% end %>
 </table>
 <%= paginate @paginatable_array %>
