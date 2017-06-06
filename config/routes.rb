@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   get 'hello_world', to: 'hello_world#index'
+  get 'google_auth', to: 'google_auth#new'
+  get 'oauth2callback', to: 'google_auth#show'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   mount ShopifyApp::Engine, at: '/'
