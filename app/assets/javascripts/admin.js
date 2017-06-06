@@ -3,9 +3,4 @@
  */
 
 $(function () {
-    $('.alert-box').click(function(e){
-        e.preventDefault();
-        alert('hello world');
-        console.log('test');
     });
-});
