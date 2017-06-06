@@ -22,6 +22,7 @@ gem 'kaminari'
 
 # Services
 gem 'shopify_app'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'byebug'
