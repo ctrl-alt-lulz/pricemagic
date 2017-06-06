@@ -12,6 +12,6 @@ tmp/
 # React on Rails
 npm-debug.log*
 node_modules
-
+.env
 # Generated js bundles
 /app/assets/webpack/*
