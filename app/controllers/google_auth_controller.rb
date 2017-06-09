@@ -1,5 +1,5 @@
 require 'signet/oauth_2/client'
-require 'google/apis/analytics_v3'
+require 'google/apis/analyticsreporting_v4'
 class GoogleAuthController < ApplicationController
   def show
   end
@@ -9,7 +9,7 @@ class GoogleAuthController < ApplicationController
     client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
     client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
     authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
-    scope: ::Google::Apis::AnalyticsV3::AUTH_ANALYTICS_READONLY,
+    scope: ::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY,
     redirect_uri: "https://533e004c.ngrok.io/oauth2callback",
     token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token',
     })
@@ -33,7 +33,7 @@ class GoogleAuthController < ApplicationController
   def analytics
     client = Signet::OAuth2::Client.new(access_token: session[:access_token])
     client.expires_in = Time.now + 1_000_000
-    service = Google::Apis::AnalyticsV3::AnalyticsService.new
+    service = Google::Apis::AnalyticsreportingV4::AnalyticsService.new
     service.authorization = client
     @account_summaries = service.list_management_account_summaries
   end
