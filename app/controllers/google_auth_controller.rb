@@ -16,7 +16,6 @@ class GoogleAuthController < ApplicationController
     redirect_to client.authorization_uri.to_s
   end
 
-
   def callback
     client = Signet::OAuth2::Client.new({
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
@@ -26,7 +25,11 @@ class GoogleAuthController < ApplicationController
       code: params[:code]
     })
     response = client.fetch_access_token!
+    puts '*'*50
+    #puts response.inspect
+    puts '*'*50
     session[:access_token] = response['access_token']
+    puts cookies[:shopify_domain]
 
     ## TODO store access_token on user
     # current_user.access_token = response['access_token']
