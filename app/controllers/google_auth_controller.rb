@@ -32,8 +32,9 @@ class GoogleAuthController < ApplicationController
     puts cookies[:shopify_domain]
 
     ## TODO store access_token on user
-    # current_user.access_token = response['access_token']
-    # current_user.save
+    user  = current_shop.users.new
+    user.google_access_token = response['access_token']
+    user.save
 
     ## TODO redirect back to index (or wherever they started)
     ## redirect_to admin_products_path
