@@ -30,7 +30,6 @@ class GoogleAuthController < ApplicationController
     puts '*'*50
     session[:access_token] = response['access_token']
     puts cookies[:shopify_domain]
-
     ## TODO store access_token on user
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
@@ -41,3 +40,5 @@ class GoogleAuthController < ApplicationController
     redirect_to url_for(:action => :analytics)
   end
 end
+
+
