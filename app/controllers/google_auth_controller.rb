@@ -25,16 +25,10 @@ class GoogleAuthController < ApplicationController
       code: params[:code]
     })
     response = client.fetch_access_token!
-    puts '*'*50
-    #puts response.inspect
-    puts '*'*50
     session[:access_token] = response['access_token']
-    puts cookies[:shopify_domain]
-    ## TODO store access_token on user
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
     user.save
-
     ## TODO redirect back to index (or wherever they started)
     ## redirect_to admin_products_path
     redirect_to url_for(:action => :analytics)

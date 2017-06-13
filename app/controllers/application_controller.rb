@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   end
 
   def current_shop
-    Shop.last
-    #look up real shop based on sessions
+    @shop ||= Shop.where(shopify_domain: session['shopify_domain']).first
   end
 end

@@ -8,7 +8,7 @@
   </thead>
   <% @paginatable_array.each do |product| %>
     <tr>
-      <td><%= link_to product.title, admin_product_path(product) %></td>
+      <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.variants[0].price %></td>
       <!-- variant [0], until all variants possibly as drop down? -->
     </tr>

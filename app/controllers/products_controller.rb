@@ -1,4 +1,4 @@
-class Admin::ProductsController < ShopifyApp::AuthenticatedController
+class ProductsController < ShopifyApp::AuthenticatedController
   def show
     @product = ShopifyAPI::Product.find(params[:id])
     #model.find http request has id
