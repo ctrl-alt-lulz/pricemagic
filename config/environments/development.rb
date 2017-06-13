@@ -10,8 +10,8 @@ Rails.application.configure do
   config.public_url = 'http://localhost:3000/';
   
   # shopify app creds
-  config.shopify_api_key = "a989c34d6c25f186a15af108bc39cbdb"
-  config.shopify_secret = "180f9cd7a38d6c69b5a8561e667cbe80"
+  config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
+  config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
