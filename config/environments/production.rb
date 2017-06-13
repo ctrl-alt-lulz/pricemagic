@@ -12,7 +12,7 @@ Rails.application.configure do
   # shopify app creds
   config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
   config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
-
+  
   # Code is not reloaded between requests.
   config.cache_classes = true
 
