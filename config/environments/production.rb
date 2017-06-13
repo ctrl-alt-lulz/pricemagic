@@ -7,11 +7,11 @@ Rails.application.configure do
   # using Shopify's Scripttags manager
   # (configured in /config/initializers/shopify_app.rb)
   # and also by ApplicationController
-  config.public_url = 'https://enigmatic-wave-96927.herokuapp.com/';
+  config.public_url = 'https://pricemagic.herokuapp.com';
   
   # shopify app creds
-  config.shopify_api_key = ENV['PUBLIC_KEY']
-  config.shopify_secret = ENV['SECRET_KEY']
+  config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
+  config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
 
   # Code is not reloaded between requests.
   config.cache_classes = true
