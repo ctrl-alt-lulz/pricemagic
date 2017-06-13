@@ -2,7 +2,7 @@ class Shop < ActiveRecord::Base
   include ShopifyApp::Shop
   include ShopifyApp::SessionStorage
 
-  has_many :users
+  has_many :users, dependent: :destroy
 
   def latest_access_token
     #gets latest access token

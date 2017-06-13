@@ -29,9 +29,7 @@ class GoogleAuthController < ApplicationController
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
     user.save
-    ## TODO redirect back to index (or wherever they started)
-    ## redirect_to admin_products_path
-    redirect_to url_for(:action => :analytics)
+    redirect_to products_path
   end
 end
 
