@@ -1,4 +1,4 @@
-class Admin::DashboardController < ShopifyApp::AuthenticatedController
+class DashboardController < ShopifyApp::AuthenticatedController
   # GET /admin
   # GET /admin.json
   def index

@@ -23,9 +23,11 @@ gem 'kaminari'
 # Services
 gem 'shopify_app'
 gem 'sidekiq'
+gem 'google-api-client', '~> 0.11'
 
 group :development, :test do
   gem 'byebug'
+  gem 'dotenv-rails'
 end
 
 group :development do

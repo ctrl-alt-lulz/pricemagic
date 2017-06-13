@@ -7,4 +7,8 @@ class ApplicationController < ActionController::Base
   def base_url
   	Rails.configuration.public_url
   end
+
+  def current_shop
+    @shop ||= Shop.where(shopify_domain: session['shopify_domain']).first
+  end
 end
