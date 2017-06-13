@@ -29,7 +29,7 @@ class GoogleAuthController < ApplicationController
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
     user.save
-    redirect_to products_path
+    redirect_to root_url
   end
 end
 
