@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170609025955) do
+ActiveRecord::Schema.define(version: 20170624221130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "price_tests", force: :cascade do |t|
+    t.string   "product_id"
+    t.float    "percent_increase"
+    t.float    "percent_decrease"
+    t.jsonb    "price_data"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "price_tests", ["product_id"], name: "index_price_tests_on_product_id", using: :btree
 
   create_table "shops", force: :cascade do |t|
     t.string   "shopify_domain", null: false
