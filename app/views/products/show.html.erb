@@ -1,3 +1,20 @@
-<%= @product.title %>
-<br>
-<%= @product.handle %>
+<h1><%= @product.title %></h1>
+
+<%= render 'price_tests/form', product: @product, price_test: @price_test %>
+
+<table>
+  <thead>
+    <th><strong>Title</strong></th>
+    <th><strong>Starting Price</strong></th>
+    <th><strong>Percent Increase</strong></th>
+    <th><strong>Percent Decrease</strong></th>
+  </thead>
+  <% @product.variants.each do |variant| %>
+      <tr>
+        <td><%= variant.title %></td>
+        <td><%= variant.price %></td>
+        <td></td>
+        <td></td>
+      </tr>
+  <% end %>
+</table>
