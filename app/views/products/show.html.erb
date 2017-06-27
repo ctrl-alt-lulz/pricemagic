@@ -1,15 +1,7 @@
 <h1><%= @product.title %></h1>
 
-<%= form_for @price_test do |f| %>
-  <%= f.hidden_field(:product_id, value: @product.id) %>
-    <%= f.label(:percent_increase)%>
-    <%= f.text_field(:percent_increase) %>
-    <div>
-    <%= f.label(:percent_decrease)%>
-    <%= f.text_field(:percent_decrease) %>
-    </div>
-    <%= f.submit %>
-<% end %>
+<%= render 'price_tests/form', product: @product, price_test: @price_test %>
+
 <table>
   <thead>
     <th><strong>Title</strong></th>
@@ -21,8 +13,8 @@
       <tr>
         <td><%= variant.title %></td>
         <td><%= variant.price %></td>
-        <td><%= @price_test_data.percent_increase %></td>
-        <td><%= @price_test_data.percent_decrease %></td>
+        <td></td>
+        <td></td>
       </tr>
   <% end %>
 </table>

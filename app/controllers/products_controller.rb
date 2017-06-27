@@ -4,8 +4,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @product = ShopifyAPI::Product.find(params[:id])
-    price_test_data
-    #model.find http request has id
   end
 
   def update
@@ -28,12 +26,4 @@ class ProductsController < ShopifyApp::AuthenticatedController
   def instantiate_price_test
     @price_test = PriceTest.new
   end
-
-  def price_test_data
-    @price_test_data = PriceTest.last
-    @price_test_data.percent_increase ||= 1
-    @price_test_data.percent_decrease ||= 1
-    @price_test_data.save
-  end
-
 end
