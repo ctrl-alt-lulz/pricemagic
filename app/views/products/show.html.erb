@@ -4,18 +4,25 @@
   <%= f.hidden_field(:product_id, value: @product.id) %>
     <%= f.label(:percent_increase)%>
     <%= f.text_field(:percent_increase) %>
+    <div>
+    <%= f.label(:percent_decrease)%>
+    <%= f.text_field(:percent_decrease) %>
+    </div>
     <%= f.submit %>
 <% end %>
-
 <table>
   <thead>
     <th><strong>Title</strong></th>
-    <th><strong>Price</strong></th>
+    <th><strong>Starting Price</strong></th>
+    <th><strong>Percent Increase</strong></th>
+    <th><strong>Percent Decrease</strong></th>
   </thead>
   <% @product.variants.each do |variant| %>
       <tr>
         <td><%= variant.title %></td>
         <td><%= variant.price %></td>
+        <td><%= @price_test_data.percent_increase %></td>
+        <td><%= @price_test_data.percent_decrease %></td>
       </tr>
   <% end %>
 </table>
