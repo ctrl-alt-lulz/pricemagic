@@ -24,6 +24,11 @@ class PriceTest < ActiveRecord::Base
     product.save
   end
 
+  ## TODO write this method
+  def revert_price_to_base!
+
+  end
+
   def variants
     product.variants
   end
