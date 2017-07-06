@@ -5,7 +5,7 @@ class PriceTest < ActiveRecord::Base
   ## TODO validate :no_active_price_tests_for_product
 
   before_validation :seed_price_data, if: proc { price_data.nil? }
-  before_save :percent_decrease, :percent_increase
+  before_save :percent_decrease, :percent_increase, :percent_increase_to_percent, :percent_decrease_to_percent
   # after_create :apply_test_to_product ## TODO get apply_price_increase! working in the console
 
   scope :active, ->{ where(active: true) }
@@ -66,5 +66,13 @@ class PriceTest < ActiveRecord::Base
 
   def seed_price_data
     self.price_data = raw_price_data
+  end
+
+  def percent_increase_to_percent
+    self[:percent_increase] = 1 + self[:percent_increase]/100
+  end
+
+  def percent_decrease_to_percent
+    self[:percent_decrease] = 1 - self[:percent_decrease]/100
   end
 end

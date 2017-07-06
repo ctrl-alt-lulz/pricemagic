@@ -4,6 +4,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @product = ShopifyAPI::Product.find(params[:id])
+    @price_test_data = PriceTest.where("product_id = ?", "10698169348").last
   end
 
   def update
