@@ -1,9 +1,11 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
+
   ## TODO validate :no_active_price_tests_for_product
 
   before_validation :seed_price_data, if: proc { price_data.nil? }
+  before_save :percent_decrease, :percent_increase
   # after_create :apply_test_to_product ## TODO get apply_price_increase! working in the console
 
   scope :active, ->{ where(active: true) }
@@ -13,8 +15,12 @@ class PriceTest < ActiveRecord::Base
     @product ||= ShopifyAPI::Product.find(product_id)
   end
 
+  def percent_increase
+    self[:percent_increase] ||= 0
+  end
+
   def percent_decrease
-    self[:percent_decrease] || 0
+    self[:percent_decrease] ||= 0
   end
 
   def apply_price_increase!
@@ -39,7 +45,7 @@ class PriceTest < ActiveRecord::Base
     {
       variant.id => {
         base_price: variant.price.to_f,
-        price_ceiling: variant.price.to_f * percent_increase,
+        price_ceiling: variant.price.to_f * 1+percent_increase/100.0,
         price_basement: variant.price.to_f * percent_decrease
       }
     }
