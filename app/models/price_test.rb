@@ -94,5 +94,6 @@ class PriceTest < ActiveRecord::Base
 
   def make_ending_digits(price)
     price.round(0) + 0.99
+    ## TODO make the 0.99 ending customizable, will need to add field to price test data model
   end
 end
