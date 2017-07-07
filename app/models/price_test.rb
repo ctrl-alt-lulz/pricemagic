@@ -1,12 +1,10 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
-
   ## TODO validate :no_active_price_tests_for_product
-
   before_validation :seed_price_data, if: proc { price_data.nil? }
-  before_save :percent_decrease, :percent_increase, :percent_increase_to_percent, :percent_decrease_to_percent
   # after_create :apply_test_to_product ## TODO get apply_price_increase! working in the console
+  # after_create :revert_price_to_base!
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
@@ -15,11 +13,11 @@ class PriceTest < ActiveRecord::Base
     @product ||= ShopifyAPI::Product.find(product_id)
   end
 
-  def percent_increase
+  def init_percent_increase
     self[:percent_increase] ||= 0
   end
 
-  def percent_decrease
+  def init_percent_decrease
     self[:percent_decrease] ||= 0
   end
 
@@ -30,28 +28,39 @@ class PriceTest < ActiveRecord::Base
     product.save
   end
 
-  ## TODO write this method
-  def revert_price_to_base!
+  def apply_price_decrease!
+    variants.each do |variant|
+      variant.price = price_data[variant.id.to_s]['price_basement']
+    end
+    product.save
+  end
 
+  ## TODO write this method -done
+  def revert_price_to_base!
+    variants.each do |variant|
+      variant.price = price_data[variant.id.to_s]['base_price']
+    end
+    product.save
   end
 
   def variants
     product.variants
   end
 
-  ## TODO make percent_increase a percent, right now its an integer.
+  ## TODO make percent_increase a percent, right now its an integer. -done
   ## ie., 10 rather than 1.10
   def variant_hash(variant)
     {
       variant.id => {
-        base_price: variant.price.to_f,
-        price_ceiling: variant.price.to_f * 1+percent_increase/100.0,
-        price_basement: variant.price.to_f * percent_decrease
+        base_price: variant.price.to_f.round(2),
+        price_ceiling: make_ending_digits(variant.price.to_f * percent_increase),
+        price_basement: make_ending_digits(variant.price.to_f * percent_decrease)
       }
     }
   end
 
   def raw_price_data
+    convert_inputs
     empty_hash = {}
     variants.each{ |variant| empty_hash.merge!(variant_hash(variant)) }
     empty_hash
@@ -74,5 +83,16 @@ class PriceTest < ActiveRecord::Base
 
   def percent_decrease_to_percent
     self[:percent_decrease] = 1 - self[:percent_decrease]/100
+  end
+
+  def convert_inputs
+    init_percent_decrease
+    init_percent_increase
+    percent_increase_to_percent
+    percent_decrease_to_percent
+  end
+
+  def make_ending_digits(price)
+    price.round(0) + 0.99
   end
 end

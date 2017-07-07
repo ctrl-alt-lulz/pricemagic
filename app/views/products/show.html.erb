@@ -1,20 +1,5 @@
 <h1><%= @product.title %></h1>
 
 <%= render 'price_tests/form', product: @product, price_test: @price_test %>
-
-<table>
-  <thead>
-    <th><strong>Title</strong></th>
-    <th><strong>Starting Price</strong></th>
-    <th><strong>Percent Increase</strong></th>
-    <th><strong>Percent Decrease</strong></th>
-  </thead>
-  <% @product.variants.each do |variant| %>
-      <tr>
-        <td><%= variant.title %></td>
-        <td><%= variant.price %></td>
-        <td><%= @price_test_data.price_data["40061050692"]["price_ceiling"] %></td>
-        <td><%= @price_test_data.price_data["40061050692"]["price_basement"] %></td>
-      </tr>
-  <% end %>
-</table>
+<%= render 'price_tests/product_data_table' unless @price_test_data %>
+<%= render 'price_tests/active_price_test_data' if @price_test_data %>
