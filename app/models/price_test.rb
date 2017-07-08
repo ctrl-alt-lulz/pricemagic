@@ -1,6 +1,7 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
+  validates :percent_increase, :percent_decrease, numericality: true
   ## TODO validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
   # after_create :apply_test_to_product ## TODO get apply_price_increase! working in the console
@@ -11,14 +12,6 @@ class PriceTest < ActiveRecord::Base
 
   def product
     @product ||= ShopifyAPI::Product.find(product_id)
-  end
-
-  def init_percent_increase
-    self[:percent_increase] ||= 0
-  end
-
-  def init_percent_decrease
-    self[:percent_decrease] ||= 0
   end
 
   def apply_price_increase!
@@ -35,7 +28,6 @@ class PriceTest < ActiveRecord::Base
     product.save
   end
 
-  ## TODO write this method -done
   def revert_price_to_base!
     variants.each do |variant|
       variant.price = price_data[variant.id.to_s]['base_price']
@@ -47,8 +39,6 @@ class PriceTest < ActiveRecord::Base
     product.variants
   end
 
-  ## TODO make percent_increase a percent, right now its an integer. -done
-  ## ie., 10 rather than 1.10
   def variant_hash(variant)
     {
       variant.id => {
@@ -60,12 +50,24 @@ class PriceTest < ActiveRecord::Base
   end
 
   def raw_price_data
-    convert_inputs
     empty_hash = {}
     variants.each{ |variant| empty_hash.merge!(variant_hash(variant)) }
     empty_hash
   end
 
+  def percent_increase=(percent)
+    percent = percent.to_f
+    percent ||= 0
+    percent = 1 + percent/100
+    write_attribute(:percent_increase, percent) ## written in two different ways (see below), is any way better than the other?
+  end
+
+  def percent_decrease=(percent)
+    percent = percent.to_f
+    percent ||= 0
+    percent = 1 - percent/100
+    self[:percent_decrease] = percent
+  end
   private
 
   ## TODO rip this out
@@ -77,23 +79,9 @@ class PriceTest < ActiveRecord::Base
     self.price_data = raw_price_data
   end
 
-  def percent_increase_to_percent
-    self[:percent_increase] = 1 + self[:percent_increase]/100
-  end
-
-  def percent_decrease_to_percent
-    self[:percent_decrease] = 1 - self[:percent_decrease]/100
-  end
-
-  def convert_inputs
-    init_percent_decrease
-    init_percent_increase
-    percent_increase_to_percent
-    percent_decrease_to_percent
-  end
-
   def make_ending_digits(price)
-    price.round(0) + 0.99
+    price.floor + 0.99
     ## TODO make the 0.99 ending customizable, will need to add field to price test data model
   end
+
 end

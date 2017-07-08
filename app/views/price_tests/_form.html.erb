@@ -2,11 +2,11 @@
   <%= f.hidden_field(:product_id, value: product.id) %>
   <div>
     <%= f.label(:percent_increase)%>
-    <%= f.text_field(:percent_increase) %>
+    <%= f.number_field(:percent_increase) %>
   </div>
   <div>
     <%= f.label(:percent_decrease)%>
-    <%= f.text_field(:percent_decrease) %>
+    <%= f.number_field(:percent_decrease) %>
   </div>
   <div>
     <%= f.submit %>

@@ -8,4 +8,9 @@ class Shop < ActiveRecord::Base
     #gets latest access token
     users.order(created_at: :desc).first.google_access_token
   end
+
+  def with_shopify!
+    session = ShopifyAPI::Session.new(shopify_domain, shopify_token)
+    ShopifyAPI::Base.activate_session(session)
+  end
 end
