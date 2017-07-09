@@ -4,8 +4,6 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   ## TODO validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
-  # after_create :apply_test_to_product ## TODO get apply_price_increase! working in the console
-  # after_create :revert_price_to_base!
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
