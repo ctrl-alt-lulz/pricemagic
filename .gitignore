@@ -15,6 +15,3 @@ node_modules
 .env
 # Generated js bundles
 /app/assets/webpack/*
-development.rb
-procfile.dev
-database.yml
