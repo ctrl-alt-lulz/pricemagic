@@ -10,6 +10,8 @@ development:
   database: shopify_app_development
   host: localhost
   port: 5432
+  username: postgres
+  password: password
 
 test:
   <<: *default

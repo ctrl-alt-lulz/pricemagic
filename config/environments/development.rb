@@ -7,7 +7,7 @@ Rails.application.configure do
   # using Shopify's Scripttags manager
   # (configured in /config/initializers/shopify_app.rb)
   # and also by ApplicationController
-  config.public_url = 'https://879b2cc7.ngrok.io';
+  config.public_url = 'https://price-magic-bytesize.c9users.io/';
   
   # shopify app creds
   config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']

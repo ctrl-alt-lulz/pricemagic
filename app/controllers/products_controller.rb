@@ -30,13 +30,13 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def collection
     ## TODO there's got to be a better way to do this than using begin/rescue??
-    ## TODO have it handle the case of multiple collections
     ## this section finds a collection if it exists
     begin
+      @collection_titles = []
       @collection = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:collection_id).uniq
-      @collection = ShopifyAPI::SmartCollection.find(@collection[0]).title
+      @collection.each { |c| @collection_titles << ShopifyAPI::SmartCollection.find(c).title}
     rescue
-      @collection = "None"
+      @collection_titles = "None"
     end
   end
 
