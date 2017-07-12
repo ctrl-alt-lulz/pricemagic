@@ -20,7 +20,6 @@ before_action :products, only: [:index, :search_title, :get_collection]
   end
   
   def get_collection
-    ## TODO fix form so first option can actually be selected
     @collection_id = []
     ## TODO probably better to use hidden tag that contains element index
     # below code finds the collection id based on index position of the title in the given array
@@ -44,8 +43,8 @@ before_action :products, only: [:index, :search_title, :get_collection]
   end
   
   def collection_titles
-    @collection_titles = []
-    @collection_ids = []
+    @collection_titles = ["Select"]
+    @collection_ids = ["dummy"]
     @scollection = ShopifyAPI::SmartCollection.find(:all)
     @ccollection = ShopifyAPI::CustomCollection.find(:all)
     @scollection.each { |c| @collection_titles << c.title;  @collection_ids << c.id}
