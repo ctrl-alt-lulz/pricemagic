@@ -20,6 +20,7 @@ before_action :products, only: [:index, :search_title, :get_collection]
   end
   
   def get_collection
+    ## TODO make this find products in collection
     @matches = []
     @products.each_with_index do |p,index|
        @matches << @products[index.to_i] if search(p.title, params[:collection]) 
@@ -44,9 +45,10 @@ before_action :products, only: [:index, :search_title, :get_collection]
   
   def collection_titles
     @collection_titles = []
+    @collection_ids = []
     @scollection = ShopifyAPI::SmartCollection.find(:all)
     @ccollection = ShopifyAPI::CustomCollection.find(:all)
-    @scollection.each { |c| @collection_titles << c.title}
-    @ccollection.each { |c| @collection_titles << c.title}
+    @scollection.each { |c| @collection_titles << c.title;  @collection_ids << c.id}
+    @ccollection.each { |c| @collection_titles << c.title;  @collection_ids << c.id}
   end
 end

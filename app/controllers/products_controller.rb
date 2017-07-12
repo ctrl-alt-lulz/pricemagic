@@ -1,14 +1,13 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
   before_filter :instantiate_price_test, :collection, only: :show
+  before_filter :product, only: [:show, :update]
 
   def show
-    @product = ShopifyAPI::Product.find(params[:id])
     @price_test_data = PriceTest.where(product_id: params[:id]).last
   end
 
   def update
-    @product = ShopifyAPI::Product.find(params[:id])
     @product.variants.each{|variant| variant.price = (variant.price.to_f * @percent_increase); }
     if @product.save
       redirect_to product_path(@product), notice: 'Updated successfully!'
@@ -19,6 +18,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   private
 
+  def product
+     @product = ShopifyAPI::Product.find(params[:id])
+  end
+   
   def convert_percent_to_float
     params[:percent_increase] ||= 0
     @percent_increase = 1+(params[:percent_increase].to_f)/100
