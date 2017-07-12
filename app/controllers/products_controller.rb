@@ -34,6 +34,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     begin
       @collection_titles = []
       @collection = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:collection_id).uniq
+      @position = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:position)
       @collection.each { |c| @collection_titles << ShopifyAPI::SmartCollection.find(c).title}
     rescue
       @collection_titles = "None"

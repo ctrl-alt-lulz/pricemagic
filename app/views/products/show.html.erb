@@ -1,6 +1,8 @@
 <h1><%= @product.title %></h1>
 <h2><%= @collection_titles %></h2>
+<h1><%= @position %></h1>
 <h1><%= @product.id %></h1>
+<h1><%= @matches %></h1>
 
 <%= link_to "Home", root_url %> 
 <%= render 'price_tests/form', product: @product, price_test: @price_test %>
