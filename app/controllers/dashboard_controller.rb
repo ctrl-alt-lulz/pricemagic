@@ -20,12 +20,12 @@ before_action :products, only: [:index, :search_title, :get_collection]
   end
   
   def get_collection
-    ## TODO make this find products in collection
-    @matches = []
-    @products.each_with_index do |p,index|
-       @matches << @products[index.to_i] if search(p.title, params[:collection]) 
-    end
-    @products = @matches
+    ## TODO fix form so first option can actually be selected
+    @collection_id = []
+    ## TODO probably better to use hidden tag that contains element index
+    # below code finds the collection id based on index position of the title in the given array
+    @collection_titles.each_index.detect{ |index| @collection_id << @collection_ids[index] if @collection_titles[index] == params[:collection]}
+    @products = ShopifyAPI::Product.where(collection_id: @collection_id)
     paginate
   end
   
