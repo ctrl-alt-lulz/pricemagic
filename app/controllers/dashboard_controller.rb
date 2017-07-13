@@ -1,10 +1,12 @@
 class DashboardController < ShopifyApp::AuthenticatedController
+  helper PriceTestHelper
 before_action :collection_titles, only: [:index, :search_title, :get_collection]
 before_action :products, only: [:index, :search_title, :get_collection]
 
   def index
     @product_count = ShopifyAPI::Product.count
     paginate
+    price_test
   end
 
   def show
@@ -26,6 +28,10 @@ before_action :products, only: [:index, :search_title, :get_collection]
     @collection_titles.each_index.detect{ |index| @collection_id << @collection_ids[index] if @collection_titles[index] == params[:collection]}
     @products = ShopifyAPI::Product.where(collection_id: @collection_id)
     paginate
+  end
+  
+  def price_test
+    @price_tests = PriceTest
   end
   
   private 
