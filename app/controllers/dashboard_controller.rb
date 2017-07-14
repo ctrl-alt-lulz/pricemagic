@@ -2,10 +2,8 @@ class DashboardController < ShopifyApp::AuthenticatedController
   before_action :define_collections, only: [:index]
 
   def index
-    if params[:collection]
-      @products = ShopifyAPI::Product.where(collection_id: params[:collection])
-    elsif params[:term]
-      @products = ShopifyAPI::Product.where(title: params[:term])
+    if params[:collection] || params[:term]
+      @products = ShopifyAPI::Product.where(collection_id: params[:collection], title: params[:term])
     else
       @products = ShopifyAPI::Product.find(:all, :params => {:limit => 150})
     end
@@ -15,6 +13,11 @@ class DashboardController < ShopifyApp::AuthenticatedController
   private 
   
   def define_collections
+    ## TODO Alex research doing this with cookies to minimize external requests
+    # unless cookies[:collections].present?
+    #   cookies[:collections] = ShopifyAPI::SmartCollection.find(:all) + ShopifyAPI::CustomCollection.find(:all)
+    # end
+    # @collections = cookies[:collections]
     @collections ||= ShopifyAPI::SmartCollection.find(:all) + ShopifyAPI::CustomCollection.find(:all)
   end
 end

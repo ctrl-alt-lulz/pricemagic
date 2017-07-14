@@ -10,7 +10,7 @@ class GoogleAuthController < ApplicationController
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
       scope: ::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY,
-      redirect_uri: Rails.configuration.public_url + "/oauth2callback",
+      redirect_uri: Rails.configuration.public_url + "oauth2callback",
       token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token',
     })
     redirect_to client.authorization_uri.to_s
@@ -21,7 +21,7 @@ class GoogleAuthController < ApplicationController
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
-      redirect_uri: Rails.configuration.public_url + "/oauth2callback", ## TODO put this in .env
+      redirect_uri: Rails.configuration.public_url + "oauth2callback", ## TODO put this in .env
       code: params[:code]
     })
     response = client.fetch_access_token!

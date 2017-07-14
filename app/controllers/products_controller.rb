@@ -36,6 +36,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     ## TODO have it handle the case of multiple collections
     ## this section finds a collection if it exists
     begin
+    ## TODO refactor
       @collection = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:collection_id).uniq
       @position = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:position)
       @collection.each { |c| @collection_titles << ShopifyAPI::SmartCollection.find(c).title}
