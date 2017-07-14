@@ -1,4 +1,4 @@
-<%= form_tag(get_collection_path,  method: :get) do %>
-    <%= select_tag "collection", options_for_select(@collection_titles), 
-        onchange: "this.form.submit();"%>
+<%= form_tag(root_url,  method: :get) do %>
+    <%= select_tag "collection", options_from_collection_for_select(@collections, :id, :title), prompt: "Select Collection",
+        onchange: "this.form.submit();" %>
 <% end %>

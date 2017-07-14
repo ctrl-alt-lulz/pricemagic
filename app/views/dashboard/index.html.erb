@@ -1,5 +1,5 @@
 <h1>hello world</h1>
-<h2>The number of products: <%= @product_count %></h2>
+<h2>The number of products: <%= @products.count %></h2>
 <%= render 'partials/get_collection_form'%>
 <%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
 <%= render 'partials/search_form'%>
