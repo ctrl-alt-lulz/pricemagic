@@ -6,7 +6,7 @@ before_action :products, only: [:index, :search_title, :get_collection]
   def index
     @product_count = ShopifyAPI::Product.count
     paginate
-    price_test
+    price_test ## not sure if necessary - check code in view helper
   end
 
   def show
