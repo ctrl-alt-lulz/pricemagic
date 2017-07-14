@@ -1,8 +1,0 @@
-<h1>hello world</h1>
-<h2>The number of products: <%= @product_count %></h2>
-<%= render 'partials/get_collection_form'%>
-<%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
-<%= render 'partials/search_form'%>
-<%= render 'partials/std_products' unless @matches %>
-<%= render 'partials/queried_products' if @matches %>
-
