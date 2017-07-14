@@ -1,7 +1,7 @@
 class DashboardController < ShopifyApp::AuthenticatedController
-  helper PriceTestHelper
-before_action :collection_titles, only: [:index, :search_title, :get_collection]
-before_action :products, only: [:index, :search_title, :get_collection]
+  #helper PriceTestHelper
+  before_action :collection_titles, only: [:index, :search_title, :get_collection]
+  before_action :products, only: [:index, :search_title, :get_collection]
 
   def index
     @product_count = ShopifyAPI::Product.count
