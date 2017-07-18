@@ -1,23 +1,36 @@
 require 'signet/oauth_2/client'
 require 'google/apis/analyticsreporting_v4'
-include Google::Apis::AnalyticsreportingV4
 
 class QueryGoogleApiWorker
+  include Google::Apis::AnalyticsreportingV4
   include Sidekiq::Worker
   sidekiq_options :retry => 1
 
   def perform(shop_id)
-    ## lookup the user to get the access_token
+    ## TODO store the refresh_token so we can use the refresh_token to
+    ## get updated access_tokens when they expire
     shop = Shop.find(shop_id)
     client = Signet::OAuth2::Client.new(access_token: shop.latest_access_token)
     client.expires_in = Time.now + 1_000_000 ## TODO research more here
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
-      @account_summaries = service.batch_get_reports(get_account_summaries)
-      @product_revenue = service.batch_get_reports(get_product_revenue)
-      @product_performance = service.batch_get_reports(get_product_performance)
-    rescue
+      @account_summaries = service.batch_report_get(get_account_summaries)
+      # @product_revenue = service.batch_get_reports(get_product_revenue)
+      # @product_performance = service.batch_get_reports(get_product_performance)
+    # rescue ## TODO put a specific rescue here
+    # else
+      puts '*'*50
+      puts @account_summaries.inspect
+      puts '*'*50
+      puts @account_summaries.reports.count
+      puts '*'*50
+      puts @account_summaries.reports[0].data.rows.count
+      puts '*'*50
+      puts @account_summaries.reports[0].data.rows.first.inspect
+      ## TODO store @account_summaries, @product_revenue, @product_performance
+      ## TODO figure out how to relate to a product
+      ## product.metrics.create(type: 'Summary', data: @account_summaries)
     end
   end
   

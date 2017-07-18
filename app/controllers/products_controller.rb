@@ -1,10 +1,12 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
   before_filter :instantiate_price_test, :collection, only: :show
-  before_filter :product, only: [:show, :update]
+  before_filter :define_product, only: [:show, :update]
 
   def show
     @price_test_data = PriceTest.where(product_id: params[:id]).last
+    ## TODO define how we access metrics
+    ## TODO create a view to support showing metrics leveraging the google_auth/analytics view
   end
 
   def update
@@ -18,7 +20,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   private
 
-  def product
+  def define_product
      @product = ShopifyAPI::Product.find(params[:id])
   end
    

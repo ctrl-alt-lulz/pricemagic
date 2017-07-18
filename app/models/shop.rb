@@ -6,7 +6,7 @@ class Shop < ActiveRecord::Base
 
   def latest_access_token
     #gets latest access token
-    users.order(created_at: :desc).first.google_access_token
+    users.order(updated_at: :desc).first.google_access_token
   end
 
   def with_shopify!

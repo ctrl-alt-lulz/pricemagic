@@ -13,21 +13,16 @@ class DashboardController < ShopifyApp::AuthenticatedController
   private 
   
   def define_collections
-    # session.delete :collections
+    ## TODO figure out how to get this working so we dont need to wipe it clean 
+    ## by deleting each page load
+    session.delete :collections
     
     ## TODO Alex research doing this with cookies to minimize external requests
     ## cookies[:login] = { :value => "XJ-122", :expires => 1.hour.from_now }
     unless session[:collections].present?
-      session[:collections] = ShopifyAPI::SmartCollection.find(:all).map{|sc| OpenStruct.new({ title: sc.title, id: sc.id }) }  + ShopifyAPI::CustomCollection.find(:all).map{|cc|  OpenStruct.new({ title: cc.title, id: cc.id }) } 
+      session[:collections] = ShopifyAPI::SmartCollection.find(:all) + ShopifyAPI::CustomCollection.find(:all)
     end
-    logger.debug '*'*50
-    logger.debug session[:collections].inspect
-    logger.debug session[:collections].class.name
-    
+  
     @collections = session[:collections]
-    
-    logger.debug '!'*50
-    logger.debug @collections.inspect
-    logger.debug @collections.class.name
   end
 end
