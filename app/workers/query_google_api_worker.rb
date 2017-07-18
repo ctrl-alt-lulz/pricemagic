@@ -15,19 +15,10 @@ class QueryGoogleApiWorker
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
-      @account_summaries = service.batch_report_get(get_account_summaries)
-      # @product_revenue = service.batch_get_reports(get_product_revenue)
-      # @product_performance = service.batch_get_reports(get_product_performance)
-    # rescue ## TODO put a specific rescue here
-    # else
-      puts '*'*50
-      puts @account_summaries.inspect
-      puts '*'*50
-      puts @account_summaries.reports.count
-      puts '*'*50
-      puts @account_summaries.reports[0].data.rows.count
-      puts '*'*50
-      puts @account_summaries.reports[0].data.rows.first.inspect
+      # @account_summaries = service.batch_report_get(get_account_summaries)
+      # @product_revenue = service.batch_report_get(get_product_revenue)
+      @product_performance = service.batch_report_get(get_product_performance)
+      shop.metrics.create(data: @product_performance)
       ## TODO store @account_summaries, @product_revenue, @product_performance
       ## TODO figure out how to relate to a product
       ## product.metrics.create(type: 'Summary', data: @account_summaries)

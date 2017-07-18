@@ -3,6 +3,7 @@ class Shop < ActiveRecord::Base
   include ShopifyApp::SessionStorage
 
   has_many :users, dependent: :destroy
+  has_many :metrics, dependent: :destroy
 
   def latest_access_token
     #gets latest access token

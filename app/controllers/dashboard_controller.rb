@@ -8,6 +8,7 @@ class DashboardController < ShopifyApp::AuthenticatedController
       @products = ShopifyAPI::Product.find(:all, :params => {:limit => 150})
     end
     @paginatable_array = Kaminari.paginate_array(@products).page(params[:page]).per(10)
+    @metric = current_shop.metrics.last
   end
   
   private 
