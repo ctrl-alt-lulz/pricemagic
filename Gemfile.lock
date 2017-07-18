@@ -268,6 +268,7 @@ DEPENDENCIES
   rails (= 4.2.6)
   rails_12factor
   react_on_rails (~> 7)
+  redis (~> 3.2)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   shopify_app
@@ -282,4 +283,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

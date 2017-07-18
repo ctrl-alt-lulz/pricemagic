@@ -24,6 +24,7 @@ gem 'kaminari'
 gem 'shopify_app'
 gem 'sidekiq'
 gem 'google-api-client', '~> 0.11'
+gem 'redis', '~>3.2'
 
 group :development, :test do
   gem 'byebug'
