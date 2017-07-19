@@ -1,6 +1,6 @@
 class Metric < ActiveRecord::Base
   belongs_to :shop
-
+  ## use .starts_with? to find product matches with price test
   def data=(google_data_object)
     if google_data_object.is_a? Array
       super

@@ -27,19 +27,6 @@ class QueryGoogleApiWorker
   
   private
   
-  def get_account_summaries
-    rr = default_rr([metric(expression: "ga:uniquePageviews")],
-                    [dimension(name: 'ga:pageTitle'),dimension(name: 'ga:pagePath')])
-    rr.filters_expression = "ga:pagePath=~collections,ga:pagePath=~products"
-    rr.order_bys = [sort(sort_order: "descending", field_name: "ga:uniquePageviews")]
-    return grr([rr])
-  end
-  
-  def get_product_revenue
-    rr = default_rr([metric(expression: "ga:itemRevenue")], [dimension(name: 'ga:productName')])
-    return grr([rr])
-  end
-  
   def get_product_performance
     rr = default_rr([metric(expression: "ga:itemRevenue"), metric(expression: "ga:productDetailViews"),
     metric(expression: "ga:revenuePerItem")], [dimension(name: 'ga:productName')])

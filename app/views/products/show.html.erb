@@ -4,6 +4,7 @@
 <h1><%= @product.id %></h1>
 <h1><%= @matches %></h1>
 
+<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.empty? %>
 <%= link_to "Home", root_url %>
 <%= render 'price_tests/form', product: @product, price_test: @price_test %>
 <%= render 'price_tests/product_data_table' unless @price_test_data %>

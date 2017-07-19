@@ -4,7 +4,7 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   ## TODO validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
-
+  ## TODO need to keep track of dates price test starts/ends
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
 

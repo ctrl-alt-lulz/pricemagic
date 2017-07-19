@@ -1,22 +1,6 @@
 <h1>hello world</h1>
 <h2>The number of products: <%= @products.count %></h2>
-<div class="row">
- <table>
-      <thead>
-        <th><strong>Product Title</strong></th>
-        <th><strong>Product Revenue</strong></th>
-        <th><strong>Product Detail Views</strong></th>
-        <th><strong>Avg. Price</strong></th>
-      </thead>
-      <% @metric.data.each do |p| %>
-        <tr>
-          <td><%= p['title'] %></td>
-          <td><%= p['revenue'] %></td>
-          <td><%= p['views'] %></td>
-          <td><%= p['avg_price'] %></td>
-        </tr>
-      <% end %>
-</div>
+
 <%= render 'partials/get_collection_form'%>
 <%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
 <%= render 'partials/search_form'%>

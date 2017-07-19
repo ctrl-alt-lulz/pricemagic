@@ -1,0 +1,14 @@
+<table>
+  <thead>
+    <th><strong>Title</strong></th>
+    <th><strong>Revenue</strong></th>
+    <th><strong>Detail Product Views</strong></th>
+  </thead>
+  <% @google_analytics_data[0].each do |variant| %>
+      <tr>
+        <td><%= variant['title'] %></td>
+        <td><%= variant['revenue'] %></td>
+        <td><%= variant['views'] %></td>
+      </tr>
+  <% end %>
+</table>
