@@ -72,7 +72,14 @@ class PriceTest < ActiveRecord::Base
   def apply_test_to_product
     self.apply_price_increase!
   end
-
+  
+  ## TODO find max price steps
+  ## TODO figure out how to get steps working ie array of [price_basement, price1, price2, price_ceiling]
+  ## maybe set a maximum of 4 and it will set up to 4/max?
+  # def max_price_steps
+  #   price_ceiling - price_basement
+  # end
+  
   def seed_price_data
     self.price_data = raw_price_data
   end

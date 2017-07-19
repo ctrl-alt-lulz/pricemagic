@@ -12,14 +12,14 @@ class QueryGoogleApiWorker
     shop = Shop.find(shop_id)
     client = Signet::OAuth2::Client.new(access_token: shop.latest_access_token)
     client.expires_in = Time.now + 1_000_000 ## TODO research more here
+    ## TODO verify this offline access is necessary and/how to use properly
+    ## client.update!(:additional_parameters => {"access_type" => "offline"})
+    ## https://developers.google.com/identity/protocols/OAuth2WebServer#offline
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
-      # @account_summaries = service.batch_report_get(get_account_summaries)
-      # @product_revenue = service.batch_report_get(get_product_revenue)
       @product_performance = service.batch_report_get(get_product_performance)
       shop.metrics.create(data: @product_performance)
-      ## TODO store @account_summaries, @product_revenue, @product_performance
       ## TODO figure out how to relate to a product
       ## product.metrics.create(type: 'Summary', data: @account_summaries)
     end
