@@ -9,6 +9,10 @@
     <%= f.number_field(:percent_decrease) %>
   </div>
   <div>
+    <%= f.label(:ending_digits)%>
+    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0.25, 0] ) %>
+  </div>
+  <div>
     <%= f.submit %>
   </div>
 <% end %>

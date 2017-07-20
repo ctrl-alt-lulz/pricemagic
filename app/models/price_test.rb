@@ -1,13 +1,16 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
+  #validates :ending_digits, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   ## TODO validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
-  ## TODO need to keep track of dates price test starts/ends
+  ## TODO need to keep track of dates price test starts/ends can select days to run or views
+  ## TODO be able to configure settings and then submit/start/ goes active 
+  ## ties in with #of price steps chosen
+  
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
-
   def product
     @product ||= ShopifyAPI::Product.find(product_id)
   end
@@ -40,7 +43,7 @@ class PriceTest < ActiveRecord::Base
   def variant_hash(variant)
     {
       variant.id => {
-        base_price: variant.price.to_f.round(2),
+        base_price: make_ending_digits(variant.price.to_f),
         price_ceiling: make_ending_digits(variant.price.to_f * percent_increase),
         price_basement: make_ending_digits(variant.price.to_f * percent_decrease)
       }
@@ -85,8 +88,7 @@ class PriceTest < ActiveRecord::Base
   end
 
   def make_ending_digits(price)
-    price.floor + 0.99
-    ## TODO make the 0.99 ending customizable, will need to add field to price test data model
+    price.floor + self.ending_digits
   end
 
 end
