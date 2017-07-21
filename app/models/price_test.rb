@@ -1,7 +1,7 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
-  #validates :ending_digits, presence: true, numericality: true
+  validates :ending_digits, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   ## TODO validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
@@ -57,25 +57,14 @@ class PriceTest < ActiveRecord::Base
   end
 
   def percent_increase=(percent)
-    percent = percent.to_f
-    percent ||= 0
-    percent = 1 + percent/100
-    write_attribute(:percent_increase, percent) ## written in two different ways (see below), is any way better than the other?
+    self[:percent_increase] = 1 + percent.to_f/100
   end
 
   def percent_decrease=(percent)
-    percent = percent.to_f
-    percent ||= 0
-    percent = 1 - percent/100
-    self[:percent_decrease] = percent
-  end
-  private
-
-  ## TODO rip this out
-  def apply_test_to_product
-    self.apply_price_increase!
+    self[:percent_decrease] = 1 - percent.to_f/100
   end
   
+  private
   ## TODO find max price steps
   ## TODO figure out how to get steps working ie array of [price_basement, price1, price2, price_ceiling]
   ## maybe set a maximum of 4 and it will set up to 4/max?
@@ -90,5 +79,4 @@ class PriceTest < ActiveRecord::Base
   def make_ending_digits(price)
     price.floor + self.ending_digits
   end
-
 end
