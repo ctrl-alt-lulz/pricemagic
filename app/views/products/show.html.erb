@@ -1,6 +1,6 @@
 <h1><%= @product.title %></h1>
-<h2><%= @collection_titles %></h2>
-<h1><%= @position %></h1>
+<h2><%= @collections.map{|c| c[:title].capitalize }.join(', ') %></h2>
+<h1><%= @collections.map{|c| c[:position] } %></h1>
 <h1><%= @product.id %></h1>
 <h1><%= @matches %></h1>
 

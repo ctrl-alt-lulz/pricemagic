@@ -1,6 +1,6 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
-  before_filter :instantiate_price_test, :collection, only: :show
+  before_filter :instantiate_price_test, :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
 
   def show
@@ -32,18 +32,13 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @price_test = PriceTest.new
   end
 
-  def collection
-    ## TODO there's got to be a better way to do this than using begin/rescue??
-    ## TODO have it handle the case of multiple collections
-    ## this section finds a collection if it exists
-    begin
-    ## TODO refactor
-      @collection = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:collection_id).uniq
-      @position = ShopifyAPI::Collect.where(product_id: params[:id]).map(&:position)
-      @collection.each { |c| @collection_titles << ShopifyAPI::SmartCollection.find(c).title}
-    rescue
-      @collection = "None"
-    end
+  def define_collection
+      @collections =  ShopifyAPI::Collect.where(product_id: params[:id]).map do |c| 
+                        { 
+                          position: c.position, 
+                          title: ShopifyAPI::SmartCollection.find(c.collection_id).title 
+                        }
+                      end
   end
 
 end
