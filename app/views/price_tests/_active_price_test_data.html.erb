@@ -10,7 +10,7 @@
       <tr>
         <td><%= variant.title %></td>
         <td><%= variant.price %></td>
-        <td><%= @price_test_data.price_data["#{variant.id}"]["price_ceiling"] %></td>
+        <td class='price-ceiling'><%= @price_test_data.price_data["#{variant.id}"]["price_ceiling"] %></td>
         <td><%= @price_test_data.price_data["#{variant.id}"]["base_price"] %></td>
         <td><%= @price_test_data.price_data["#{variant.id}"]["price_basement"] %></td>
       </tr>
