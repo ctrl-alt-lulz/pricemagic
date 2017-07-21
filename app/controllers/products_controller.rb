@@ -5,7 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @price_test_data = PriceTest.where(product_id: params[:id]).last
-    metric
+    @google_analytics_data =  current_shop.metrics.last.google_product_match(@product.title)
   end
 
   def update
@@ -18,14 +18,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   private
-  
-  def metric
-    @google_analytics_data = []
-    @google_analytics_data = current_shop.metrics.last.data.map { |m| @google_analytics_data << m if m['title'].starts_with?(@product.title)}.compact.uniq
-    ## TODO Refactor above code, why does it need uniq, is there a faster method than .map.compact?
-    ## TODO define how we access metrics
-    ## TODO create a view to support showing metrics leveraging the google_auth/analytics view
-  end
   
   def define_product
      @product = ShopifyAPI::Product.find(params[:id])
