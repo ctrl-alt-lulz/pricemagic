@@ -1,20 +1,11 @@
 <h1><%= @product.title %></h1>
+<h2><%= @collections.map{|c| c[:title].capitalize }.join(', ') %></h2>
+<h1><%= @collections.map{|c| c[:position] } %></h1>
+<h1><%= @product.id %></h1>
+<h1><%= @matches %></h1>
 
+<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.empty? %>
+<%= link_to "Home", root_url %>
 <%= render 'price_tests/form', product: @product, price_test: @price_test %>
-
-<table>
-  <thead>
-    <th><strong>Title</strong></th>
-    <th><strong>Starting Price</strong></th>
-    <th><strong>Percent Increase</strong></th>
-    <th><strong>Percent Decrease</strong></th>
-  </thead>
-  <% @product.variants.each do |variant| %>
-      <tr>
-        <td><%= variant.title %></td>
-        <td><%= variant.price %></td>
-        <td></td>
-        <td></td>
-      </tr>
-  <% end %>
-</table>
+<%= render 'price_tests/product_data_table' unless @price_test_data %>
+<%= render 'price_tests/active_price_test_data' if @price_test_data %>

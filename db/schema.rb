@@ -11,19 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627033441) do
+ActiveRecord::Schema.define(version: 20170720030554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "metrics", force: :cascade do |t|
+    t.integer  "shop_id"
+    t.json     "data",       default: [],              array: true
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
   create_table "price_tests", force: :cascade do |t|
     t.string   "product_id"
-    t.float    "percent_increase"
-    t.float    "percent_decrease"
+    t.float    "percent_increase", default: 0.0
+    t.float    "percent_decrease", default: 0.0
     t.jsonb    "price_data"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.boolean  "active",           default: true
+    t.float    "ending_digits",    default: 0.99
   end
 
   add_index "price_tests", ["product_id"], name: "index_price_tests_on_product_id", using: :btree

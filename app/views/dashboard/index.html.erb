@@ -1,17 +1,7 @@
 <h1>hello world</h1>
-<h2>The number of products: <%= @product_count %></h2>
+<h2>The number of products: <%= @products.count %></h2>
+
+<%= render 'partials/get_collection_form'%>
 <%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
-<table>
-  <thead>
-    <th><strong>Products</strong></th>
-    <th><strong>Price</strong></th>
-  </thead>
-  <% @paginatable_array.each do |product| %>
-    <tr>
-      <td><%= link_to product.title, product_path(product) %></td>
-      <td><%= product.variants[0].price %></td>
-      <!-- variant [0], until all variants possibly as drop down? -->
-    </tr>
-  <% end %>
-</table>
-<%= paginate @paginatable_array %>
+<%= render 'search_form'%>
+<%= render 'std_products'%>
