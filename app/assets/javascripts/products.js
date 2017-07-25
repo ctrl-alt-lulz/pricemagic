@@ -1,6 +1,9 @@
 var divClone;
 var endingDigits;
 var numberOfPricePoints;
+var percentIncrease;
+var percentDecrease;
+var newValue = [];
 
 $(document).ready(function(){
     divClone = $("#price-test-table").clone();
@@ -8,34 +11,42 @@ $(document).ready(function(){
   
 $(function () {
   $("#price-test-form").keyup(function() {
-    
-    endingDigits = parseFloat($("select#price_test_ending_digits").val());
-    numberOfPricePoints = parseFloat($("select#price_test").val());
-    
-    $("#price-test-table").html(divClone.html());
-    var percentIncrease = $("input#price_test_percent_increase").val();
-    var percentDecrease = $("input#price_test_percent_decrease").val();
-    $.each($('td.price-ceiling'), function(index,cell) {
-      var newValue = round(parseFloat($(cell).text()) * (1 + percentIncrease/100),2); // ensure this is a positive number on the input itself
-      newValue = Math.floor(newValue)+endingDigits;
-      $(cell).text(newValue);
+    getFormData();
+    $.each($('td.variant-price'), function(index,cell) {
+      var Value = round(parseFloat($(cell).text()) * (1 + percentIncrease/100),2); // ensure this is a positive number on the input itself
+      //var newValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
+      Value = Math.floor(Value)+endingDigits;
+      newValue[index] =  Value;
+      // $(cell).text(newValue);
     });
-    $.each($('td.price-basement'), function(index,cell) {
-      var newValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
-      newValue = Math.floor(newValue)+endingDigits;
-      $(cell).text(newValue);
-    });
-    
+    // $.each($('td.price-basement'), function(index,cell) {
+    //   var newValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
+    //   newValue = Math.floor(newValue)+endingDigits;
+    //   $(cell).text(newValue);
+    // });
+            
     $("#price-test-table > thead  > tr").last().append("<th>" + 'Diff' + "</th>");
     $("#price-test-table > tbody  > tr").each(function(index, cell) {
-      var row = $(cell);
-      var test = round(parseFloat($('td.price-ceiling')[index].innerText)-
-                 parseFloat($('td.price-basement')[index].innerText),2);
-      $(cell).append("<td>" + test + "</td>");
+      // var test = round(parseFloat($('td.price-ceiling')[index].innerText)-
+      //           parseFloat($('td.price-basement')[index].innerText),2);
+      $(cell).append("<td>" + newValue[index]  + "</td>");
     });
     
   });
 });
+
+function validPricePoints(value, number) {
+  if (value/number >= 1) return true;
+  return false;
+}
+
+function getFormData() {
+  $("#price-test-table").html(divClone.html());
+  endingDigits = parseFloat($("select#price_test_ending_digits").val());
+  numberOfPricePoints = parseFloat($("select#price_test").val());
+  percentIncrease = $("input#price_test_percent_increase").val();
+  percentDecrease = $("input#price_test_percent_decrease").val();
+};
 
 function round(value, exp) {
   if (typeof exp === 'undefined' || +exp === 0)
