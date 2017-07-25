@@ -1,3 +1,4 @@
+<div id="price-test-form">
 <%= form_for price_test do |f| %>
   <%= f.hidden_field(:product_id, value: product.id) %>
   <div>
@@ -10,9 +11,16 @@
   </div>
   <div>
     <%= f.label(:ending_digits)%>
-    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0.25, 0] ) %>
+    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0] ) %>
   </div>
   <div>
     <%= f.submit %>
   </div>
 <% end %>
+</div>
+<div>
+  <text>Number of Price Points</text>
+<%= form_tag(root_url,  method: :get) do %>
+  <%= select_tag "price_test", options_for_select((1..5).each) %>
+<% end %>
+</div>

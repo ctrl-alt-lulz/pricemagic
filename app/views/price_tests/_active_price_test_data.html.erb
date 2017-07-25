@@ -1,4 +1,4 @@
-<table>
+<table id="price-test-table">
   <thead>
   <th><strong>Title</strong></th>
   <th><strong>Current Price</strong></th>
@@ -11,8 +11,8 @@
         <td><%= variant.title %></td>
         <td><%= variant.price %></td>
         <td class='price-ceiling'><%= @price_test_data.price_data["#{variant.id}"]["price_ceiling"] %></td>
-        <td><%= @price_test_data.price_data["#{variant.id}"]["base_price"] %></td>
-        <td><%= @price_test_data.price_data["#{variant.id}"]["price_basement"] %></td>
+        <td class='price-base'><%= @price_test_data.price_data["#{variant.id}"]["base_price"] %></td>
+        <td class='price-basement'><%= @price_test_data.price_data["#{variant.id}"]["price_basement"] %></td>
       </tr>
   <% end %>
 </table>

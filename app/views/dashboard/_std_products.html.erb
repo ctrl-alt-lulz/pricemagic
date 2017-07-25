@@ -1,13 +1,15 @@
-<div class="queried_products">
+<div class="std_products">
 <table>
   <thead>
     <th><strong>Products</strong></th>
     <th><strong>Price</strong></th>
+    <th><strong>Price Test Status</strong></th>
   </thead>
   <% @paginatable_array.each do |product| %>
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.variants[0].price %></td>
+      <td><%= PriceTest.where(product_id: product.id).any?.to_s.capitalize %></td>
       <!-- variant [0], until all variants possibly as drop down? -->
     </tr>
   <% end %>
