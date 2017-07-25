@@ -1,9 +1,11 @@
 var divClone;
-var endingDigits;
+var endingDigits; // being used globally check if ok, or should list explicit in stepfunction
 var numberOfPricePoints;
 var percentIncrease;
 var percentDecrease;
-var newValue = [];
+var upperValueIndex = [];
+var lowerValueIndex = [];
+var pricePointArray = [];
 
 $(document).ready(function(){
     divClone = $("#price-test-table").clone();
@@ -11,31 +13,37 @@ $(document).ready(function(){
   
 $(function () {
   $("#price-test-form").keyup(function() {
+    pricePointArray = [];
     getFormData();
     $.each($('td.variant-price'), function(index,cell) {
-      var Value = round(parseFloat($(cell).text()) * (1 + percentIncrease/100),2); // ensure this is a positive number on the input itself
-      //var newValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
-      Value = Math.floor(Value)+endingDigits;
-      newValue[index] =  Value;
-      // $(cell).text(newValue);
+      var upperValue = round(parseFloat($(cell).text()) * (1 + percentIncrease/100),2); // ensure this is a positive number on the input itself
+      var lowerValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
+      upperValue = Math.floor(upperValue)+endingDigits;
+      upperValueIndex[index] =  upperValue;
+      if (numberOfPricePoints > 1) {
+      lowerValue = Math.floor(lowerValue)+endingDigits;
+      lowerValueIndex[index] =  lowerValue;}
+      pricePointArray.push(stepPricePoints(upperValue, lowerValue, numberOfPricePoints));
+      console.log(pricePointArray);
     });
-    // $.each($('td.price-basement'), function(index,cell) {
-    //   var newValue = round(parseFloat($(cell).text()) * (1 - percentDecrease/100),2); // ensure this is a positive number on the input itself
-    //   newValue = Math.floor(newValue)+endingDigits;
-    //   $(cell).text(newValue);
-    // });
-            
+    if (numberOfPricePoints < 2){
     $("#price-test-table > thead  > tr").last().append("<th>" + 'Diff' + "</th>");
     $("#price-test-table > tbody  > tr").each(function(index, cell) {
-      // var test = round(parseFloat($('td.price-ceiling')[index].innerText)-
-      //           parseFloat($('td.price-basement')[index].innerText),2);
-      if (validPricePoints(newValue[index],2)) {
-        $(cell).append("<td>" + newValue[index]  + "</td>");
-      }
-      else {
-        $(cell).append("<td>" + "NOPE"  + "</td>");
-      }
-    });
+        $(cell).append("<td>" + upperValueIndex[index]  + "</td>");
+    });}
+    else {
+      $.each(pricePointArray[0], function(index,value){
+        console.log(index);
+        console.log(value);
+        console.log(pricePointArray[0]);
+        $("#price-test-table > thead  > tr").last().append("<th>" + 'Diff' + index + "</th>");
+      });
+      
+      $("#price-test-table > tbody  > tr").each(function(index, cell) {
+        $.each(pricePointArray[index], function(index1,value){
+          $(cell).append("<td>" + pricePointArray[index][index1]  + "</td>");
+        });
+    });}
     
   });
 });
@@ -43,6 +51,18 @@ $(function () {
 function validPricePoints(value, number) {
   if (value/number >= 1) return true;
   return false;
+}
+
+// TODO ensure violation of price seperation rule above does not accur in below func
+// ask patrick, does using same var name endingDigits make any difference? any global stuff matter?
+function stepPricePoints(upper, lower, number_of_test_points) {
+  number_of_test_points -= 1;
+  var pricePoints = [lower];
+  var step = (upper - lower)/number_of_test_points;
+  for(var i=1; i<number_of_test_points; i++){
+    pricePoints.push(Math.floor(pricePoints[i-1]+step)+endingDigits);} // global use of endingDigits
+  pricePoints.push(upper);
+  return pricePoints;
 }
 
 function getFormData() {
