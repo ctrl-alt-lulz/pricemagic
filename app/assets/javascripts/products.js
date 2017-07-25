@@ -29,7 +29,12 @@ $(function () {
     $("#price-test-table > tbody  > tr").each(function(index, cell) {
       // var test = round(parseFloat($('td.price-ceiling')[index].innerText)-
       //           parseFloat($('td.price-basement')[index].innerText),2);
-      $(cell).append("<td>" + newValue[index]  + "</td>");
+      if (validPricePoints(newValue[index],2)) {
+        $(cell).append("<td>" + newValue[index]  + "</td>");
+      }
+      else {
+        $(cell).append("<td>" + "NOPE"  + "</td>");
+      }
     });
     
   });
