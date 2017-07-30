@@ -14,25 +14,19 @@
     <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0] ) %>
   </div>
   <div>
-    <%= f.label(:num_price_points)%>
-    <%= select("price_test", "num_price_points", (1..5).each ) %>
+    <%= f.label(:price_points)%>
+    <%= select("price_test", "price_points", [1, 2, 3, 4, 5]) %>
   </div>
   <div>
     <%= f.submit %>
   </div>
 <% end %>
 <div>
-  <text>Number of Price Points</text>
 <%= form_tag(root_url,  method: :get) do %>
   <div>
-    <%= select_tag "num_price_points", options_for_select((1..5).each) %>
+    <text> Select number of product views for each price point.</text>
   </div>
-  <div>
-    <div>
-      <text> Select number of product views for each price point.</text>
-    </div>
     <%= select_tag "test_views", options_for_select([7500, 5000, 1500, 750]) %>
-  </div>
 <% end %>
 </div>
 

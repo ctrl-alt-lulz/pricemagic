@@ -15,7 +15,7 @@ $(function () {
 
 function calculatePriceMatrix() {
   var priceArray = [];
-  var pricePoints = parseFloat($("select#num_price_points").val());
+  var pricePoints = parseFloat($("select#price_test_price_points").val());
   var percentDecrease = $("input#price_test_percent_decrease").val();
   var percentIncrease = $("input#price_test_percent_increase").val();
 
@@ -76,7 +76,7 @@ function setPricePointTable(priceArray) {
 }
 
 function toggleDecreaseInput() {
-  var pricePoints = parseFloat($("select#num_price_points").val());
+  var pricePoints = parseFloat($("select#price_test_price_points").val());
   if (pricePoints == 1) {
     $("input#price_test_percent_decrease").val(0);
     $("input#price_test_percent_decrease").attr('disabled','disabled');

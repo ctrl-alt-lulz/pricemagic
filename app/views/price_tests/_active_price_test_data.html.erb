@@ -2,17 +2,11 @@
   <thead>
   <th><strong>Title</strong></th>
   <th><strong>Current Price</strong></th>
-  <!--<th><strong>Price Ceiling</strong></th>-->
-  <!--<th><strong>Base Price</strong></th>-->
-  <!--<th><strong>Price Basement</strong></th>-->
   </thead>
   <% @product.variants.each do |variant| %>
       <tr>
         <td><%= variant.title %></td>
         <td class='variant-price'><%= variant.price %></td>
-        <!--<td class='price-ceiling'><%= @price_test_data.price_data["#{variant.id}"]["price_ceiling"] %></td>-->
-        <!--<td class='price-base'><%= @price_test_data.price_data["#{variant.id}"]["base_price"] %></td>-->
-        <!--<td class='price-basement'><%= @price_test_data.price_data["#{variant.id}"]["price_basement"] %></td>-->
       </tr>
   <% end %>
 </table>
