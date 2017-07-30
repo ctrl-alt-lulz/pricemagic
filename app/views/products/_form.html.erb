@@ -7,7 +7,7 @@
     </div>
     <div id="single_price_point">
       <%= f.label(:percent_decrease)%>
-      <%= f.number_field(:percent_decrease) %>
+      <%= f.number_field(:percent_decrease, within: 1...100) %>
     </div>
   <div>
     <%= f.label(:ending_digits)%>
@@ -20,8 +20,15 @@
 <div>
   <text>Number of Price Points</text>
 <%= form_tag(root_url,  method: :get) do %>
-  <%= select_tag "price_test", options_for_select((1..5).each) %>
-  <%= check_box_tag("manual_entry") %>
+  <div>
+    <%= select_tag "num_price_points", options_for_select((1..5).each) %>
+  </div>
+  <div>
+    <div>
+      <text> Select number of product views for each price point.</text>
+    </div>
+    <%= select_tag "test_views", options_for_select([7500, 5000, 1500, 750]) %>
+  </div>
 <% end %>
 </div>
 

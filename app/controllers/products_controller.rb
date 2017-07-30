@@ -17,6 +17,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
     end
   end
 
+  def google_variant_match(name)
+    self.keep_if{ |m| m['title'].ends_with?(name) }  
+  end
+  
   private
   
   def define_product

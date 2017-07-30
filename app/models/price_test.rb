@@ -11,6 +11,12 @@ class PriceTest < ActiveRecord::Base
   
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
+  
+  ## TODO handle product views across all variants
+  #  def total_product_views
+  #    ## TODO sum variant views for current test
+  #  end 
+  
   def product
     @product ||= ShopifyAPI::Product.find(product_id)
   end
@@ -42,10 +48,13 @@ class PriceTest < ActiveRecord::Base
 
   def variant_hash(variant)
     {
-      variant.id => {
-        base_price: make_ending_digits(variant.price.to_f),
-        price_ceiling: make_ending_digits(variant.price.to_f * percent_increase),
-        price_basement: make_ending_digits(variant.price.to_f * percent_decrease)
+      variant.id: {
+        original_price: make_ending_digits(variant.price.to_f)
+        current_test_price: nil,
+        current_test_position: nil,
+        total_variant_views: {},
+        price_points: [], ## TODO write something that takes an array of values and sets it here
+        tested_price_points: []
       }
     }
   end
@@ -65,12 +74,6 @@ class PriceTest < ActiveRecord::Base
   end
   
   private
-  ## TODO find max price steps
-  ## TODO figure out how to get steps working ie array of [price_basement, price1, price2, price_ceiling]
-  ## maybe set a maximum of 4 and it will set up to 4/max?
-  # def max_price_steps
-  #   price_ceiling - price_basement
-  # end
   
   def seed_price_data
     self.price_data = raw_price_data
