@@ -37,7 +37,7 @@ class PriceTest < ActiveRecord::Base
 
   def revert_price_to_base!
     variants.each do |variant|
-      variant.price = price_data[variant.id.to_s]['base_price']
+      variant.price = price_data[variant.id.to_s]['original_price']
     end
     product.save
   end
@@ -48,10 +48,10 @@ class PriceTest < ActiveRecord::Base
 
   def variant_hash(variant)
     {
-      variant.id: {
-        original_price: make_ending_digits(variant.price.to_f)
-        current_test_price: nil,
-        current_test_position: nil,
+      variant.id =>  {
+        original_price: make_ending_digits(variant.price.to_f),
+        current_test_price: null,
+        current_test_position: null,
         total_variant_views: {},
         price_points: [], ## TODO write something that takes an array of values and sets it here
         tested_price_points: []

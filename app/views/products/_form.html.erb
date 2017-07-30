@@ -14,6 +14,10 @@
     <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0] ) %>
   </div>
   <div>
+    <%= f.label(:num_price_points)%>
+    <%= select("price_test", "num_price_points", (1..5).each ) %>
+  </div>
+  <div>
     <%= f.submit %>
   </div>
 <% end %>
