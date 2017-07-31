@@ -55,7 +55,7 @@ class PriceTest < ActiveRecord::Base
         current_test_price: nil,
         current_test_position: nil,
         total_variant_views: {},
-        price_points: step_price_points(upperValue, lowerValue, self[:price_points]), ## TODO write something that takes an array of values and sets it here
+        price_points: step_price_points(upperValue, lowerValue, self[:price_points]),
         tested_price_points: []
       }
     }
