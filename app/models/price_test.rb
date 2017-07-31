@@ -80,7 +80,12 @@ class PriceTest < ActiveRecord::Base
   def seed_price_data
     self.price_data = raw_price_data
   end
-
+  
+  ## TODO, creates new start date when next price point is ready for test
+  def price_test_start_date
+    Time.now.strftime("%Y-%m-%d")
+  end
+  
   def make_ending_digits(price)
     price.floor + self.ending_digits
   end
@@ -96,4 +101,5 @@ class PriceTest < ActiveRecord::Base
     pricePoints.push(upper);
     return pricePoints;
   end
+  
 end
