@@ -21,16 +21,15 @@ class GoogleAuthController < ApplicationController
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
-      redirect_uri: Rails.configuration.public_url + "oauth2callback", ## TODO put this in .env
-      code: params[:code]
+      redirect_uri: Rails.configuration.public_url + "oauth2callback", 
+      code: params[:code],
     })
     response = client.fetch_access_token!
-    session[:access_token] = response['access_token']
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
+    user.google_refresh_token = response['refresh_token']
     user.save
     redirect_to root_url
   end
 end
-
 

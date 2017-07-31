@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170729224800) do
+ActiveRecord::Schema.define(version: 20170731024611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,8 +49,9 @@ ActiveRecord::Schema.define(version: 20170729224800) do
   create_table "users", force: :cascade do |t|
     t.text     "google_access_token"
     t.integer  "shop_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.text     "google_refresh_token"
   end
 
 end

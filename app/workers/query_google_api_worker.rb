@@ -10,11 +10,15 @@ class QueryGoogleApiWorker
     ## TODO store the refresh_token so we can use the refresh_token to
     ## get updated access_tokens when they expire
     shop = Shop.find(shop_id)
-    client = Signet::OAuth2::Client.new(access_token: shop.latest_access_token)
+    client = Signet::OAuth2::Client.new(access_token: shop.latest_access_token,
+                                        refresh_token: shop.latest_refresh_token)
+    client.update_token!
     client.expires_in = Time.now + 1_000_000 ## TODO research more here
     ## TODO verify this offline access is necessary and/how to use properly
     ## client.update!(:additional_parameters => {"access_type" => "offline"})
     ## https://developers.google.com/identity/protocols/OAuth2WebServer#offline
+    # session[:expires_in] = client.expires_in
+    # session[:issued_at] = client.issued_at
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
@@ -28,7 +32,8 @@ class QueryGoogleApiWorker
   private
   
   def get_product_performance
-    rr = default_rr([metric(expression: "ga:itemRevenue"), metric(expression: "ga:productDetailViews"),
+    rr = default_rr([metric(expression: "ga:itemRevenue"), 
+    metric(expression: "ga:productDetailViews"),
     metric(expression: "ga:revenuePerItem")], [dimension(name: 'ga:productName')])
     rr.order_bys = [sort(sort_order: "descending", field_name: "ga:itemRevenue")]
     return grr([rr])
