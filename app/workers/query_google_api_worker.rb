@@ -14,10 +14,7 @@ class QueryGoogleApiWorker
                                         access_token: shop.latest_access_token,
                                         refresh_token: shop.latest_refresh_token,
                                         token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token')
-    client.refresh!
-    client.expires_in = Time.now + 1_000_000 ## TODO research more here
-    # session[:expires_in] = client.expires_in
-    # session[:issued_at] = client.issued_at
+    client.refresh! if client.expired?
     # time convert created at to google format strftime("%Y-%m-%d")
     # time = Metric.last.created_at
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
