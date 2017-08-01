@@ -25,9 +25,6 @@ class GoogleAuthController < ApplicationController
       code: params[:code],
     })
     response = client.fetch_access_token!
-    puts "*"*50
-    logger.debug response.inspect
-    puts "*"*50
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
     user.google_refresh_token = response['refresh_token']

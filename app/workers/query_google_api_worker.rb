@@ -6,11 +6,11 @@ class QueryGoogleApiWorker
   include Sidekiq::Worker
   sidekiq_options :retry => 1
 
-  def perform(shop_id, start_date)
-    ## TODO pass in start date of price test
+  def perform(shop_id)
     ## TODO? maybe check for metrics that exist, meeting date criteria
     ## before running again? ie start and end date are the same as a previous query
     shop = Shop.find(shop_id)
+    start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
     client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
                                         client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
                                         access_token: shop.latest_access_token,
@@ -24,8 +24,8 @@ class QueryGoogleApiWorker
     begin
       @product_performance = service.batch_report_get(get_product_performance(start_date))
       shop.metrics.create(data: @product_performance)
-      ## TODO figure out how to relate to a product
-      ## product.metrics.create(type: 'Summary', data: @account_summaries)
+      ## TODO write worker to check price_tests for upgrades/closing
+      ## CheckPriceTestsWorker.perform_async(shop_id)
     end
   end
   

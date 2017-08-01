@@ -6,11 +6,11 @@ class Shop < ActiveRecord::Base
   has_many :metrics, dependent: :destroy
 
   def latest_access_token
-    users.order(updated_at: :desc).first.google_access_token
+    users.order(updated_at: :desc).where.not(google_access_token: nil).first.google_access_token
   end
   
   def latest_refresh_token
-    users.order(updated_at: :desc).first.google_refresh_token
+    users.order(updated_at: :desc).where.not(google_refresh_token: nil).first.google_refresh_token
   end
 
   def with_shopify!

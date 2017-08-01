@@ -23,6 +23,7 @@ gem 'kaminari'
 # Services
 gem 'shopify_app'
 gem 'sidekiq'
+gem 'sidekiq-scheduler', '~> 2.1.7'
 gem 'google-api-client', '~> 0.11'
 
 group :development, :test do
