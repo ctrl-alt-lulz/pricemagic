@@ -5,6 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @price_test_data = PriceTest.where(product_id: params[:id]).last
+    ## TODO figure out how code below works when multiple date/timelines maybe find match by date start?
     @google_analytics_data =  current_shop.metrics.last.google_product_match(@product.title)
   end
 

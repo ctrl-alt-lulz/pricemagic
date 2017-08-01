@@ -3,7 +3,7 @@ class PriceTest < ActiveRecord::Base
   validates :price_data, presence: true
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
-  ## TODO validate :no_active_price_tests_for_product
+  validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
   ## TODO need to keep track of dates price test starts/ends can select days to run or views
   ## TODO be able to configure settings and then submit/start/ goes active 
@@ -16,7 +16,7 @@ class PriceTest < ActiveRecord::Base
   #  def total_product_views
   #    ## TODO sum variant views for current test
   #  end 
-  
+
   def product
     @product ||= ShopifyAPI::Product.find(product_id)
   end
@@ -53,8 +53,8 @@ class PriceTest < ActiveRecord::Base
       variant.id =>  {
         original_price: make_ending_digits(variant.price.to_f),
         current_test_price: nil,
-        current_test_position: nil,
-        total_variant_views: {},
+        current_test_position: nil, ##TODO figure out how to shift as a function of below code
+        total_variant_views: {}, ## TODO get views from google worker
         price_points: step_price_points(upperValue, lowerValue, self[:price_points]),
         tested_price_points: []
       }
@@ -76,6 +76,11 @@ class PriceTest < ActiveRecord::Base
   end
   
   private
+  
+  def no_active_price_tests_for_product
+    return if PriceTest.where(product_id: product_id).active.empty?
+    errors.add(:id, "cannot have multiple active price tests")
+  end
   
   def seed_price_data
     self.price_data = raw_price_data

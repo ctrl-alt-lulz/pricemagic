@@ -9,7 +9,7 @@ class GoogleAuthController < ApplicationController
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
-      scope: ::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY,
+      scope: "profile #{::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY}",
       redirect_uri: Rails.configuration.public_url + "oauth2callback",
       token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token',
     })
@@ -25,6 +25,9 @@ class GoogleAuthController < ApplicationController
       code: params[:code],
     })
     response = client.fetch_access_token!
+    puts "*"*50
+    logger.debug response.inspect
+    puts "*"*50
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
     user.google_refresh_token = response['refresh_token']

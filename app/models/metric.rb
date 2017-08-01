@@ -1,6 +1,5 @@
 class Metric < ActiveRecord::Base
   belongs_to :shop
-  
   def google_product_match(name)
     data.keep_if{ |m| m['title'].starts_with?(name) }  
   end

@@ -8,6 +8,8 @@ class QueryGoogleApiWorker
 
   def perform(shop_id, start_date)
     ## TODO pass in start date of price test
+    ## TODO? maybe check for metrics that exist, meeting date criteria
+    ## before running again? ie start and end date are the same as a previous query
     shop = Shop.find(shop_id)
     client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
                                         client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),

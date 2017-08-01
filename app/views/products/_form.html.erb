@@ -3,22 +3,22 @@
   <%= f.hidden_field(:product_id, value: product.id) %>
     <div>
       <%= f.label(:percent_increase)%>
-      <%= f.number_field(:percent_increase) %>
+      <%= f.number_field(:percent_increase, class: 'Polaris-TextField') %>
     </div>
     <div id="single_price_point">
       <%= f.label(:percent_decrease)%>
-      <%= f.number_field(:percent_decrease, within: 1...100) %>
+      <%= f.number_field(:percent_decrease, within: 0..100, class: 'Polaris-TextField') %>
     </div>
   <div>
     <%= f.label(:ending_digits)%>
-    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0] ) %>
+    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0], {}, {class: 'Polaris-Select'}) %>
   </div>
   <div>
     <%= f.label(:price_points)%>
-    <%= select("price_test", "price_points", [1, 2, 3, 4, 5]) %>
+    <%= select("price_test", "price_points", [1, 2, 3, 4, 5], {}, {class: 'Polaris-Select'}) %>
   </div>
   <div>
-    <%= f.submit %>
+    <%= f.submit 'Start Price Test', class: 'Polaris-Button' %>
   </div>
 <% end %>
 <div>
