@@ -27,7 +27,6 @@ function calculatePriceMatrix() {
     priceArray.push(stepPricePoints(upperValue, lowerValue, pricePoints));
   });
   return priceArray;
-  console.log(priceArray);
 }
 
 function validPricePoints(value, number) {
