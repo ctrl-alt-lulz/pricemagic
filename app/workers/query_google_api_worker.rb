@@ -7,10 +7,9 @@ class QueryGoogleApiWorker
   sidekiq_options :retry => 1
 
   def perform(shop_id)
-    ## TODO? maybe check for metrics that exist, meeting date criteria
-    ## before running again? ie start and end date are the same as a previous query
     shop = Shop.find(shop_id)
-    start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
+    @view_id = shop.google_profile_id
+    @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
     client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
                                         client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
                                         access_token: shop.latest_access_token,
@@ -22,7 +21,7 @@ class QueryGoogleApiWorker
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
-      @product_performance = service.batch_report_get(get_product_performance(start_date))
+      @product_performance = service.batch_report_get(get_product_performance)
       shop.metrics.create(data: @product_performance)
       ## TODO write worker to check price_tests for upgrades/closing
       ## CheckPriceTestsWorker.perform_async(shop_id)
@@ -31,18 +30,17 @@ class QueryGoogleApiWorker
   
   private
   
-  def get_product_performance(start_date)
+  def get_product_performance
     rr = default_rr([metric(expression: "ga:itemRevenue"), 
     metric(expression: "ga:productDetailViews"),
-    metric(expression: "ga:revenuePerItem")], [dimension(name: 'ga:productName')], 
-    start_date)
+    metric(expression: "ga:revenuePerItem")], [dimension(name: 'ga:productName')])
     rr.order_bys = [sort(sort_order: "descending", field_name: "ga:itemRevenue")]
     return grr([rr])
   end
   
-  def default_rr(metrics, dimensions, start_date)
-    rr = rrq(view_id: "136801755", 
-            date_ranges: [date(start_date: start_date, end_date: 'today')],
+  def default_rr(metrics, dimensions)
+    rr = rrq(view_id: @view_id, 
+            date_ranges: [date(start_date: @start_date, end_date: 'today')],
             metrics: metrics,
             dimensions: dimensions)
     return rr

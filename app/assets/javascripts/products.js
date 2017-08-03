@@ -4,8 +4,9 @@ $(function () {
   storeOriginalData();
   toggleDecreaseInput();
     
-  $("#price-test-form").change(function() {
+  $("div#price-test-form").change(function() {
     setOriginalFormData();
+    updateEndingDigits();
     toggleDecreaseInput();
     var pricePointArray = calculatePriceMatrix();
     setPricePointHeaders(pricePointArray);
@@ -35,7 +36,6 @@ function validPricePoints(value, number) {
 
 function storeOriginalData() {
   originalTableData = $("#price-test-table").clone();
-  endingDigits = parseFloat($("select#price_test_ending_digits").val());
 }
 
 // TODO ensure violation of price seperation rule above does not accur in below func
@@ -59,9 +59,14 @@ function setOriginalFormData() {
   $("#price-test-table").html(originalTableData.html());
 }
 
+function updateEndingDigits() {
+  endingDigits = parseFloat($("select#price_test_ending_digits").val());
+}
+
 function setPricePointHeaders(priceArray) {
   $.each(priceArray[0], function(index,value){
     $("#price-test-table > thead  > tr").last().append("<th>" + 'Price ' + index + "</th>");
+;
   });
 }
 
@@ -69,7 +74,7 @@ function setPricePointTable(priceArray) {
   $("#price-test-table > tbody  > tr").each(function(row, cell) {
     $.each(priceArray[row], function(col,value){
       $(cell).append("<td class=row-" + row + "-col-" + col + 
-                     "><input type=number value=" + priceArray[row][col]
+                     "><input class='manual_price' type=number value=" + priceArray[row][col]
                      + ">" + "</input></td>");
     });
   });

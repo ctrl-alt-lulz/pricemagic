@@ -1,33 +1,40 @@
-<div id="price-test-form">
-<%= form_for price_test do |f| %>
-  <%= f.hidden_field(:product_id, value: product.id) %>
-    <div>
-      <%= f.label(:percent_increase)%>
-      <%= f.number_field(:percent_increase, class: 'Polaris-TextField') %>
+<div class="Polaris-Layout__AnnotationWrapper">
+  <div class="Polaris-Layout__Annotation">
+    <div class="Polaris-TextContainer">
+      <h2 class="Polaris-Heading">Form</h2>
+      <p> Form Sample</p>
     </div>
-    <div id="single_price_point">
-      <%= f.label(:percent_decrease)%>
-      <%= f.number_field(:percent_decrease, within: 0..100, class: 'Polaris-TextField') %>
+  </div>
+  <div class="Polaris-Layout__AnnotationContent">
+    <div id="price-test-form", class="Polaris-Card">
+      <div class="Polaris-Card__Section">
+        <%= form_for price_test do |f| %>
+          <%= f.hidden_field(:product_id, value: product.id) %>
+          <div role="group" class>
+            <div class="Polaris-FormLayout__Items">
+              <div class="Polaris-FormLayout__Item">
+                <%= f.label(:percent_increase, class: "Polaris-Labelled__LabelWrapper")%>
+                <%= f.number_field(:percent_increase, class: 'Polaris-TextField') %>
+              </div>
+              <div id="single_price_point",  class="Polaris-FormLayout__Item">
+                <%= f.label(:percent_decrease, class: "Polaris-Labelled__LabelWrapper")%>
+                <%= f.number_field(:percent_decrease, class: 'Polaris-TextField') %>
+              </div>
+            </div>
+          </div>
+          <div class="Polaris-FormLayout__Item">
+            <%= f.label(:ending_digits, class: "Polaris-Labelled__LabelWrapper")%>
+            <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0], {}, {class: 'Polaris-Select'}) %>
+          </div>
+          <div class="Polaris-FormLayout__Item">
+            <%= f.label(:price_points, class: "Polaris-Labelled__LabelWrapper")%>
+            <%= select("price_test", "price_points", [1, 2, 3, 4, 5], {}, {class: 'Polaris-Select'}) %>
+          </div>
+          <div class="Polaris-FormLayout__Item">
+            <%= f.submit 'Start Price Test', class: 'Polaris-Button Polaris-Button--primary' %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  <div>
-    <%= f.label(:ending_digits)%>
-    <%= select("price_test", "ending_digits", [0.99, 0.95, 0.50, 0], {}, {class: 'Polaris-Select'}) %>
   </div>
-  <div>
-    <%= f.label(:price_points)%>
-    <%= select("price_test", "price_points", [1, 2, 3, 4, 5], {}, {class: 'Polaris-Select'}) %>
-  </div>
-  <div>
-    <%= f.submit 'Start Price Test', class: 'Polaris-Button' %>
-  </div>
-<% end %>
-<div>
-<%= form_tag(root_url,  method: :get) do %>
-  <div>
-    <text> Select number of product views for each price point.</text>
-  </div>
-    <%= select_tag "test_views", options_for_select([7500, 5000, 1500, 750]) %>
-<% end %>
-</div>
-
 </div>

@@ -1,13 +1,18 @@
-/*.percent_inputs input{*/
-/*    width: 15%;*/
-/*}*/
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+}
 
-/*fieldset {*/
-/*    display: inline-block;*/
-/*    clear: left;*/
-/*    width: 25%;*/
-/*    text-align: right;*/
-/*}*/
-/*input {*/
-/*  display: inline-block;*/
-/*}*/
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    width: "pixels|%|relative_length";
+}
+
+input.manual_price {
+    width: 100%;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+}

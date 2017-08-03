@@ -95,6 +95,7 @@ class PriceTest < ActiveRecord::Base
     price.floor + self.ending_digits
   end
   
+  ## TODO refactor this
   def step_price_points(upper, lower, number_of_test_points)
     number_of_test_points -= 1;
     pricePoints = []; 

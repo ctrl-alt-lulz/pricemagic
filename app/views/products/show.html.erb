@@ -3,10 +3,8 @@
 <h1><%= @collections.map{|c| c[:position] } %></h1>
 <h1><%= @product.id %></h1>
 <h1><%= @matches %></h1>
-<h1><%= @google_analytics_data %></h1>
 
 <%= link_to "Home", root_url %>
 <%= render 'form', product: @product, price_test: @price_test %>
-<%= render 'price_tests/product_data_table' unless @price_test_data %>
-<%= render 'price_tests/active_price_test_data' if @price_test_data %>
+<%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data%>
 <%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.empty? %>

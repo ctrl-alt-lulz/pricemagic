@@ -9,8 +9,8 @@
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.variants[0].price %></td>
-      <td><%= PriceTest.where(product_id: product.id).any?.to_s.capitalize %></td>
-      <!-- variant [0], until all variants possibly as drop down? -->
+      <td><%= PriceTest.where(product_id: product.id).empty? ? "False" :
+              PriceTest.where(product_id: product.id).last.active.to_s.capitalize %></td>
     </tr>
   <% end %>
 </table>
