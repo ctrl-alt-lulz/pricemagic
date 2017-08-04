@@ -5,6 +5,7 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
+  after_validation
   ## TODO need to keep track of dates price test starts/ends can select days to run or views
   ## TODO be able to configure settings and then submit/start/ goes active 
   ## ties in with #of price steps chosen
@@ -60,7 +61,31 @@ class PriceTest < ActiveRecord::Base
       }
     }
   end
+  
+  # p = PriceTest.last
+  # p['price_data']['40061050756']['price_points']
+  def set_test_position
+    define_current_test_position_array
+    shift_price_point
+    variants.each do |variant|
+      puts variant.id
+    end
+    # current_test_price: price_points[@current_test_position],
+    # current_test_position: @current_test_position, ##TODO figure out how to shift as a function of below code
+  end
 
+  def define_current_test_position_array 
+    @current_test_position_array = self[:price_points].times.map{|n| n}
+  end
+  
+  def shift_price_point
+    if @current_test_position_array.nil?
+      ##TODO end test
+    else
+      @current_test_position = @current_test_position_array.shift
+    end
+  end
+  
   def raw_price_data
     empty_hash = {}
     variants.each{ |variant| empty_hash.merge!(variant_hash(variant)) }
@@ -97,15 +122,26 @@ class PriceTest < ActiveRecord::Base
   
   ## TODO refactor this
   def step_price_points(upper, lower, number_of_test_points)
-    number_of_test_points -= 1;
-    pricePoints = []; 
+    number_of_test_points -= 1
+    pricePoints = []
     pricePoints.push(lower) if(number_of_test_points > 0) 
     step = (upper - lower)/number_of_test_points;
     for number_of_test_points in (1...number_of_test_points) do
       pricePoints.push(make_ending_digits(pricePoints[number_of_test_points-1] + step))
     end
     pricePoints.push(upper);
-    return pricePoints;
+    pricePoints = validate_price_points(pricePoints)
   end
   
+    ## TODO maybe there is a better way? like stopping execution?
+    ## How to only return one of error type? Currently using uniq method in pricetest controller
+  def validate_price_points(pricePoints)
+    if pricePoints != pricePoints.uniq  
+        errors.add(:base, "Cannot have duplicate price points!")
+    elsif pricePoints != pricePoints.sort
+        errors.add(:base, "Price range is not sufficient, must order smallest to largest!") 
+    else 
+      return pricePoints
+    end
+  end
 end

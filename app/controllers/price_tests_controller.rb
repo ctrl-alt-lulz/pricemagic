@@ -10,7 +10,7 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
       end
     else
       respond_to do |format|
-        format.html { redirect_to product_path(params[:price_test][:product_id]), notice: @price_test.errors.full_messages.to_sentence }
+        format.html { redirect_to product_path(params[:price_test][:product_id]), notice: @price_test.errors.full_messages.uniq.to_sentence }
         format.js { render action: "create"}
         format.json { render json: { success: false, message: @price_test.errors.full_messages.to_sentence }, status: 400   }
       end
