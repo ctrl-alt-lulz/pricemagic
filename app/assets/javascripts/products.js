@@ -12,6 +12,19 @@ $(function () {
     setPricePointHeaders(pricePointArray);
     setPricePointTable(pricePointArray);
   });
+  
+  // $('#new_price_test').submit(function(e){
+  //   e.preventDefault();
+  //   $.ajax({
+  //     type: "POST",
+  //     url: '/price_tests',
+  //     data: $(this).serialize(),
+  //     dataType: 'json'
+  //   })
+  //   .done(function() {
+  //     alert( "Success!" );
+  //   });
+  // });
 });
 
 function calculatePriceMatrix() {

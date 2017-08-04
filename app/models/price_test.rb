@@ -79,7 +79,7 @@ class PriceTest < ActiveRecord::Base
   
   def no_active_price_tests_for_product
     return if PriceTest.where(product_id: product_id).active.empty?
-    errors.add(:id, "cannot have multiple active price tests")
+    errors.add(:base, "Cannot have multiple active price tests!")
   end
   
   def seed_price_data
