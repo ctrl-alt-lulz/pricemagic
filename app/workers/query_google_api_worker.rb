@@ -7,36 +7,40 @@ class QueryGoogleApiWorker
   sidekiq_options :retry => 1
 
   def perform(shop_id)
-    ## TODO store the refresh_token so we can use the refresh_token to
-    ## get updated access_tokens when they expire
     shop = Shop.find(shop_id)
-    client = Signet::OAuth2::Client.new(access_token: shop.latest_access_token)
-    client.expires_in = Time.now + 1_000_000 ## TODO research more here
-    ## TODO verify this offline access is necessary and/how to use properly
-    ## client.update!(:additional_parameters => {"access_type" => "offline"})
-    ## https://developers.google.com/identity/protocols/OAuth2WebServer#offline
+    @view_id = shop.google_profile_id
+    @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
+    client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
+                                        client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
+                                        access_token: shop.latest_access_token,
+                                        refresh_token: shop.latest_refresh_token,
+                                        token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token')
+    client.refresh! if client.expired?
+    # time convert created at to google format strftime("%Y-%m-%d")
+    # time = Metric.last.created_at
     service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
     service.authorization = client
     begin
       @product_performance = service.batch_report_get(get_product_performance)
       shop.metrics.create(data: @product_performance)
-      ## TODO figure out how to relate to a product
-      ## product.metrics.create(type: 'Summary', data: @account_summaries)
+      ## TODO write worker to check price_tests for upgrades/closing
+      ## CheckPriceTestsWorker.perform_async(shop_id)
     end
   end
   
   private
   
   def get_product_performance
-    rr = default_rr([metric(expression: "ga:itemRevenue"), metric(expression: "ga:productDetailViews"),
+    rr = default_rr([metric(expression: "ga:itemRevenue"), 
+    metric(expression: "ga:productDetailViews"),
     metric(expression: "ga:revenuePerItem")], [dimension(name: 'ga:productName')])
     rr.order_bys = [sort(sort_order: "descending", field_name: "ga:itemRevenue")]
     return grr([rr])
   end
   
   def default_rr(metrics, dimensions)
-    rr = rrq(view_id: "136801755", 
-            date_ranges: [date(start_date: '180daysago', end_date: 'today')],
+    rr = rrq(view_id: @view_id, 
+            date_ranges: [date(start_date: @start_date, end_date: 'today')],
             metrics: metrics,
             dimensions: dimensions)
     return rr

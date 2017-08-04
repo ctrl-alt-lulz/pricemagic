@@ -7,8 +7,12 @@ td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+    width: "pixels|%|relative_length";
 }
 
+input.manual_price {
+    width: 100%;
+}
 tr:nth-child(even) {
     background-color: #dddddd;
 }

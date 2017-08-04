@@ -1,5 +1,7 @@
 require 'signet/oauth_2/client'
 require 'google/apis/analyticsreporting_v4'
+require 'google/apis/analytics_v3'
+
 class GoogleAuthController < ApplicationController
   def show
   end
@@ -9,7 +11,8 @@ class GoogleAuthController < ApplicationController
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       authorization_uri: 'https://accounts.google.com/o/oauth2/auth',
-      scope: ::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY,
+      scope: "#{Google::Apis::AnalyticsV3::AUTH_ANALYTICS_READONLY} 
+              #{::Google::Apis::AnalyticsreportingV4::AUTH_ANALYTICS_READONLY}",
       redirect_uri: Rails.configuration.public_url + "oauth2callback",
       token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token',
     })
@@ -21,16 +24,39 @@ class GoogleAuthController < ApplicationController
       client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
       client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
       token_credential_uri: 'https://accounts.google.com/o/oauth2/token',
-      redirect_uri: Rails.configuration.public_url + "oauth2callback", ## TODO put this in .env
-      code: params[:code]
+      redirect_uri: Rails.configuration.public_url + "oauth2callback", 
+      code: params[:code],
     })
     response = client.fetch_access_token!
-    session[:access_token] = response['access_token']
+    service = Google::Apis::AnalyticsV3::AnalyticsService.new
+    service.authorization = client
     user  = current_shop.users.new
     user.google_access_token = response['access_token']
+    user.google_refresh_token = response['refresh_token']
+    user.google_profile_id = find_google_account_id(service)
     user.save
     redirect_to root_url
   end
+  
+  private 
+  
+  def find_google_account_id(service)
+    domain = strip_to_base_url(current_shop.shopify_domain)
+    service.list_management_account_summaries.items.map do |item|
+      url = item.web_properties[0].website_url
+      url = strip_to_base_url(url)
+      if (!!url.match(/^#{domain}$/))
+        id = item.web_properties[0].profiles[0].id
+        return id
+      end
+    end
+  end
+  
+  def strip_to_base_url(url)
+    url = url.strip.gsub(/\Ahttps?:\/\//, '')
+    if idx = url.index(".")
+      url = url.slice(0, idx)
+    end
+    return url
+  end
 end
-
-

@@ -16,6 +16,6 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
 
   def price_test_params
     params.require(:price_test).permit(:percent_increase, :percent_decrease,
-                   :product_id, :ending_digits)
+                   :product_id, :ending_digits, :price_points)
   end
 end

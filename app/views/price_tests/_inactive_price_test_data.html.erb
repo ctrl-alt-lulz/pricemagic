@@ -7,7 +7,7 @@
   </div>
     <div class="Polaris-Layout__AnnotationContent">
       <div class="Polaris-Card__Section">
-        <table>
+        <table id="price-test-table">
           <thead>
             <th><strong>Title</strong></th>
             <th><strong>Current Price</strong></th>
@@ -16,9 +16,6 @@
             <tr>
               <td><%= variant.title %></td>
               <td class='variant-price'><%= variant.price %></td>
-              <% @price_test_data['price_data'][variant.id.to_s]['price_points'].map do |price| %>
-                <td><%= price %></td>
-              <% end %>
             </tr>
           <% end %>
         </table>

@@ -1,0 +1,6 @@
+:schedule:
+  query_google_api_worker:
+    # cron: '0 * * * *'
+    every: '1h'
+    args: [1] ## TODO how to
+    class: QueryGoogleApiWorker
