@@ -30,9 +30,9 @@ class GoogleAuthController < ApplicationController
     response = client.fetch_access_token!
     service = Google::Apis::AnalyticsV3::AnalyticsService.new
     service.authorization = client
-    user  = current_shop.users.new
+    user  = current_shop.users.first_or_initialize
     user.google_access_token = response['access_token']
-    user.google_refresh_token = response['refresh_token']
+    user.google_refresh_token = response['refresh_token'] unless response['refresh_token'].nil?
     user.google_profile_id = find_google_account_id(service)
     user.save
     redirect_to root_url

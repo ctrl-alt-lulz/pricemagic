@@ -1,8 +1,6 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # for development when using ngrok:
-  # set this to your ngrok url!
   # this will be used to serve JavaScript assets
   # using Shopify's Scripttags manager
   # (configured in /config/initializers/shopify_app.rb)
@@ -50,4 +48,5 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  $stdout.sync = true
 end

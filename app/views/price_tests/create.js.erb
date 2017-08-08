@@ -1,0 +1,11 @@
+<%= @product = ShopifyAPI::Product.find(@price_test.product_id) %>
+
+<% if @price_test.persisted? %>
+  console.log('HERE');
+  $('.active-price-test-data').html("<b>We did it!</b>");
+  console.log('HTML updated');
+<% else %>
+  console.log("<%= @price_test.errors.full_messages.to_sentence %>");
+<% end %>
+
+
