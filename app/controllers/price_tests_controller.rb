@@ -27,7 +27,12 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
   end
   
   def update
-    ## TODO write the update case
+    price_test = PriceTest.find(params[:id])
+    if price_test.update_attributes(price_test_params)
+      redirect_to product_path(price_test.product_id), notice: 'Price test updated!'
+    else
+      redirect_to product_path(price_test.product_id), notice: 'Price test could not be updated.'
+    end
   end
   
   def destroy
@@ -44,6 +49,6 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
 
   def price_test_params
     params.require(:price_test).permit(:percent_increase, :percent_decrease,
-                   :product_id, :ending_digits, :price_points)
+                   :product_id, :ending_digits, :price_points, :active)
   end
 end

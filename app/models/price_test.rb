@@ -5,7 +5,6 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
-  after_validation
   ## TODO need to keep track of dates price test starts/ends can select days to run or views
   ## TODO be able to configure settings and then submit/start/ goes active 
   ## ties in with #of price steps chosen
@@ -21,13 +20,6 @@ class PriceTest < ActiveRecord::Base
   def product
     @product ||= ShopifyAPI::Product.find(product_id)
   end
-
-  # def apply_price_increase!
-  #   variants.each do |variant|
-  #     variant.price = price_data[variant.id.to_s]['price_ceiling']
-  #   end
-  #   product.save
-  # end
 
   # def apply_price_decrease!
   #   variants.each do |variant|
@@ -50,40 +42,22 @@ class PriceTest < ActiveRecord::Base
   def variant_hash(variant)
     upperValue = make_ending_digits(variant.price.to_f * percent_increase)
     lowerValue =  make_ending_digits(variant.price.to_f * percent_decrease)
+    price_points = step_price_points(upperValue, lowerValue, self[:price_points])
     {
       variant.id =>  {
         original_price: make_ending_digits(variant.price.to_f),
-        current_test_price: nil,
-        current_test_position: nil, ##TODO figure out how to shift as a function of below code
+        current_test_price: price_points.first,
         total_variant_views: {}, ## TODO get views from google worker
-        price_points: step_price_points(upperValue, lowerValue, self[:price_points]),
+        price_points: price_points,
         tested_price_points: []
       }
     }
   end
   
-  # p = PriceTest.last
-  # p['price_data']['40061050756']['price_points']
-  def set_test_position
-    define_current_test_position_array
-    shift_price_point
-    variants.each do |variant|
-      puts variant.id
-    end
-    # current_test_price: price_points[@current_test_position],
-    # current_test_position: @current_test_position, ##TODO figure out how to shift as a function of below code
-  end
-
-  def define_current_test_position_array 
-    @current_test_position_array = self[:price_points].times.map{|n| n}
-  end
-  
-  def shift_price_point
-    if @current_test_position_array.nil?
-      ##TODO end test
-    else
-      @current_test_position = @current_test_position_array.shift
-    end
+  def shift_price_point!
+    move_current_test_price_to_tested
+    set_new_test_price
+    save
   end
   
   def raw_price_data
@@ -102,8 +76,21 @@ class PriceTest < ActiveRecord::Base
   
   private
   
+  def move_current_test_price_to_tested
+    price_data.each do |k, v|
+      return if v['current_test_price'].nil?
+      v['tested_price_points'] << v['current_test_price']
+    end
+  end
+  
+  def set_new_test_price
+    price_data.each do |k, v|
+      v['current_test_price'] = (v['price_points'] - v['tested_price_points']).first
+    end
+  end
+  
   def no_active_price_tests_for_product
-    return if PriceTest.where(product_id: product_id).active.empty?
+    return if (PriceTest.where(product_id: product_id).active - [self]).empty?
     errors.add(:base, "Cannot have multiple active price tests!")
   end
   
