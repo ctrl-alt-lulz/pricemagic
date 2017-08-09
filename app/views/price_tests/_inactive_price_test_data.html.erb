@@ -14,8 +14,8 @@
           </thead>
           <% @product.variants.each do |variant| %>
             <tr>
-              <td><%= variant.title %></td>
-              <td class='variant-price'><%= variant.price %></td>
+              <td><%= variant.variant_title %></td>
+              <td class='variant-price'><%= variant.variant_price %></td>
             </tr>
           <% end %>
         </table>

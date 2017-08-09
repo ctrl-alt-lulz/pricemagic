@@ -4,8 +4,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def show
-    @price_test_data = PriceTest.where(product_id: params[:id]).last
-    ## TODO figure out how code below works when multiple date/timelines maybe find match by date start?
+    @price_test_data = PriceTest.where(shopify_product_id: @product.shopify_product_id).last
     @google_analytics_data =  current_shop.metrics.last.google_product_match(@product.title)
   end
 
@@ -25,7 +24,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   private
   
   def define_product
-     @product = ShopifyAPI::Product.find(params[:id])
+     @product = Product.find(params[:id])
   end
    
   def convert_percent_to_float

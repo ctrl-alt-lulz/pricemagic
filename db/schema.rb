@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170802225430) do
+ActiveRecord::Schema.define(version: 20170808164839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,18 +24,28 @@ ActiveRecord::Schema.define(version: 20170802225430) do
   end
 
   create_table "price_tests", force: :cascade do |t|
-    t.string   "product_id"
-    t.float    "percent_increase", default: 0.0
-    t.float    "percent_decrease", default: 0.0
+    t.string   "shopify_product_id"
+    t.float    "percent_increase",   default: 0.0
+    t.float    "percent_decrease",   default: 0.0
     t.jsonb    "price_data"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.boolean  "active",           default: true
-    t.float    "ending_digits",    default: 0.99
-    t.integer  "price_points",     default: 0
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.boolean  "active",             default: true
+    t.float    "ending_digits",      default: 0.99
+    t.integer  "price_points",       default: 0
+    t.integer  "product_id"
   end
 
-  add_index "price_tests", ["product_id"], name: "index_price_tests_on_product_id", using: :btree
+  add_index "price_tests", ["shopify_product_id"], name: "index_price_tests_on_shopify_product_id", using: :btree
+
+  create_table "products", force: :cascade do |t|
+    t.string   "title"
+    t.string   "shopify_product_id"
+    t.string   "product_type"
+    t.string   "tags"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
 
   create_table "shops", force: :cascade do |t|
     t.string   "shopify_domain", null: false
@@ -53,6 +63,16 @@ ActiveRecord::Schema.define(version: 20170802225430) do
     t.datetime "updated_at",           null: false
     t.text     "google_refresh_token"
     t.string   "google_profile_id"
+  end
+
+  create_table "variants", force: :cascade do |t|
+    t.integer  "product_id"
+    t.string   "shopify_product_id"
+    t.string   "shopify_variant_id"
+    t.string   "variant_title"
+    t.string   "variant_price"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
 end

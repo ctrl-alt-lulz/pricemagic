@@ -1,6 +1,7 @@
 class PriceTest < ActiveRecord::Base
   validates :product_id, presence: true
   validates :price_data, presence: true
+  validates :shopify_product_id, presence: true
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
@@ -18,7 +19,7 @@ class PriceTest < ActiveRecord::Base
   #  end 
 
   def product
-    @product ||= ShopifyAPI::Product.find(product_id)
+    @product ||= Product.find(product_id)
   end
 
   # def apply_price_decrease!
@@ -40,12 +41,12 @@ class PriceTest < ActiveRecord::Base
   end
 
   def variant_hash(variant)
-    upperValue = make_ending_digits(variant.price.to_f * percent_increase)
-    lowerValue =  make_ending_digits(variant.price.to_f * percent_decrease)
+    upperValue = make_ending_digits(variant.variant_price.to_f * percent_increase)
+    lowerValue =  make_ending_digits(variant.variant_price.to_f * percent_decrease)
     price_points = step_price_points(upperValue, lowerValue, self[:price_points])
     {
-      variant.id =>  {
-        original_price: make_ending_digits(variant.price.to_f),
+      variant.shopify_variant_id =>  {
+        original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
         total_variant_views: {}, ## TODO get views from google worker
         price_points: price_points,

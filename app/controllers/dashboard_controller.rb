@@ -5,7 +5,7 @@ class DashboardController < ShopifyApp::AuthenticatedController
     if params[:collection] || params[:term]
       @products = ShopifyAPI::Product.where(collection_id: params[:collection], title: params[:term])
     else
-      @products = ShopifyAPI::Product.find(:all, :params => {:limit => 150})
+      @products = Product.all #ShopifyAPI::Product.find(:all, :params => {:limit => 150})
     end
     @paginatable_array = Kaminari.paginate_array(@products).page(params[:page]).per(10)
   end
