@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808164839) do
+ActiveRecord::Schema.define(version: 20170809215049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "collects", force: :cascade do |t|
+    t.string   "shopify_product_id"
+    t.string   "shopify_collection_id"
+    t.string   "position"
+    t.string   "collect_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
 
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
@@ -43,8 +52,9 @@ ActiveRecord::Schema.define(version: 20170808164839) do
     t.string   "shopify_product_id"
     t.string   "product_type"
     t.string   "tags"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.jsonb    "shopify_collection_data"
   end
 
   create_table "shops", force: :cascade do |t|

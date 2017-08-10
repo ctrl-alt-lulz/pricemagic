@@ -29,12 +29,12 @@ class PriceTest < ActiveRecord::Base
   #   product.save
   # end
 
-  def revert_price_to_base!
-    variants.each do |variant|
-      variant.price = price_data[variant.id.to_s]['original_price']
-    end
-    product.save
-  end
+  # def revert_price_to_base!
+  #   variants.each do |variant|
+  #     variant.price = price_data[variant.id.to_s]['original_price']
+  #   end
+  #   product.save
+  # end
 
   def variants
     product.variants

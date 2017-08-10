@@ -37,12 +37,13 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def define_collection
-      @collections =  ShopifyAPI::Collect.where(product_id: params[:id]).map do |c| 
-                        { 
-                          position: c.position, 
-                          title: ShopifyAPI::SmartCollection.find(c.collection_id).title 
-                        }
-                      end
+    @product = Product.find(params[:id])
+    @collections ||=  Collect.where(shopify_product_id: @product.shopify_product_id).map do |c| 
+                      { 
+                        position: c.position, 
+                        title: ShopifyAPI::SmartCollection.find(c.shopify_collection_id).title 
+                      }
+                    end
   end
 
 end
