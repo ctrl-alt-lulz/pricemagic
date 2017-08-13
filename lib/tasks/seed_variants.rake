@@ -5,9 +5,8 @@ namespace :variants do
     # get the external produts
     shop = Shop.first
     shop.with_shopify!
-    products = []
-    for page in (1..(ShopifyAPI::Product.count.to_f/150.0).ceil)
-      products += ShopifyAPI::Product.find(:all, :params => {:page => page, :limit => 150})
+    products = (1..(ShopifyAPI::Product.count.to_f/150.0).ceil).flat_map do |page|
+      ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
     products.each do |product|
       shopify_product = Product.where(shopify_product_id: product.id.to_s).first

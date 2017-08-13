@@ -1,7 +1,9 @@
 class PriceTest < ActiveRecord::Base
+  belongs_to :product
+  
   validates :product_id, presence: true
   validates :price_data, presence: true
-  validates :shopify_product_id, presence: true
+  validates :shopify_product_id, presence: true ## TODO rip this out and rely on product
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
@@ -18,10 +20,6 @@ class PriceTest < ActiveRecord::Base
   #    ## TODO sum variant views for current test
   #  end 
 
-  def product
-    @product ||= Product.find(product_id)
-  end
-
   # def apply_price_decrease!
   #   variants.each do |variant|
   #     variant.price = price_data[variant.id.to_s]['price_basement']
@@ -36,8 +34,25 @@ class PriceTest < ActiveRecord::Base
   #   product.save
   # end
 
+  def shop
+    product.shop
+  end
+
+  def latest_metric_data
+    shop.latest_metric.data.select { |obj| obj['title'] =~ /#{product.title}/ }.first
+  end
+
+  def hit_threshold?
+    latest_metric_data['views'].to_i >= view_threshold
+     # since price test
+  end
+
   def variants
     product.variants
+  end
+  
+  def view_threshold
+    2 ## TODO make this dependent on CI, price, etc.
   end
 
   def variant_hash(variant)
@@ -53,6 +68,14 @@ class PriceTest < ActiveRecord::Base
         tested_price_points: []
       }
     }
+  end
+  
+  def make_inactive!
+    update_attributes(active: false)
+  end
+  
+  def done?
+    price_data.first.last['current_test_price'].nil?
   end
   
   def shift_price_point!

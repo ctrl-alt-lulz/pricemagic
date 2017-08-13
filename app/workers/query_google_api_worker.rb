@@ -22,7 +22,8 @@ class QueryGoogleApiWorker
     service.authorization = client
     begin
       @product_performance = service.batch_report_get(get_product_performance)
-      shop.metrics.create(data: @product_performance)
+      # shop.metrics.create(data: @product_performance)
+      Metric.bulk_metric_create_from_google(shop.id, @product_performance)
       ## TODO write worker to check price_tests for upgrades/closing
       ## CheckPriceTestsWorker.perform_async(shop_id)
     end

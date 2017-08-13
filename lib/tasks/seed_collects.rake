@@ -5,32 +5,20 @@ namespace :collects do
     # get the external produts
     shop = Shop.first
     shop.with_shopify!
-    c = []
-    for page in (1..(ShopifyAPI::Collect.count.to_f/250.0).ceil)
-      c += ShopifyAPI::Collect.find(:all, :params => {:page => page, :limit => 250})
+    c = (1..(ShopifyAPI::Collect.count.to_f/250.0).ceil).flat_map do |page|
+      ShopifyAPI::Collect.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
     c.each do |collect|
-      next if Collect.find_by(collect_id: collect.id)
-      col = Collect.new(shopify_product_id: collect.product_id, 
-                        shopify_collection_id: collect.collection_id,
+      next if Collect.find_by(shopify_collect_id: collect.id)
+      product = Product.find_by(shopify_product_id: collect.product_id.to_s)
+      collection = Collection.find_by(shopify_collection_id: collect.collection_id.to_s)
+      col = Collect.new(shopify_collect_id: collect.collection_id,
                         position: collect.position,
-                        collect_id: collect.id)  
+                        product_id: product.id,
+                        collection_id: collection.id)  
       col.save
       puts col.errors.inspect if col.errors.any?
     end
     puts Collect.count
   end
 end
-
-#collections = ShopifyAPI::SmartCollection.find(:all) + ShopifyAPI::CustomCollection.find(:all)
-
-#@products = ShopifyAPI::Product.where(collection_id: params[:collection], title: params[:term])
-
-  # def define_collection
-  #     @collections ||=  ShopifyAPI::Collect.where(product_id: params[:id]).map do |c| 
-  #                       { 
-  #                         position: c.position, 
-  #                         title: ShopifyAPI::SmartCollection.find(c.collection_id).title 
-  #                       }
-  #                     end
-  # end

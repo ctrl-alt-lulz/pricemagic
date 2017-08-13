@@ -11,25 +11,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170809215049) do
+ActiveRecord::Schema.define(version: 20170813185956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "collects", force: :cascade do |t|
-    t.string   "shopify_product_id"
+  create_table "collections", force: :cascade do |t|
+    t.string   "title"
     t.string   "shopify_collection_id"
-    t.string   "position"
-    t.string   "collect_id"
+    t.string   "collection_type"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
   end
 
+  create_table "collects", force: :cascade do |t|
+    t.string   "position"
+    t.string   "shopify_collect_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "collection_id"
+    t.integer  "product_id"
+  end
+
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
-    t.json     "data",       default: [],              array: true
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.json     "data",           default: [],              array: true
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "product_id"
+    t.integer  "variant_id"
+    t.string   "page_title"
+    t.float    "page_revenue"
+    t.integer  "page_views"
+    t.float    "page_avg_price"
+    t.datetime "acquired_at"
   end
 
   create_table "price_tests", force: :cascade do |t|
@@ -52,9 +67,9 @@ ActiveRecord::Schema.define(version: 20170809215049) do
     t.string   "shopify_product_id"
     t.string   "product_type"
     t.string   "tags"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.jsonb    "shopify_collection_data"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "shop_id"
   end
 
   create_table "shops", force: :cascade do |t|
@@ -77,7 +92,6 @@ ActiveRecord::Schema.define(version: 20170809215049) do
 
   create_table "variants", force: :cascade do |t|
     t.integer  "product_id"
-    t.string   "shopify_product_id"
     t.string   "shopify_variant_id"
     t.string   "variant_title"
     t.string   "variant_price"

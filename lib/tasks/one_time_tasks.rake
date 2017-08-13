@@ -8,4 +8,23 @@ namespace :one_time_tasks do
   task set_all_past_price_point_number: :environment do
     PriceTest.all.update_all(price_points: 2)
   end
+  
+  desc 'Convert metrics to individual variants'
+  task convert_to_variants: :environment do
+    Metric.all.each do |metric|
+      shop = metric.shop
+      metric.data.each do |datum|
+        new_metric = shop.metrics.new(
+          product_and_variant_name: datum['title'],
+          page_title: datum['title'],
+          page_revenue: datum['revenue'],
+          page_views: datum['views'],
+          page_avg_price: datum['avg_price'],
+          acquired_at: metric.created_at
+        )
+        new_metric.save
+        puts new_metric.errors.inspect unless new_metric.persisted?
+      end
+    end
+  end
 end
