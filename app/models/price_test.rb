@@ -37,11 +37,13 @@ class PriceTest < ActiveRecord::Base
   end
 
   def latest_metric_data
-    shop.latest_metric.data.select { |obj| obj['title'] =~ /#{product.title}/ }.first
+    self.product.google_metrics
+    #shop.latest_metric.data.select { |obj| obj['title'] =~ /#{product.title}/ }.first
   end
 
   def hit_threshold?
-    latest_metric_data['views'].to_i >= view_threshold
+    latest_metric_data.page_views.to_i >= view_threshold
+    #latest_metric_data['views'].to_i >= view_threshold
      # since price test
   end
 

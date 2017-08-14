@@ -12,6 +12,8 @@ class Product < ActiveRecord::Base
   validates :shop_id, presence: true
   
   def google_metrics
-    self.variants.map {|m| m.metrics.last}
+    ## TODO better way than shifting through unneccesary nils?
+    metrics = self.variants.map {|m| m.metrics.last}
+    metrics.compact
   end
 end
