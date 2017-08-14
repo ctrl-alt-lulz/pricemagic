@@ -16,4 +16,8 @@ class Product < ActiveRecord::Base
     metrics = self.variants.map {|m| m.metrics.last}
     metrics.compact
   end
+  
+  def main_product_google_metric
+    self.variants.first.metrics.last
+  end
 end

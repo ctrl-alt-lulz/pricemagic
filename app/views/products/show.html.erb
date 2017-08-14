@@ -8,4 +8,4 @@
   <%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data if @price_test_data.try(:active) %>
 </div>
 <%= render 'price_tests/inactive_price_test_data', product: @product, price_test_data: @price_test_data unless @price_test_data.try(:active) %>
-<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.empty? %>
+<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data if @google_analytics_data.try(:page_title) %>

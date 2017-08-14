@@ -6,6 +6,8 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
+  after_create :apply_current_test_price!
+  before_destroy :revert_to_original_price! ## OR make best price original price?
   ## TODO need to keep track of dates price test starts/ends can select days to run or views
   ## TODO be able to configure settings and then submit/start/ goes active 
   ## ties in with #of price steps chosen
@@ -46,13 +48,14 @@ class PriceTest < ActiveRecord::Base
 
   def latest_metric_data
     self.product.google_metrics
-    #shop.latest_metric.data.select { |obj| obj['title'] =~ /#{product.title}/ }.first
+  end
+  
+  def main_metric_data
+    self.product.main_product_google_metric
   end
 
   def hit_threshold?
-    latest_metric_data.page_views.to_i >= view_threshold
-    #latest_metric_data['views'].to_i >= view_threshold
-     # since price test
+    main_metric_data.page_views.to_i >= view_threshold
   end
 
   def variants
@@ -90,6 +93,7 @@ class PriceTest < ActiveRecord::Base
   def shift_price_point!
     move_current_test_price_to_tested
     set_new_test_price
+    apply_current_test_price!
     save
   end
   
