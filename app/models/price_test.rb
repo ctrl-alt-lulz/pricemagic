@@ -83,6 +83,7 @@ class PriceTest < ActiveRecord::Base
   
   def make_inactive!
     update_attributes(active: false)
+    revert_to_original_price!
     ## TODO set price to original or best price
   end
   
