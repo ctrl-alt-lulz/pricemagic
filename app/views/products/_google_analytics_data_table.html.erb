@@ -6,9 +6,9 @@
   </thead>
   <% @google_analytics_data.each do |variant| %>
       <tr>
-        <td><%= variant['title'] %></td>
-        <td><%= variant['revenue'] %></td>
-        <td><%= variant['views'] %></td>
+        <td><%= variant.page_title %></td>
+        <td><%= variant.page_revenue %></td>
+        <td><%= variant.page_views %></td>
       </tr>
   <% end %>
 </table>

@@ -1,6 +1,5 @@
 class PriceTest < ActiveRecord::Base
   belongs_to :product
-  
   validates :product_id, presence: true
   validates :price_data, presence: true
   validates :shopify_product_id, presence: true ## TODO rip this out and rely on product

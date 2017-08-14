@@ -1,4 +1,5 @@
 class Collect < ActiveRecord::Base
+  # does every object need to belong to shop?
   # shopify_product_id --> rely on the product internal your app
   # shopify_collection_id --> rely on the product internal your app
   # shopify_collect_id ## change this name

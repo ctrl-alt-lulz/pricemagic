@@ -4,7 +4,7 @@ require 'google/apis/analyticsreporting_v4'
 class QueryGoogleApiWorker
   include Google::Apis::AnalyticsreportingV4
   include Sidekiq::Worker
-  sidekiq_options :retry => 1
+  sidekiq_options :retry => 5
 
   def perform(shop_id)
     shop = Shop.find(shop_id)
@@ -18,12 +18,11 @@ class QueryGoogleApiWorker
     client.refresh! if client.expired?
     # time convert created at to google format strftime("%Y-%m-%d")
     # time = Metric.last.created_at
-    service = Google::Apis::AnalyticsreportingV4::AnalyticsReportingService.new
+    service = AnalyticsReportingService.new
     service.authorization = client
     begin
       @product_performance = service.batch_report_get(get_product_performance)
-      # shop.metrics.create(data: @product_performance)
-      Metric.bulk_metric_create_from_google(shop.id, @product_performance)
+      ::Metric.bulk_metric_create_from_google!(shop.id, @product_performance)
       ## TODO write worker to check price_tests for upgrades/closing
       ## CheckPriceTestsWorker.perform_async(shop_id)
     end

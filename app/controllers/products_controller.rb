@@ -5,7 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @price_test_data = PriceTest.where(shopify_product_id: @product.shopify_product_id).last
-    @google_analytics_data =  current_shop.metrics.last.google_product_match(@product.title)
+    @google_analytics_data =  @product.google_metrics
   end
 
   def update
@@ -38,12 +38,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def define_collection
     @product = Product.find(params[:id])
-    @collections ||=  Collect.where(product_id: @product.id).map do |c| 
-                      { 
-                        position: c.position, 
-                        title: Collection.find(collection_id: c.id).title 
-                      }
-                    end
+    @collections ||=  @product.collections.map(&:title)
   end
 
 end

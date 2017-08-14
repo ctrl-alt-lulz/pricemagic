@@ -1,5 +1,4 @@
 class Product < ActiveRecord::Base
-  
   belongs_to :shop
   has_many :variants, dependent: :destroy
   has_many :price_tests, dependent: :destroy
@@ -11,4 +10,8 @@ class Product < ActiveRecord::Base
   # TODO add validation to make sure shopify_product_id is unique
   
   validates :shop_id, presence: true
+  
+  def google_metrics
+    self.variants.map {|m| m.metrics.last}
+  end
 end
