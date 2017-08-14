@@ -18,20 +18,28 @@ class PriceTest < ActiveRecord::Base
   #    ## TODO sum variant views for current test
   #  end 
 
-  # def apply_price_decrease!
-  #   variants.each do |variant|
-  #     variant.price = price_data[variant.id.to_s]['price_basement']
-  #   end
-  #   product.save
-  # end
-
-  # def revert_price_to_base!
-  #   variants.each do |variant|
-  #     variant.price = price_data[variant.id.to_s]['original_price']
-  #   end
-  #   product.save
-  # end
-
+  def revert_to_original_price!
+   ext_shopify_variants.each do |variant|
+      variant.price = price_data[variant.id.to_s]['original_price']
+    end
+    ext_shopify_product.save
+  end
+  
+  def apply_current_test_price!
+   ext_shopify_variants.each do |variant|
+      variant.price = price_data[variant.id.to_s]['current_test_price']
+    end
+    ext_shopify_product.save
+  end
+  
+  def ext_shopify_product
+    @ext_shopify_product ||= ShopifyAPI::Product.find(self.product.shopify_product_id)
+  end
+  
+  def ext_shopify_variants
+   ext_shopify_product.variants
+  end
+  
   def shop
     product.shop
   end
@@ -72,6 +80,7 @@ class PriceTest < ActiveRecord::Base
   
   def make_inactive!
     update_attributes(active: false)
+    ## TODO set price to original or best price
   end
   
   def done?
@@ -140,7 +149,7 @@ class PriceTest < ActiveRecord::Base
     for number_of_test_points in (1...number_of_test_points) do
       pricePoints.push(make_ending_digits(pricePoints[number_of_test_points-1] + step))
     end
-    pricePoints.push(upper);
+    pricePoints.push(upper)
     pricePoints = validate_price_points(pricePoints)
   end
   

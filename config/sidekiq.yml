@@ -5,5 +5,5 @@
     args: [1] ## TODO how to
     class: QueryGoogleApiWorker
   product_view_threshold_worker:
-    every: '1h' ## ideally this start at :30m past the hour
+    every: '1h' ## TODO ideally this start at :30m past the hour
     class: ProductViewThresholdWorker
