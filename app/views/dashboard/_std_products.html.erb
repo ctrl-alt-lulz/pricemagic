@@ -9,8 +9,8 @@
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.variants[0].variant_price %></td>
-      <td><%= PriceTest.where(shopify_product_id: product.shopify_product_id).empty? ? "False" :
-              PriceTest.where(shopify_product_id: product.shopify_product_id).last.active.to_s.capitalize %></td>
+      <td><%= PriceTest.where(product_id: product.id).empty? ? "False" :
+              PriceTest.where(product_id: product.id).last.active.to_s.capitalize %></td>
     </tr>
   <% end %>
 </table>

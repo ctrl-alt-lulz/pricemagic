@@ -4,7 +4,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def show
-    @price_test_data = PriceTest.where(shopify_product_id: @product.shopify_product_id).last
+    @price_test_data = PriceTest.where(product_id: @product.id).last
     @google_analytics_data =  @product.google_metrics
   end
 
