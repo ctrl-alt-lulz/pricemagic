@@ -6,6 +6,9 @@ class Shop < ActiveRecord::Base
   has_many :metrics, dependent: :destroy
   has_many :products, dependent: :destroy
   has_many :price_tests, through: :products
+  
+  #has_many :collects, dependent: :destroy
+  #has_many :collections, through: :collects
 
   def latest_metric
     metrics.order(created_at: :asc).last
