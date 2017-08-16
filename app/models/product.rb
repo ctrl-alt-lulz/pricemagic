@@ -1,23 +1,34 @@
 class Product < ActiveRecord::Base
   belongs_to :shop
-  has_many :variants, dependent: :destroy
+  has_many :variants, ->{ order(:created_at) }, dependent: :destroy
   has_many :price_tests, dependent: :destroy
-  has_many :metrics, dependent: :destroy
+  has_many :metrics, ->{ order(:created_at) }, dependent: :destroy 
   has_many :collects
   has_many :collections, through: :collects
   
-    # Other validations
+  # Other validations
   # TODO add validation to make sure shopify_product_id is unique
   
   validates :shop_id, presence: true
   
-  def google_metrics
-    ## TODO better way than shifting through unneccesary nils?
-    metrics = self.variants.map {|m| m.metrics.last}
-    metrics.compact
+  # ## TODO change name to be more descriptive
+  # ## Should be singular, most_rece_google_metric?
+  ## TODO figure out joins/includes, previous code doesn't work
+  def most_recent_metrics
+    variants.includes(:metrics).select{ |m| m if m.metrics.any? }.map {|m| m.metrics.last}
+  end
+  
+  def main_variant
+    variants.first
   end
   
   def main_product_google_metric
-    self.variants.first.metrics.last
+    main_variant.metrics.last
   end
+  alias_method :latest_product_google_metric, :main_product_google_metric
+  
+  def main_product_google_metric_at(date)
+    main_variant.metrics.where('created_at < ?', date).last
+  end
+  
 end

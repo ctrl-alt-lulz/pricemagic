@@ -3,4 +3,6 @@ class Collection < ActiveRecord::Base
     #belongs_to :shop #verify
     has_many :collects
     has_many :products, through: :collects
+    
+    ## belong_to :shop
 end

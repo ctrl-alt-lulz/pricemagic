@@ -9,6 +9,13 @@ namespace :one_time_tasks do
     PriceTest.all.update_all(price_points: 2)
   end
   
+  desc "Seed price test current test start date, back fill"
+  task set_all_current_price_test_start_dates: :environment do
+    PriceTest.all.each do |pt|
+      pt.update_attributes(current_price_started_at: pt.created_at)
+    end
+  end
+  
   desc 'Convert metrics to individual variants'
   task convert_to_variants: :environment do
     Metric.all.each do |metric|

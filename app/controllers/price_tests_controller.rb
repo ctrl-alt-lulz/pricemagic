@@ -35,6 +35,7 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
     end
   end
   
+  ## Note to self hidden products can mess with this
   def destroy
     price_test = PriceTest.find(params[:id])
     product_id = price_test.product_id

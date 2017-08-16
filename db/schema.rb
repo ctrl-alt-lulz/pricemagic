@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170814053521) do
+ActiveRecord::Schema.define(version: 20170815034007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,15 +47,16 @@ ActiveRecord::Schema.define(version: 20170814053521) do
   end
 
   create_table "price_tests", force: :cascade do |t|
-    t.float    "percent_increase", default: 0.0
-    t.float    "percent_decrease", default: 0.0
+    t.float    "percent_increase",         default: 0.0
+    t.float    "percent_decrease",         default: 0.0
     t.jsonb    "price_data"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.boolean  "active",           default: true
-    t.float    "ending_digits",    default: 0.99
-    t.integer  "price_points",     default: 0
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.boolean  "active",                   default: true
+    t.float    "ending_digits",            default: 0.99
+    t.integer  "price_points",             default: 0
     t.integer  "product_id"
+    t.datetime "current_price_started_at"
   end
 
   create_table "products", force: :cascade do |t|

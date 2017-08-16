@@ -5,7 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def show
     @price_test_data = PriceTest.where(product_id: @product.id).last
-    @google_analytics_data =  @product.google_metrics
+    @google_analytics_data =  @product.most_recent_metrics
   end
 
   def update

@@ -1,16 +1,8 @@
 class Collect < ActiveRecord::Base
-  # does every object need to belong to shop?
-  # shopify_product_id --> rely on the product internal your app
-  # shopify_collection_id --> rely on the product internal your app
-  # shopify_collect_id ## change this name
-  belongs_to :product #product_id
-  belongs_to :collection #collection_id
-  
-  # def shopify_product_id
-  #   product.shopify_product_id
-  # end
-  
-  # def shopify_collection_id
-  #   collection.shopify_collection_id
-  # end
+  belongs_to :product
+  belongs_to :collection
+
+  delegate :shop, to: :product
+  delegate :shopify_product_id, to: :product 
+  delegate :shopify_collection_id, to: :collection 
 end

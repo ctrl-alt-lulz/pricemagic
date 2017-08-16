@@ -6,12 +6,19 @@ class PriceTest < ActiveRecord::Base
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
+  before_create :set_new_current_price_started_at
   after_create :apply_current_test_price!
-  before_destroy :revert_to_original_price! ## OR make best price original price?
+  before_destroy :revert_to_original_price!, if: :active?
+  ## OR make best price original price?
   ## TODO need to keep track of dates price test starts/ends can select days to run or views
   ## TODO be able to configure settings and then submit/start/ goes active 
   ## ties in with #of price steps chosen
   
+  delegate :shop, to: :product
+  delegate :variants, to: :product
+  
+  delegate :shop, to: :product
+
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
   
@@ -28,6 +35,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def apply_current_test_price!
+   ## update current_price_started_at
    ext_shopify_variants.each do |variant|
       variant.price = price_data[variant.id.to_s]['current_test_price']
     end
@@ -42,24 +50,29 @@ class PriceTest < ActiveRecord::Base
    ext_shopify_product.variants
   end
   
-  def shop
-    product.shop
-  end
-
+  ## TODO clean up use delegates
   def latest_metric_data
-    self.product.google_metrics
+    product.most_recent_metrics
   end
   
   def main_metric_data
-    self.product.main_product_google_metric
+    product.main_product_google_metric
   end
 
+  def main_metric_data_at_start_of_price 
+    product.main_product_google_metric_at(current_price_started_at) 
+  end
+
+  def page_views_since_create
+    if main_metric_data_at_start_of_price
+      main_metric_data.page_views.to_i - main_metric_data_at_start_of_price.page_views.to_i
+    else
+      main_metric_data.page_views.to_i
+    end
+  end
+  
   def hit_threshold?
-    main_metric_data.page_views.to_i >= view_threshold
-  end
-
-  def variants
-    product.variants
+    page_views_since_create >= view_threshold
   end
   
   def view_threshold
@@ -74,7 +87,7 @@ class PriceTest < ActiveRecord::Base
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
-        total_variant_views: {}, ## TODO get views from google worker
+        total_variant_views: [], ## TODO get views from google worker
         price_points: price_points,
         tested_price_points: []
       }
@@ -82,8 +95,10 @@ class PriceTest < ActiveRecord::Base
   end
   
   def make_inactive!
-    update_attributes(active: false)
     revert_to_original_price!
+    set_to_inactive
+    set_new_current_price_started_at
+    save
     ## TODO set price to original or best price
   end
   
@@ -93,8 +108,10 @@ class PriceTest < ActiveRecord::Base
   
   def shift_price_point!
     move_current_test_price_to_tested
+    store_view_count_from_test
     set_new_test_price
     apply_current_test_price!
+    set_new_current_price_started_at
     save
   end
   
@@ -112,7 +129,23 @@ class PriceTest < ActiveRecord::Base
     self[:percent_decrease] = 1 - percent.to_f/100
   end
   
+  
   private
+  
+  def set_to_inactive
+    self.active = false
+  end
+  
+  def store_view_count_from_test
+    price_data.each do |k, v|
+      return if v['current_test_price'].nil?
+      v['total_variant_views'] << page_views_since_create
+    end
+  end
+  
+  def set_new_current_price_started_at
+    self.current_price_started_at = DateTime.now
+  end
   
   def move_current_test_price_to_tested
     price_data.each do |k, v|
@@ -136,11 +169,6 @@ class PriceTest < ActiveRecord::Base
     self.price_data = raw_price_data
   end
   
-  ## TODO, creates new start date when next price point is ready for test
-  def price_test_start_date
-    Time.now.strftime("%Y-%m-%d")
-  end
-  
   def make_ending_digits(price)
     price.floor + self.ending_digits
   end
@@ -162,9 +190,9 @@ class PriceTest < ActiveRecord::Base
     ## How to only return one of error type? Currently using uniq method in pricetest controller
   def validate_price_points(pricePoints)
     if pricePoints != pricePoints.uniq  
-        errors.add(:base, "Cannot have duplicate price points!")
+      errors.add(:base, "Cannot have duplicate price points!")
     elsif pricePoints != pricePoints.sort
-        errors.add(:base, "Price range is not sufficient, must order smallest to largest!") 
+      errors.add(:base, "Price range is not sufficient, must order smallest to largest!") 
     else 
       return pricePoints
     end
