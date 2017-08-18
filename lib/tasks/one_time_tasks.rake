@@ -16,6 +16,16 @@ namespace :one_time_tasks do
     end
   end
   
+  desc "Change {} to [] in price test"
+  task change_pricetest_view_structure: :environment do
+    PriceTest.all.each do |pt|
+      pt.price_data.each do |k, v|
+        v['total_variant_views'] = []
+      end    
+    pt.save
+    end
+  end
+  
   desc 'Convert metrics to individual variants'
   task convert_to_variants: :environment do
     Metric.all.each do |metric|

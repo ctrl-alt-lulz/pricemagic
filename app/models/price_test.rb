@@ -1,5 +1,7 @@
 class PriceTest < ActiveRecord::Base
+  include PriceTestLogic
   belongs_to :product
+  
   validates :product_id, presence: true
   validates :price_data, presence: true
   validates :ending_digits, :price_points, presence: true, numericality: true
@@ -10,14 +12,11 @@ class PriceTest < ActiveRecord::Base
   after_create :apply_current_test_price!
   before_destroy :revert_to_original_price!, if: :active?
   ## OR make best price original price?
-  ## TODO need to keep track of dates price test starts/ends can select days to run or views
-  ## TODO be able to configure settings and then submit/start/ goes active 
-  ## ties in with #of price steps chosen
   
   delegate :shop, to: :product
   delegate :variants, to: :product
-  
-  delegate :shop, to: :product
+  delegate :latest_product_google_metric_views, to: :product, :allow_nil => true
+  delegate :latest_product_google_metric_views_at, to: :product, :allow_nil => true
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
@@ -26,59 +25,6 @@ class PriceTest < ActiveRecord::Base
   #  def total_product_views
   #    ## TODO sum variant views for current test
   #  end 
-
-  def revert_to_original_price!
-   ext_shopify_variants.each do |variant|
-      variant.price = price_data[variant.id.to_s]['original_price']
-    end
-    ext_shopify_product.save
-  end
-  
-  def apply_current_test_price!
-   ## update current_price_started_at
-   ext_shopify_variants.each do |variant|
-      variant.price = price_data[variant.id.to_s]['current_test_price']
-    end
-    ext_shopify_product.save
-  end
-  
-  def ext_shopify_product
-    @ext_shopify_product ||= ShopifyAPI::Product.find(self.product.shopify_product_id)
-  end
-  
-  def ext_shopify_variants
-   ext_shopify_product.variants
-  end
-  
-  ## TODO clean up use delegates
-  def latest_metric_data
-    product.most_recent_metrics
-  end
-  
-  def main_metric_data
-    product.main_product_google_metric
-  end
-
-  def main_metric_data_at_start_of_price 
-    product.main_product_google_metric_at(current_price_started_at) 
-  end
-
-  def page_views_since_create
-    if main_metric_data_at_start_of_price
-      main_metric_data.page_views.to_i - main_metric_data_at_start_of_price.page_views.to_i
-    else
-      main_metric_data.page_views.to_i
-    end
-  end
-  
-  def hit_threshold?
-    page_views_since_create >= view_threshold
-  end
-  
-  def view_threshold
-    2 ## TODO make this dependent on CI, price, etc.
-  end
-
   def variant_hash(variant)
     upperValue = make_ending_digits(variant.variant_price.to_f * percent_increase)
     lowerValue =  make_ending_digits(variant.variant_price.to_f * percent_decrease)
@@ -94,6 +40,26 @@ class PriceTest < ActiveRecord::Base
     }
   end
   
+  def latest_product_google_metric_views_at_start_of_price 
+    latest_product_google_metric_views_at(current_price_started_at) 
+  end
+
+  def page_views_since_create
+    if latest_product_google_metric_views_at_start_of_price
+      latest_product_google_metric_views - latest_product_google_metric_views_at_start_of_price
+    else
+      latest_product_google_metric_views
+    end
+  end
+
+  def hit_threshold?
+    page_views_since_create >= view_threshold
+  end
+  
+  def view_threshold
+    2 ## TODO make this dependent on CI, price, etc.
+  end
+
   def make_inactive!
     revert_to_original_price!
     set_to_inactive
@@ -138,7 +104,6 @@ class PriceTest < ActiveRecord::Base
   
   def store_view_count_from_test
     price_data.each do |k, v|
-      return if v['current_test_price'].nil?
       v['total_variant_views'] << page_views_since_create
     end
   end

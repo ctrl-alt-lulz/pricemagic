@@ -7,6 +7,8 @@ class SeedProductsAndVariantsWorker
   def perform
     Shop.all.each do |shop|
       shop.seed_products!
+      shop.seed_variants!
+      ## if variants isnt loaded when new product is seeded error will occur on dashboard page
       # rake variants:seed ## TODO handle for variants
     end 
   end

@@ -22,13 +22,11 @@ class Product < ActiveRecord::Base
     variants.first
   end
   
-  def main_product_google_metric
-    main_variant.metrics.last
+  def latest_product_google_metric_views
+    main_variant.metrics.last.try(:page_views).to_i
   end
-  alias_method :latest_product_google_metric, :main_product_google_metric
-  
-  def main_product_google_metric_at(date)
-    main_variant.metrics.where('created_at < ?', date).last
+
+  def latest_product_google_metric_views_at(date)
+    main_variant.metrics.where('created_at < ?', date).last.try(:page_views).to_i
   end
-  
 end

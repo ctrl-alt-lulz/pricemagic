@@ -10,7 +10,8 @@ module ShopifySeeds
       ## What about deleting products that don't exist anymore?
       next if Product.where(shopify_product_id: product.id).any?
       p = Product.new(title: product.title, shopify_product_id: product.id,
-                      product_type: product.product_type, tags: product.tags)
+                      product_type: product.product_type, tags: product.tags, 
+                      shop_id: id)
       p.save
       puts p.errors.inspect if p.errors.any?
     end
@@ -32,8 +33,7 @@ module ShopifySeeds
           pv.update_attributes(variant_title: variant.title.to_s, 
                                variant_price: variant.price.to_s)
         else 
-          shopify_product.variants.new(shopify_product_id: product.id.to_s, 
-                                    shopify_variant_id: variant.id.to_s,
+          shopify_product.variants.new(shopify_variant_id: variant.id.to_s,
                                     variant_title: variant.title.to_s, 
                                     variant_price: variant.price.to_s)
         end
