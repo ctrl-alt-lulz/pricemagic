@@ -1,8 +1,21 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
-  before_filter :instantiate_price_test, :define_collection, only: :show
+  before_filter :instantiate_price_test, only: [:show, :index]
+  before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
 
+  def index
+    @collections = Collection.all
+    if params[:term]
+      @products = Product.where('title iLIKE ?', '%' + params[:term] + '%')
+    elsif params[:collection]
+      @products = Collection.find(params[:collection]).products
+    else
+      @products = Product.all
+    end
+    @paginatable_array = @products.page(params[:page]).per(10)
+  end
+  
   def show
     @price_test_data = PriceTest.where(product_id: @product.id).last
     @google_analytics_data =  @product.most_recent_metrics
@@ -35,7 +48,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   def instantiate_price_test
     @price_test = PriceTest.new
   end
-
+  
   def define_collection
     @product = Product.find(params[:id])
     @collections ||=  @product.collections.map(&:title)

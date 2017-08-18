@@ -1,5 +1,5 @@
 class PriceTest < ActiveRecord::Base
-  include PriceTestLogic
+  include PriceTestExtShopifyMethods
   belongs_to :product
   
   validates :product_id, presence: true
@@ -25,6 +25,7 @@ class PriceTest < ActiveRecord::Base
   #  def total_product_views
   #    ## TODO sum variant views for current test
   #  end 
+  
   def variant_hash(variant)
     upperValue = make_ending_digits(variant.variant_price.to_f * percent_increase)
     lowerValue =  make_ending_digits(variant.variant_price.to_f * percent_decrease)
@@ -94,7 +95,6 @@ class PriceTest < ActiveRecord::Base
   def percent_decrease=(percent)
     self[:percent_decrease] = 1 - percent.to_f/100
   end
-  
   
   private
   

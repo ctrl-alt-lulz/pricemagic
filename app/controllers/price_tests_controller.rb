@@ -16,7 +16,12 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
       end
     end
   end
-
+  
+  def bulk_create
+    #loop for each product
+    #BulkTestCreateWorker.perform_async(price_test_params)
+  end
+  
   def show
   end
 
@@ -50,6 +55,6 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
 
   def price_test_params
     params.require(:price_test).permit(:percent_increase, :percent_decrease,
-                   :product_id, :ending_digits, :price_points, :active)
+                   :product_id, :ending_digits, :price_points, :active, :product_ids)
   end
 end
