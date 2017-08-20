@@ -29,10 +29,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
       redirect_to product_path(@product), error: @product.errors.full_messages.join(' ')
     end
   end
-
-  def google_variant_match(name)
-    self.keep_if{ |m| m['title'].ends_with?(name) }  
-  end
   
   private
   
@@ -53,5 +49,4 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @product = Product.find(params[:id])
     @collections ||=  @product.collections.map(&:title)
   end
-
 end

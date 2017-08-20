@@ -18,10 +18,21 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
   end
   
   def bulk_create
-    #loop for each product
-    #BulkTestCreateWorker.perform_async(price_test_params)
+    bulk_params = price_test_params
+    product_ids = bulk_params.delete(:product_ids).split(' ')
+    bulk_price_tests = product_ids.map do |id| 
+      PriceTest.new(bulk_params.merge(product_id: id)) 
+    end
+
+    bulk_price_tests.each do |pt| 
+        pt.run_callbacks(:create) { false }
+        pt.run_callbacks(:validation) { false }
+    end
+    PriceTest.import bulk_price_tests
+    BulkTestCreateWorker.perform_async(product_ids)
+    redirect_to root_url
   end
-  
+    
   def show
   end
 

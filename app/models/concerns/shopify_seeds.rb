@@ -5,16 +5,15 @@ module ShopifySeeds
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
     # create local products
-    products.each do |product|
+    sp = products.map do |product|
       ## What if product title changes? update attribute condition?
       ## What about deleting products that don't exist anymore?
       next if Product.where(shopify_product_id: product.id).any?
-      p = Product.new(title: product.title, shopify_product_id: product.id,
+      Product.new(title: product.title, shopify_product_id: product.id,
                       product_type: product.product_type, tags: product.tags, 
                       shop_id: id)
-      p.save
-      puts p.errors.inspect if p.errors.any?
     end
+    Product.import sp
     puts Product.count
   end
   
@@ -63,28 +62,25 @@ module ShopifySeeds
   
   def seed_collections!
     shop = self.with_shopify!
-    c = (1..(ShopifyAPI::SmartCollection.count.to_f/150.0).ceil).flat_map do |page|
+    sc = (1..(ShopifyAPI::SmartCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::SmartCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
-    c.each do |collect|
+    smart_col = sc.map do |collect|
       next if Collection.find_by(shopify_collection_id: collect.id)
       col = Collection.new(title: collect.title, 
                         shopify_collection_id: collect.id,
                         collection_type: "Smart")  
-      col.save
-      puts col.errors.inspect if col.errors.any?
     end
-    c = []
-    c = (1..(ShopifyAPI::CustomCollection.count.to_f/150.0).ceil).flat_map do |page|
+    Collection.import smart_col
+    cc = (1..(ShopifyAPI::CustomCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::CustomCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
-    c.each do |collect|
+    cust_col = cc.map do |collect|
       next if Collection.find_by(shopify_collection_id: collect.id)
       col = Collection.new(title: collect.title, 
                         shopify_collection_id: collect.id,
                         collection_type: "Custom")  
-      col.save
-      puts col.errors.inspect if col.errors.any?
     end
+    Collection.import cust_col
   end
 end

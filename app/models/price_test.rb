@@ -70,7 +70,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def done?
-    price_data.first.last['current_test_price'].nil?
+    price_data.try(:first).last['current_test_price'].nil?
   end
   
   def shift_price_point!
