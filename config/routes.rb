@@ -7,5 +7,6 @@ Rails.application.routes.draw do
   get 'search_title', to: 'dashboard#search_title'
   get 'get_collection', to: 'dashboard#get_collection'
   post 'price_tests/bulk_create', to: 'price_tests#bulk_create', as: 'price_tests_bulk'
+  delete 'price_tests/bulk_destroy', to: 'price_tests#bulk_destroy', as: 'price_tests_bulk_destroy'
   resources :products, :price_tests
 end

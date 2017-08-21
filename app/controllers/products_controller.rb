@@ -13,7 +13,9 @@ class ProductsController < ShopifyApp::AuthenticatedController
     else
       @products = Product.all
     end
+    @products = @products.includes(:price_tests).includes(:variants)
     @paginatable_array = @products.page(params[:page]).per(10)
+    get_all_price_tests_ids
   end
   
   def show
@@ -45,8 +47,15 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @price_test = PriceTest.new
   end
   
+  def get_all_price_tests_ids
+    @selected_price_tests_ids = 
+    @products.select{ |p| p if p.price_tests.active.any? }.map do |p|
+      p.price_tests.active.last.try(:id)
+    end
+    puts 
+  end
+  
   def define_collection
-    @product = Product.find(params[:id])
-    @collections ||=  @product.collections.map(&:title)
+    @collections ||=  Product.find(params[:id]).collections.map(&:title)
   end
 end
