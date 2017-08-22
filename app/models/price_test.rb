@@ -9,7 +9,7 @@ class PriceTest < ActiveRecord::Base
   validate :no_active_price_tests_for_product
   before_validation :seed_price_data, if: proc { price_data.nil? }
   before_create :set_new_current_price_started_at
-  after_create :apply_current_test_price!
+  after_create :apply_current_test_price_async!
   before_destroy :revert_to_original_price!, if: :active?
   ## OR make best price original price?
   

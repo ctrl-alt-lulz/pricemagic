@@ -17,7 +17,6 @@ gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
 
 # Assets / views
-gem "react_on_rails", "~> 7"
 gem 'kaminari'
 
 # Services

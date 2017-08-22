@@ -6,16 +6,14 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def index
     @collections = Collection.all
-    if params[:term]
+    if params[:term].present?
       @products = Product.where('title iLIKE ?', '%' + params[:term] + '%')
     elsif params[:collection]
       @products = Collection.find(params[:collection]).products
     else
       @products = Product.all
     end
-    @products = @products.includes(:price_tests).includes(:variants)
-    @paginatable_array = @products.page(params[:page]).per(10)
-    get_all_price_tests_ids
+    @products = @products.includes(:price_tests, :variants).page(params[:page]).per(10)
   end
   
   def show
@@ -45,14 +43,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def instantiate_price_test
     @price_test = PriceTest.new
-  end
-  
-  def get_all_price_tests_ids
-    @selected_price_tests_ids = 
-    @products.select{ |p| p if p.price_tests.active.any? }.map do |p|
-      p.price_tests.active.last.try(:id)
-    end
-    puts 
   end
   
   def define_collection
