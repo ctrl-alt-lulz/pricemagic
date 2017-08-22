@@ -5,14 +5,14 @@
     <th><strong>Price</strong></th>
     <th><strong>Price Test Status</strong></th>
   </thead>
-  <% @paginatable_array.each do |product| %>
+  <% @products.each do |product| %>
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
-      <td><%= product.variants[0].price %></td>
-      <td><%= PriceTest.where(product_id: product.id).empty? ? "False" :
-              PriceTest.where(product_id: product.id).last.active.to_s.capitalize %></td>
+      <td><%= product.variants.first.variant_price %></td>
+      <td><%= product.price_tests.empty? ? "False" :
+              product.price_tests.last.active.to_s.capitalize %></td>
     </tr>
   <% end %>
 </table>
-<%= paginate @paginatable_array %>
+<%= paginate @products %>
 </div>

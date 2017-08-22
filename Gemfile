@@ -17,7 +17,6 @@ gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
 
 # Assets / views
-gem "react_on_rails", "~> 7"
 gem 'kaminari'
 
 # Services
@@ -25,6 +24,7 @@ gem 'shopify_app'
 gem 'sidekiq'
 gem 'sidekiq-scheduler', '~> 2.1.7'
 gem 'google-api-client', '~> 0.11'
+gem "activerecord-import", ">= 0.2.0"
 
 group :development, :test do
   gem 'byebug'

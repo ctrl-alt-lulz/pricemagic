@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  collection_title: MyString
+  shopify_collection_id: MyString
+  collection_type: MyString
+
+two:
+  collection_title: MyString
+  shopify_collection_id: MyString
+  collection_type: MyString

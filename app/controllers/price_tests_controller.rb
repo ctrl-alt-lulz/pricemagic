@@ -16,7 +16,21 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
       end
     end
   end
-
+  
+  def bulk_create
+    session[:return_to] ||= request.referer
+    BulkCreatePriceTestsWorker.perform_async(params)
+    redirect_to session.delete(:return_to)
+  end
+  
+  def bulk_destroy
+    session[:return_to] ||= request.referer
+    unless params[:price_tests_ids].nil?
+      BulkDestroyPriceTestsWorker.perform_async(params[:price_tests_ids])
+    end
+    redirect_to session.delete(:return_to)
+  end
+    
   def show
   end
 
@@ -35,6 +49,7 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
     end
   end
   
+  ## Note to self hidden products can mess with this
   def destroy
     price_test = PriceTest.find(params[:id])
     product_id = price_test.product_id
@@ -49,6 +64,6 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
 
   def price_test_params
     params.require(:price_test).permit(:percent_increase, :percent_decrease,
-                   :product_id, :ending_digits, :price_points, :active)
+                   :product_id, :ending_digits, :price_points, :active, :product_ids)
   end
 end

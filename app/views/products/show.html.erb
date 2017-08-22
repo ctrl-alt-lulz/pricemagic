@@ -1,6 +1,5 @@
 <h1><%= @product.title %></h1>
-<h2><%= @collections.map{|c| c[:title].capitalize }.join(', ') %></h2>
-<h1><%= @collections.map{|c| c[:position] } %></h1>
+<h2><%= @collections.each(&:capitalize).join(', ') %></h2>
 <h1><%= @product.id %></h1>
 <h1><%= @matches %></h1>
 <%= link_to "Home", root_url, class: 'prevent-me' %>
@@ -9,4 +8,4 @@
   <%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data if @price_test_data.try(:active) %>
 </div>
 <%= render 'price_tests/inactive_price_test_data', product: @product, price_test_data: @price_test_data unless @price_test_data.try(:active) %>
-<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.empty? %>
+<%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.try(:empty?) %>

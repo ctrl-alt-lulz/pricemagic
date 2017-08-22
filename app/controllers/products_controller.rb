@@ -1,12 +1,24 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
-  before_filter :instantiate_price_test, :define_collection, only: :show
+  before_filter :instantiate_price_test, only: [:show, :index]
+  before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
 
+  def index
+    @collections = Collection.all
+    if params[:term].present?
+      @products = Product.where('title iLIKE ?', '%' + params[:term] + '%')
+    elsif params[:collection]
+      @products = Collection.find(params[:collection]).products
+    else
+      @products = Product.all
+    end
+    @products = @products.includes(:price_tests, :variants).page(params[:page]).per(10)
+  end
+  
   def show
-    @price_test_data = PriceTest.where(product_id: params[:id]).last
-    ## TODO figure out how code below works when multiple date/timelines maybe find match by date start?
-    @google_analytics_data =  current_shop.metrics.last.google_product_match(@product.title)
+    @price_test_data = PriceTest.where(product_id: @product.id).last
+    @google_analytics_data =  @product.most_recent_metrics
   end
 
   def update
@@ -17,15 +29,11 @@ class ProductsController < ShopifyApp::AuthenticatedController
       redirect_to product_path(@product), error: @product.errors.full_messages.join(' ')
     end
   end
-
-  def google_variant_match(name)
-    self.keep_if{ |m| m['title'].ends_with?(name) }  
-  end
   
   private
   
   def define_product
-     @product = ShopifyAPI::Product.find(params[:id])
+     @product = Product.find(params[:id])
   end
    
   def convert_percent_to_float
@@ -36,14 +44,8 @@ class ProductsController < ShopifyApp::AuthenticatedController
   def instantiate_price_test
     @price_test = PriceTest.new
   end
-
+  
   def define_collection
-      @collections =  ShopifyAPI::Collect.where(product_id: params[:id]).map do |c| 
-                        { 
-                          position: c.position, 
-                          title: ShopifyAPI::SmartCollection.find(c.collection_id).title 
-                        }
-                      end
+    @collections ||=  Product.find(params[:id]).collections.map(&:title)
   end
-
 end
