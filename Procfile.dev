@@ -1,1 +1,2 @@
 web: rails s -b $IP -p $PORT
+webpacker: ./bin/webpack-dev-server
