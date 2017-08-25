@@ -11,7 +11,7 @@ module ShopifySeeds
       next if Product.where(shopify_product_id: product.id).any?
       Product.new(title: product.title, shopify_product_id: product.id,
                       product_type: product.product_type, tags: product.tags, 
-                      shop_id: id)
+                      shop_id: id, main_image_src: product.images.first.try(:src))
     end
     Product.import sp
     puts Product.count
@@ -42,6 +42,7 @@ module ShopifySeeds
     end
   end
   
+  #collections must be defined first
   def seed_collects!
     shop = self.with_shopify!
     c = (1..(ShopifyAPI::Collect.count.to_f/250.0).ceil).flat_map do |page|

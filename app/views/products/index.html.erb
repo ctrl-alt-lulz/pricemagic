@@ -1,16 +1,25 @@
 <%= javascript_pack_tag 'hello_react' %>
-<div class="counter-wrapper">
- <h1>Counter</h1>
- <form class='counter'>
- <button id='increment'>Increment</button>
- <input type="number" name="counter" id='counter' value='0' />
- <button id='decrement'>Decrement</button>
- </form>
-</div>
-<%= javascript_pack_tag 'counter' %>
+<%= javascript_pack_tag 'polaris' %>
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    ShopifyApp.ready(function(){
+      ShopifyApp.Bar.initialize({
+        title: "Home"
+      });
+    });
+  </script>
+<% end %>
+<%= content_tag :div,
+  id: "hello-react",
+  data: {
+    name: 'Person',
+    products: @products,
+    shop_session: @shop_session
+}.to_json do %>
+<% end %>
 <div id="mount"></div>
+<div id="data"></div>
 
-<h1>hello world</h1>
 
 <h2>The number of products: <%= @products.count %></h2>
 <%= render 'form', products: @products, price_test: @price_test %>
