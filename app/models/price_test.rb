@@ -58,7 +58,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def view_threshold
-    2 ## TODO make this dependent on CI, price, etc.
+    0 ## TODO make this dependent on CI, price, etc.
   end
 
   def make_inactive!

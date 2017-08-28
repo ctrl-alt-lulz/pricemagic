@@ -18,6 +18,10 @@ class Product < ActiveRecord::Base
     variants.includes(:metrics).select{ |m| m if m.metrics.any? }.map {|m| m.metrics.last}
   end
   
+  def first_variant_price
+    main_variant.variant_price
+  end
+  
   def main_variant
     variants.first
   end
