@@ -1,3 +1,9 @@
+h2.large-product-heading {
+  margin: 0 2rem;
+}
+.polaris-card-with-table {
+  padding: 10px;
+}
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;

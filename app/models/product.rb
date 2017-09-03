@@ -33,4 +33,13 @@ class Product < ActiveRecord::Base
   def latest_product_google_metric_views_at(date)
     main_variant.metrics.where('created_at < ?', date).last.try(:page_views).to_i
   end
+  
+  def has_active_price_test?
+    price_tests.empty? ? "False" : price_tests.last.active.to_s.capitalize
+  end
+  alias_method :has_active_price_test, :has_active_price_test?
+  
+  def as_json(options={})
+    super(:methods => [:variants, :has_active_price_test])
+  end
 end

@@ -14,6 +14,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
       @products = Product.all
     end
     @products = @products.includes(:price_tests, :variants).page(params[:page]).per(10)
+    respond_to do |format|
+      format.html # default html response
+      format.json { render json: @products }
+    end
   end
   
   def show

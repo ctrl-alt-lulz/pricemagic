@@ -26,6 +26,7 @@ gem 'sidekiq-scheduler', '~> 2.1.7'
 gem 'google-api-client', '~> 0.11'
 gem "activerecord-import", ">= 0.2.0"
 gem 'webpacker', '~> 2.0'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   gem 'byebug'

@@ -1,12 +1,6 @@
 <% url = local_assigns[:product].present? ? price_tests_path : price_tests_bulk_path %>
 <div class="Polaris-Layout__AnnotationWrapper">
   <div class="Polaris-Layout__Annotation">
-    <div class="Polaris-TextContainer">
-      <h2 class="Polaris-Heading">Form</h2>
-      <p> Form Sample</p>
-    </div>
-  </div>
-  <div class="Polaris-Layout__AnnotationContent">
     <div id="price-test-form", class="Polaris-Card">
       <div class="Polaris-Card__Section">
         <%= form_for price_test, url: url do |f| %>

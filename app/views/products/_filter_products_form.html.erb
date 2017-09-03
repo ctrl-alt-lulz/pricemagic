@@ -1,0 +1,6 @@
+<%= form_tag(root_url,  method: :get) do %>
+  <%= text_field_tag :term %>
+  <%= submit_tag 'Search' %>
+  <%= select_tag "collection", options_from_collection_for_select(@collections, :id, :title), prompt: "Select Collection",
+      onchange: "this.form.submit();" %>
+<% end %>

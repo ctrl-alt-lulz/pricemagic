@@ -1,5 +1,8 @@
-<%= javascript_pack_tag 'hello_react' %>
-<%= javascript_pack_tag 'polaris' %>
+<%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
+<%= render 'form', products: @products, price_test: @price_test %>
+<%= link_to "Remove price test", price_tests_bulk_destroy_path(price_tests_ids: @selected_price_tests_ids), method: :delete %>
+
+
 <% content_for :javascript do %>
   <script type="text/javascript">
     ShopifyApp.ready(function(){
@@ -14,17 +17,11 @@
   data: {
     name: 'Person',
     products: @products,
-    shop_session: @shop_session
+    shop_session: @shop_session,
+    collections: @collections,
+    products_path: products_path(:json)
 }.to_json do %>
 <% end %>
-<div id="mount"></div>
 <div id="data"></div>
+<%= paginate @products %>
 
-
-<h2>The number of products: <%= @products.count %></h2>
-<%= render 'form', products: @products, price_test: @price_test %>
-<%= link_to "Remove price test", price_tests_bulk_destroy_path(price_tests_ids: @selected_price_tests_ids), method: :delete %>
-<%= render 'get_collection_form'%>
-<%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
-<%= render 'search_form'%>
-<%= render 'std_products'%>
