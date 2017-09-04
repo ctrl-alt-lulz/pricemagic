@@ -29,7 +29,10 @@ class ProductIndexPage extends React.Component {
     console.log('Handle Collection')
     console.log(this.col_hash['necklace'])
     console.log(event)
-    this.setState({collection_id: this.col_hash[event]}, () => {
+    this.setState({
+      collection_id: this.col_hash[event],
+      collection: event
+    }, () => {
       this.searchProducts()
     });
   }
@@ -70,7 +73,7 @@ class ProductIndexPage extends React.Component {
                   onChange={this.handleTermChange}
                 />
                 <Select
-                  value= {this.state.collection_id}
+                  value= {this.state.collection}
                   label="Collection"
                   options={ this.props.collections.map(CollectionTitles) }
                   placeholder="Select"
@@ -93,7 +96,7 @@ class ProductIndexPage extends React.Component {
           </Card>
         </Layout.Section>
       </Layout>
-    ); 
+    );  
   }
 searchProducts() {
   console.log('/products/' + "?term=" + this.state.term + "&collection=" + this.state.collection_id)
