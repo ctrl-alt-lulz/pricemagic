@@ -30,6 +30,9 @@ group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
   gem 'pry-rails'
+  gem 'factory_girl'
+  gem 'faker'
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -42,4 +45,8 @@ end
 group :production do
 	# required to deploy to heroku
 	gem 'rails_12factor'
+end
+
+group :test do
+  gem 'shoulda-matchers'
 end

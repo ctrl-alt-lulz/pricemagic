@@ -28,6 +28,9 @@ module StarterApp
     # test
     config.web_console.development_only = false
 
+    config.generators do |g|
+      g.test_framework :rspec
+    end
 
   end
 end
