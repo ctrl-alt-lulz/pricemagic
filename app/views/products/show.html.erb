@@ -1,10 +1,14 @@
-<%= javascript_pack_tag 'hello_react' %>
-
 <h2 class="large-product-heading Polaris-Heading Polaris-DisplayText--sizeExtraLarge"><%= @product.title %></h1>
-
+<%= content_tag :div, 
+  id: "polaris-price-test-form",
+  data: {
+    product: @product 
+    }.to_json do %>
+<% end %>
 <%= render 'form', product: @product, price_test: @price_test %>
 <div class='active-price-test-data'>
   <%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data if @price_test_data.try(:active) %>
 </div>
 <%= render 'price_tests/inactive_price_test_data', product: @product, price_test_data: @price_test_data unless @price_test_data.try(:active) %>
 <%= render 'products/google_analytics_data_table', google_analytics_data: @google_analytics_data unless @google_analytics_data.try(:empty?) %>
+
