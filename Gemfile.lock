@@ -60,6 +60,7 @@ GEM
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
     daemons (1.2.4)
+    database_cleaner (1.6.1)
     debug_inspector (0.0.3)
     declarative (0.0.9)
     declarative-option (0.1.0)
@@ -294,6 +295,7 @@ DEPENDENCIES
   activerecord-import (>= 0.2.0)
   byebug
   coffee-rails (~> 4.1.0)
+  database_cleaner
   dotenv-rails
   factory_girl
   faker
