@@ -11,10 +11,14 @@ export default class PriceTestForm extends React.Component {
     this.state = {
       percent_increase: '',
       percent_decrease: '',
-      product: this.props.product
+      product: this.props.product,
+      price_points: '1',
+      end_digits: '99'
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
+    this.handlePricePointChange = this.handlePricePointChange.bind(this)
+    this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handlePercentIncreaseChange(event) {
@@ -26,7 +30,12 @@ export default class PriceTestForm extends React.Component {
   handleSubmit(event) {
     this.createPriceTest()
   }
-
+  handlePricePointChange(event) {
+    this.setState({price_points: event}) 
+  }
+  handleEndDigitChange(event) {
+    this.setState({end_digits: event})
+  }
     render () {
         return (<Card>
                   <FormLayout>
@@ -46,18 +55,18 @@ export default class PriceTestForm extends React.Component {
                     </FormLayout.Group>
                     <FormLayout.Group>
                       <Select
-                        value= '1' //{this.state.collection}
+                        value= {this.state.price_points}
                         label="Price Points"
                         options={ ['1', '2', '3', '4', '5'] }
                         placeholder="Select"
-                        //onChange={this.handleCollectionChange}
+                        onChange={this.handlePricePointChange}
                       />
                       <Select
-                        value= '0.99' //{this.state.collection}
+                        value= {this.state.end_digits}
                         label="Ending Digits"
                         options={ ['.99', '0.95', '0.50', '0.00'] }
                         placeholder="Select"
-                        //onChange={this.handleCollectionChange}
+                        onChange={this.handleEndDigitChange}
                       />
                     </FormLayout.Group>
                     <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
@@ -72,8 +81,9 @@ export default class PriceTestForm extends React.Component {
       data: { price_test: { product_id: this.state.product.id, 
               shopify_product_id: this.state.product.shopify_id, 
               percent_increase: this.state.percent_increase, 
-              ending_digits: "0.99", 
-              price_points: 1 } },
+              percent_decrease: this.state.percent_decrease, 
+              ending_digits: this.state.end_digits, 
+              price_points: this.state.price_points } },
       success: function(data) {
         console.log('success')
         //this.setState({ products: data });
