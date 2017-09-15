@@ -85,11 +85,9 @@ export default class PriceTestForm extends React.Component {
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
       success: function(data) {
-        console.log('success')
-        //this.setState({ products: data });
+        this.setState({ products: data });
       }.bind(this),
       error: function(data) {
-        console.log('failed')
       }.bind(this)
      });
   }
