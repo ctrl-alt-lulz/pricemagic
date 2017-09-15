@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import PropTypes from 'prop-types'
-import {Page, Card, Select, Button, TextField, Stack, FormLayout,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox} from '@shopify/polaris';
+import { Page, Card, Select, Button, TextField, Stack, FormLayout,
+Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class PriceTestForm extends React.Component {
   constructor(props) {
@@ -24,7 +24,6 @@ export default class PriceTestForm extends React.Component {
     this.setState({percent_decrease: event}) 
   }
   handleSubmit(event) {
-    console.log('submit')
     this.createPriceTest()
   }
 
