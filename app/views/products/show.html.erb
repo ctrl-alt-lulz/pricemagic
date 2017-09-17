@@ -1,11 +1,21 @@
+<%= javascript_pack_tag 'PriceTestContainer' %>
+<%= javascript_pack_tag 'PriceTestForm' %>
+
 <h2 class="large-product-heading Polaris-Heading Polaris-DisplayText--sizeExtraLarge"><%= @product.title %></h1>
 <%= content_tag :div, 
   id: "polaris-price-test-form",
   data: {
-    product: @product 
+    product: @product, 
+    price_test: @price_test_data
     }.to_json do %>
 <% end %>
-<%= render 'form', product: @product, price_test: @price_test %>
+<%= content_tag :div, 
+  id: "price-test-container",
+  data: {
+    product: @product,
+    price_test: @price_test_data
+    }.to_json do %>
+<% end %>
 <div class='active-price-test-data'>
   <%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data if @price_test_data.try(:active) %>
 </div>

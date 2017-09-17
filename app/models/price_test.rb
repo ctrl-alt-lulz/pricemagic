@@ -96,6 +96,10 @@ class PriceTest < ActiveRecord::Base
     self[:percent_decrease] = 1 - percent.to_f/100
   end
   
+  def as_json(options={})
+    super(:methods => [:variants, :has_active_price_test])
+  end
+  
   private
   
   def set_to_inactive

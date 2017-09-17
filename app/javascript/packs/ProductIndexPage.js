@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import PriceTestForm from './PriceTestForm.js'
+
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
         Thumbnail, ResourceList, Pagination, Layout, Checkbox, 
         FooterHelp } from '@shopify/polaris';
@@ -77,7 +78,7 @@ class ProductIndexPage extends React.Component {
                   <Select
                     value= {this.state.collection}
                     label="Collection"
-                    options={ this.props.collections.map(CollectionTitles) }
+                    options={this.props.collections.map(CollectionTitles)}
                     placeholder="Select"
                     onChange={this.handleCollectionChange}
                   />
@@ -127,7 +128,7 @@ searchProducts() {
 }
   
 document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('hello-react')
+  const node = document.getElementById('product-index-page')
   const data = JSON.parse(node.getAttribute('data'))
 ReactDOM.render(<ProductIndexPage {...data}/>, node)
 })
