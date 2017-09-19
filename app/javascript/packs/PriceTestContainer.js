@@ -9,10 +9,10 @@ Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 export default class PriceTestContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
   }
   render() {
+    const price_points = this.props.price_points
+
     function CreateItem(variant) {
       return { 
         variant_title: variant.variant_title,
@@ -21,13 +21,13 @@ export default class PriceTestContainer extends React.Component {
     }
     function CreateColumns() {
       return {
-                columns: SeedColumnData(3)
+                columns: SeedColumnData(price_points)
               }
     }
-    function SeedColumnData(num_of_cols) {
+    function SeedColumnData(price_points) {
       var columns = [];
-      for (num_of_cols > 0; num_of_cols--;) {
-        columns.push({Header: 'Price Test #' + num_of_cols});
+      for (price_points > 0; price_points--;) {
+        columns.unshift({Header: 'Price Test #' + price_points});
       } 
       return columns
     }
@@ -56,9 +56,3 @@ export default class PriceTestContainer extends React.Component {
     );
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('price-test-container')
-  const data= JSON.parse(node.getAttribute('data'))
-ReactDOM.render(<PriceTestContainer {...data}/>, node)
-})

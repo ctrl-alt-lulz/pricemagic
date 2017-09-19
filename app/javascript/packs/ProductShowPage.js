@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import PriceTestForm from './PriceTestForm.js'
+import PriceTestContainer from './PriceTestContainer.js'
+
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
@@ -40,8 +42,9 @@ export default class ProductShowPage extends React.Component {
     const percent_decrease = this.state.percent_decrease
     const price_points = this.state.price_points
     const end_digits = this.state.end_digits
-    
-    return (<PriceTestForm 
+
+    return (<div>
+            <PriceTestForm 
               percent_increase = {percent_increase}
               percent_decrease = {percent_decrease}
               price_points = {price_points}
@@ -50,9 +53,13 @@ export default class ProductShowPage extends React.Component {
               onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
               onPricePointChange = {this.handlePricePointChange}
               onEndDigitChange = {this.handleEndDigitChange}
-              product = {this.props.product}
               onSubmitPriceTest = {this.handleSubmit}
             />
+            <PriceTestContainer 
+              price_test = {this.props.price_test}
+              price_points = {price_points}
+            />
+            </div>
     );
   }
   createPriceTest() {
