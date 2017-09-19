@@ -19,28 +19,36 @@ export default class PriceTestContainer extends React.Component {
         variant_price: variant.variant_price
       }
     }
+    function CreateColumns() {
+      return {
+                columns: SeedColumnData(3)
+              }
+    }
+    function SeedColumnData(num_of_cols) {
+      var columns = [];
+      for (num_of_cols > 0; num_of_cols--;) {
+        columns.push({Header: 'Price Test #' + num_of_cols});
+      } 
+      return columns
+    }
     const data = this.props.price_test.variants.map(CreateItem)
-    console.log(this.props.product)
+    console.log(this.props.price_test)
     console.log(this.props.price_test.variants)
     return (<ReactTable
               data={data}
               columns={[
               {
+                Header: "Base",
                 columns: [
                   {
                     Header: "Product Title",
                     accessor: "variant_title"
-                  }
-                ]
-              },
-              {
-                columns: [
-                  {
+                  },{
                     Header: "Price",
                     accessor: "variant_price"
                   }
                 ]
-              }
+              },CreateColumns()
             ]}
             defaultPageSize={10}
             className="-striped -highlight"

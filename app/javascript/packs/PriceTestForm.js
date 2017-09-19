@@ -9,7 +9,6 @@ export default class PriceTestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      percent_increase: '',
       percent_decrease: '',
       product: this.props.product,
       price_points: '1',
@@ -22,7 +21,7 @@ export default class PriceTestForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handlePercentIncreaseChange(event) {
-    this.setState({percent_increase: event}) 
+    this.props.onPercentIncreaseChange(event)
   }
   handlePercentDecreaseChange(event) {
     this.setState({percent_decrease: event}) 
@@ -36,43 +35,44 @@ export default class PriceTestForm extends React.Component {
   handleEndDigitChange(event) {
     this.setState({end_digits: event})
   }
-    render () {
-        return (<Card>
-                  <FormLayout>
-                    <FormLayout.Group>
-                      <TextField 
-                        value={this.state.percent_increase}
-                        label="Percent Increase"
-                        placeholder="Enter %"
-                        onChange={this.handlePercentIncreaseChange}
-                      />
-                      <TextField 
-                        value={this.state.percent_decrease}
-                        label="Percent Decrease"
-                        placeholder="Enter %"
-                        onChange={this.handlePercentDecreaseChange}
-                      />
-                    </FormLayout.Group>
-                    <FormLayout.Group>
-                      <Select
-                        value= {this.state.price_points}
-                        label="Price Points"
-                        options={ ['1', '2', '3', '4', '5'] }
-                        placeholder="Select"
-                        onChange={this.handlePricePointChange}
-                      />
-                      <Select
-                        value= {this.state.end_digits}
-                        label="Ending Digits"
-                        options={ ['.99', '0.95', '0.50', '0.00'] }
-                        placeholder="Select"
-                        onChange={this.handleEndDigitChange}
-                      />
-                    </FormLayout.Group>
-                    <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
-                 </FormLayout>
-               </Card>);
-    }
+  render () {
+    const percent_increase = this.props.percent_increase
+      return (<Card>
+                <FormLayout>
+                  <FormLayout.Group>
+                    <TextField 
+                      value={percent_increase}
+                      label="Percent Increase"
+                      placeholder="Enter %"
+                      onChange={this.handlePercentIncreaseChange}
+                    />
+                    <TextField 
+                      value={this.state.percent_decrease}
+                      label="Percent Decrease"
+                      placeholder="Enter %"
+                      onChange={this.handlePercentDecreaseChange}
+                    />
+                  </FormLayout.Group>
+                  <FormLayout.Group>
+                    <Select
+                      value= {this.state.price_points}
+                      label="Price Points"
+                      options={ ['1', '2', '3', '4', '5'] }
+                      placeholder="Select"
+                      onChange={this.handlePricePointChange}
+                    />
+                    <Select
+                      value= {this.state.end_digits}
+                      label="Ending Digits"
+                      options={ ['.99', '0.95', '0.50', '0.00'] }
+                      placeholder="Select"
+                      onChange={this.handleEndDigitChange}
+                    />
+                  </FormLayout.Group>
+                  <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
+               </FormLayout>
+             </Card>);
+  }
   createPriceTest() {
     $.ajax( {
       type: "POST",
@@ -85,16 +85,22 @@ export default class PriceTestForm extends React.Component {
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
       success: function(data) {
+        console.log('success')
+        console.log(this.state.price_points)
+        console.log(data)
         this.setState({ products: data });
       }.bind(this),
       error: function(data) {
+        console.log('fail')
+        console.log(data)
+        console.log(this.state.price_points)
       }.bind(this)
      });
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('polaris-price-test-form')
-  const data = JSON.parse(node.getAttribute('data'))
-ReactDOM.render(<PriceTestForm {...data}/>, node)
-})
+// document.addEventListener('DOMContentLoaded', () => {
+//   const node = document.getElementById('polaris-price-test-form')
+//   const data = JSON.parse(node.getAttribute('data'))
+// ReactDOM.render(<PriceTestForm {...data}/>, node)
+// })
