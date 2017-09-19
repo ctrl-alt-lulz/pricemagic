@@ -8,12 +8,6 @@ Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 export default class PriceTestForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      percent_decrease: '',
-      product: this.props.product,
-      price_points: '1',
-      end_digits: '99'
-    };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
@@ -24,19 +18,23 @@ export default class PriceTestForm extends React.Component {
     this.props.onPercentIncreaseChange(event)
   }
   handlePercentDecreaseChange(event) {
-    this.setState({percent_decrease: event}) 
+    this.props.onPercentDecreaseChange(event)
   }
   handleSubmit(event) {
-    this.createPriceTest()
+    this.props.onSubmitPriceTest()
   }
   handlePricePointChange(event) {
-    this.setState({price_points: event}) 
+    this.props.onPricePointChange(event)
   }
   handleEndDigitChange(event) {
-    this.setState({end_digits: event})
+    this.props.onEndDigitChange(event)
   }
   render () {
     const percent_increase = this.props.percent_increase
+    const percent_decrease = this.props.percent_decrease
+    const price_points = this.props.price_points
+    const end_digits = this.props.end_digits
+    
       return (<Card>
                 <FormLayout>
                   <FormLayout.Group>
@@ -47,7 +45,7 @@ export default class PriceTestForm extends React.Component {
                       onChange={this.handlePercentIncreaseChange}
                     />
                     <TextField 
-                      value={this.state.percent_decrease}
+                      value={percent_decrease}
                       label="Percent Decrease"
                       placeholder="Enter %"
                       onChange={this.handlePercentDecreaseChange}
@@ -55,14 +53,14 @@ export default class PriceTestForm extends React.Component {
                   </FormLayout.Group>
                   <FormLayout.Group>
                     <Select
-                      value= {this.state.price_points}
+                      value= {price_points}
                       label="Price Points"
                       options={ ['1', '2', '3', '4', '5'] }
                       placeholder="Select"
                       onChange={this.handlePricePointChange}
                     />
                     <Select
-                      value= {this.state.end_digits}
+                      value= {end_digits}
                       label="Ending Digits"
                       options={ ['.99', '0.95', '0.50', '0.00'] }
                       placeholder="Select"
@@ -73,34 +71,4 @@ export default class PriceTestForm extends React.Component {
                </FormLayout>
              </Card>);
   }
-  createPriceTest() {
-    $.ajax( {
-      type: "POST",
-      dataType: "json",
-      url: '/price_tests',
-      data: { price_test: { product_id: this.state.product.id, 
-              shopify_product_id: this.state.product.shopify_id, 
-              percent_increase: this.state.percent_increase, 
-              percent_decrease: this.state.percent_decrease, 
-              ending_digits: this.state.end_digits, 
-              price_points: this.state.price_points } },
-      success: function(data) {
-        console.log('success')
-        console.log(this.state.price_points)
-        console.log(data)
-        this.setState({ products: data });
-      }.bind(this),
-      error: function(data) {
-        console.log('fail')
-        console.log(data)
-        console.log(this.state.price_points)
-      }.bind(this)
-     });
-  }
 }
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   const node = document.getElementById('polaris-price-test-form')
-//   const data = JSON.parse(node.getAttribute('data'))
-// ReactDOM.render(<PriceTestForm {...data}/>, node)
-// })
