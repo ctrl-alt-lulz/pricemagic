@@ -45,7 +45,7 @@ export default class PriceTestContainer extends React.Component {
       return base
     }
     function RoundPriceDigits(price) {
-      return Math.floor(price) + end_digits/100
+      return Math.floor(price) + end_digits
     }
     const data = this.props.price_test.variants.map(CreateItem).map(CalcPricePointData)
 

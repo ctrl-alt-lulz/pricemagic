@@ -14,7 +14,7 @@ export default class ProductShowPage extends React.Component {
       percent_increase: '',
       percent_decrease: 0,
       price_points: '1',
-      end_digits: '99',
+      end_digits: 0.99, 
       price_multipler: [1]
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
@@ -44,15 +44,13 @@ export default class ProductShowPage extends React.Component {
   handleSubmit(event) {
     this.createPriceTest()
   }
-  // TODO refactor
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100
     var percent_decrease = 1 - this.state.percent_decrease/100
     var price_points = this.state.price_points
     var price_multipler = [percent_increase]
-    if (price_points == 1) {
-      return this.setState({price_multipler: price_multipler}) 
-    } 
+    
+    if (price_points == 1) return this.setState({price_multipler: price_multipler}) 
     if (price_points == 2) {
       price_multipler.unshift(percent_decrease)
       return this.setState({price_multipler: price_multipler}) 
