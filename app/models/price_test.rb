@@ -27,9 +27,8 @@ class PriceTest < ActiveRecord::Base
   #  end 
   
   def variant_hash(variant, price_multipler)
-    puts '*'*50
-    puts price_multipler.class
     price_points = price_multipler.collect { |n| make_ending_digits(n * variant.variant_price.to_f) }
+    validate_price_points(price_points)
     {
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
@@ -141,19 +140,6 @@ class PriceTest < ActiveRecord::Base
   
   def make_ending_digits(price)
     price.floor + self.ending_digits
-  end
-  
-  ## TODO refactor this
-  def step_price_points(upper, lower, number_of_test_points)
-    number_of_test_points -= 1
-    pricePoints = []
-    pricePoints.push(lower) if(number_of_test_points > 0) 
-    step = (upper - lower)/number_of_test_points;
-    for number_of_test_points in (1...number_of_test_points) do
-      pricePoints.push(make_ending_digits(pricePoints[number_of_test_points-1] + step))
-    end
-    pricePoints.push(upper)
-    pricePoints = validate_price_points(pricePoints)
   end
   
   def calc_price_multipler(number_of_test_points)
