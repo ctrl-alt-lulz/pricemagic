@@ -38,6 +38,7 @@ export default class PriceTestContainer extends React.Component {
     }
     // TODO Clean Up Names
     function CalcPricePointData(base) {
+      console.log(price_multipler)
       var pp = price_points
       for (pp > 0; pp--;) {
         $.extend(base, {[ 'test_price_' + pp]: RoundPriceDigits(base.variant_price * price_multipler[pp])})

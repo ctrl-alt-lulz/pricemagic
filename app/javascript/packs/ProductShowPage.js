@@ -12,7 +12,7 @@ export default class ProductShowPage extends React.Component {
     super(props);
     this.state = {
       percent_increase: '',
-      percent_decrease: 0,
+      percent_decrease: '',
       price_points: '1',
       end_digits: 0.99, 
       price_multipler: [1]

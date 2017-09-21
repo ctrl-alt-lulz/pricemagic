@@ -26,10 +26,10 @@ class PriceTest < ActiveRecord::Base
   #    ## TODO sum variant views for current test
   #  end 
   
-  def variant_hash(variant)
-    upperValue = make_ending_digits(variant.variant_price.to_f * percent_increase)
-    lowerValue =  make_ending_digits(variant.variant_price.to_f * percent_decrease)
-    price_points = step_price_points(upperValue, lowerValue, self[:price_points])
+  def variant_hash(variant, price_multipler)
+    puts '*'*50
+    puts price_multipler.class
+    price_points = price_multipler.collect { |n| make_ending_digits(n * variant.variant_price.to_f) }
     {
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
@@ -39,6 +39,13 @@ class PriceTest < ActiveRecord::Base
         tested_price_points: []
       }
     }
+  end
+  
+  def raw_price_data
+    empty_hash = {}
+    price_multipler = calc_price_multipler(self[:price_points])
+    variants.each{ |variant| empty_hash.merge!(variant_hash(variant, price_multipler)) }
+    empty_hash
   end
   
   def latest_product_google_metric_views_at_start_of_price 
@@ -60,7 +67,7 @@ class PriceTest < ActiveRecord::Base
   def view_threshold
     0 ## TODO make this dependent on CI, price, etc.
   end
-
+  
   def make_inactive!
     revert_to_original_price!
     set_to_inactive
@@ -82,12 +89,6 @@ class PriceTest < ActiveRecord::Base
     save
   end
   
-  def raw_price_data
-    empty_hash = {}
-    variants.each{ |variant| empty_hash.merge!(variant_hash(variant)) }
-    empty_hash
-  end
-
   def percent_increase=(percent)
     self[:percent_increase] = 1 + percent.to_f/100
   end
@@ -155,6 +156,25 @@ class PriceTest < ActiveRecord::Base
     pricePoints = validate_price_points(pricePoints)
   end
   
+  def calc_price_multipler(number_of_test_points)
+    percent_increase = self[:percent_increase]
+    percent_decrease = self[:percent_decrease]
+    price_points = number_of_test_points
+    price_multipler = [percent_increase]
+    
+    return price_multipler if (price_points == 1) 
+    if (price_points == 2) 
+      price_multipler.unshift(percent_decrease)
+      return price_multipler
+     else 
+      step = (percent_increase-percent_decrease)/(price_points-1)
+      for i in 1...(price_points - 1)
+        price_multipler.unshift(price_multipler[i-1] - step*i) 
+      end
+      price_multipler.unshift(percent_decrease)
+      return price_multipler
+    end
+  end
     ## TODO maybe there is a better way? like stopping execution?
     ## How to only return one of error type? Currently using uniq method in pricetest controller
   def validate_price_points(pricePoints)

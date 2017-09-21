@@ -41,13 +41,17 @@ export default class PriceTestForm extends React.Component {
                     <TextField 
                       value={percent_increase}
                       label="Percent Increase"
-                      placeholder="Enter %"
+                      placeholder="Enter %, i.e. 30"
+                      type='number'
                       onChange={this.handlePercentIncreaseChange}
                     />
                     <TextField 
                       value={percent_decrease}
                       label="Percent Decrease"
-                      placeholder="Enter %"
+                      placeholder="Enter % between 0 and 100, i.e. 50"
+                      type='number'
+                      min="0"
+                      max="100"
                       onChange={this.handlePercentDecreaseChange}
                     />
                   </FormLayout.Group>
