@@ -12,7 +12,9 @@ export default class PriceTestContainer extends React.Component {
   }
   render() {
     const price_points = this.props.price_points
-
+    const price_multipler = this.props.price_multipler
+    const end_digits = this.props.end_digits
+    
     function CreateItem(variant) {
       return { 
         variant_title: variant.variant_title,
@@ -27,13 +29,26 @@ export default class PriceTestContainer extends React.Component {
     function SeedColumnData(price_points) {
       var columns = [];
       for (price_points > 0; price_points--;) {
-        columns.unshift({Header: 'Price Test #' + price_points});
+        columns.unshift(
+          { Header: 'Price Test #' + price_points,
+            accessor: 'test_price_' + price_points
+          });
       } 
       return columns
     }
-    const data = this.props.price_test.variants.map(CreateItem)
-    console.log(this.props.price_test)
-    console.log(this.props.price_test.variants)
+    // TODO Clean Up Names
+    function CalcPricePointData(base) {
+      var pp = price_points
+      for (pp > 0; pp--;) {
+        $.extend(base, {[ 'test_price_' + pp]: RoundPriceDigits(base.variant_price * price_multipler[pp])})
+      }
+      return base
+    }
+    function RoundPriceDigits(price) {
+      return Math.floor(price) + end_digits/100
+    }
+    const data = this.props.price_test.variants.map(CreateItem).map(CalcPricePointData)
+
     return (<ReactTable
               data={data}
               columns={[
