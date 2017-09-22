@@ -11,6 +11,8 @@ class Shop < ActiveRecord::Base
   has_many :collects, through: :products, dependent: :destroy
   has_many :collections, ->{ uniq }, through: :collects, dependent: :destroy
   
+  validates :shopify_domain, presence: true
+  validates :shopify_token, presence: true
   ## TODO set up metrics to use  by default
   ## ike with Product
   def trial?
