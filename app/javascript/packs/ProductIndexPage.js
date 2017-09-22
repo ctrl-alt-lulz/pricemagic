@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
+import ReactTable from 'react-table'
 import PriceTestForm from './PriceTestForm.js'
+import PriceTestContainer from './PriceTestContainer.js'
 
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
         Thumbnail, ResourceList, Pagination, Layout, Checkbox, 
@@ -43,15 +45,7 @@ class ProductIndexPage extends React.Component {
   render() {
     function CreateItem(product) {
       return { 
-        url: '/products/' + product.id, 
-        attributeOne: product.title,
-        attributeTwo: product.variants[0].variant_price,
-        attributeThree: '5 prices from $8.99 to $13.99',
-        media: <Thumbnail
-                  source={product.main_image_src}
-                  alt={product.title}
-                  size="small"
-                />
+        title: product.title
       }
     }
     function CollectionTitles(collection) {
@@ -86,23 +80,22 @@ class ProductIndexPage extends React.Component {
               </FormLayout>
             </Card.Section>
             <Card.Section>
-             <Stack vertical='true' alignment='center' distribution='fillEvenly' spacing="loose">
-                <ResourceList
-                  items={
-                      this.state.products.map(CreateItem)
+             <ReactTable
+                  data={this.state.products.map(CreateItem)}
+                  columns={[
+                  {
+                    Header: "Base",
+                    columns: [
+                      {
+                        Header: "Product Title",
+                        accessor: "title"
+                      }
+                    ]
                   }
-                  renderItem={(item, index) => {
-                    return <ResourceList.Item key={index} {...item} className='Polaris-Card' />;
-                  }}
+                ]}
+                defaultPageSize={10}
+                className="-striped -highlight"
                 />
-              <Pagination
-                class='pages'
-                hasPrevious
-                onPrevious={() => {console.log('Previous')}}
-                hasNext
-                onNext={() => {console.log('Next')}} 
-              />
-            </Stack>
           </Card.Section>
           </Card>
         </Layout.Section>
