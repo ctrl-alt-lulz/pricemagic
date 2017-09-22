@@ -29,5 +29,23 @@ describe Shop, type: :model do
       expect(shop.latest_metric).to eq metric
     end
   end
+  
+  describe '#trial?' do
+    let(:shop) { create(:shop) }
+    
+    describe "with no existing price test" do
+      it 'should be true' do
+        expect(shop.trial?).to be_truthy
+      end
+    end
+    
+    describe "with existing price tests" do
+      # let!(:price_test) { create(:price_test, shop: shop) }
+      
+      it 'should be false' do
+        expect(shop.trial?).to be_falsey
+      end
+    end
+  end
 
 end
