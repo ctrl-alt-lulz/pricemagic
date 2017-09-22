@@ -45,7 +45,8 @@ class ProductIndexPage extends React.Component {
   render() {
     function CreateItem(product) {
       return { 
-        title: product.title
+        title: product.title,
+        price_test_status: product.price_tests
       }
     }
     function CollectionTitles(collection) {
@@ -59,7 +60,7 @@ class ProductIndexPage extends React.Component {
             <PriceTestForm />
           </Card.Section>
         </Card>
-          <Card title="Online store dashboard" actions={[{content: 'Edit'}]} class="product_list" sectioned>
+          <Card title="Online store dashboard" class="product_list" sectioned>
             <Card.Section>
               <FormLayout>
                 <FormLayout.Group>
@@ -89,6 +90,9 @@ class ProductIndexPage extends React.Component {
                       {
                         Header: "Product Title",
                         accessor: "title"
+                      }, {
+                        Header: "Price Test Status",
+                        accessor: "price_test_status"
                       }
                     ]
                   }
