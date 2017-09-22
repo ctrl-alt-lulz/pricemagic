@@ -7,6 +7,7 @@ class PriceTest < ActiveRecord::Base
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
+  validate :trial_or_subscription
   before_validation :seed_price_data, if: proc { price_data.nil? }
   before_create :set_new_current_price_started_at
   after_create :apply_current_test_price_async!
@@ -25,6 +26,12 @@ class PriceTest < ActiveRecord::Base
   #  def total_product_views
   #    ## TODO sum variant views for current test
   #  end 
+  
+  ## NOTE put in the private
+  def trial_or_subscription
+    return if shop.trial? || shop.has_subscription?
+    errors.add(:base, "A subscription is required after your first price test!")
+  end
   
   def variant_hash(variant, price_multipler)
     price_points = price_multipler.collect { |n| make_ending_digits(n * variant.variant_price.to_f) }

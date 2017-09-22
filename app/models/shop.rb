@@ -13,6 +13,16 @@ class Shop < ActiveRecord::Base
   
   ## TODO set up metrics to use  by default
   ## ike with Product
+  def trial?
+    !price_tests.any?
+  end
+  
+  def has_subscription?
+    ## TODO make this lookup to shopify each time
+    ## TODO set up association locally and manage with shopify
+    true
+  end
+  
   def latest_metric
     metrics.last
   end
