@@ -1,6 +1,7 @@
 {
+  "PriceTestContainer.js": "http://price-magic-bytesize.c9users.io:8081/packs/PriceTestContainer.js",
   "PriceTestForm.js": "http://price-magic-bytesize.c9users.io:8081/packs/PriceTestForm.js",
-  "application.js": "http://price-magic-bytesize.c9users.io:8081/packs/application.js",
-  "hello_react.js": "http://price-magic-bytesize.c9users.io:8081/packs/hello_react.js",
-  "polaris.js": "http://price-magic-bytesize.c9users.io:8081/packs/polaris.js"
+  "ProductIndexPage.js": "http://price-magic-bytesize.c9users.io:8081/packs/ProductIndexPage.js",
+  "ProductShowPage.js": "http://price-magic-bytesize.c9users.io:8081/packs/ProductShowPage.js",
+  "application.js": "http://price-magic-bytesize.c9users.io:8081/packs/application.js"
 }
