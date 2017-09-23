@@ -40,12 +40,22 @@ describe Shop, type: :model do
     end
     
     describe "with existing price tests" do
-      # let!(:price_test) { create(:price_test, shop: shop) }
+      let(:product) { create(:product, shop: shop) }
+      let!(:price_test) { create(:price_test, product: product) }
       
       it 'should be false' do
         expect(shop.trial?).to be_falsey
       end
     end
   end
-
+  
+  describe '#has_subscription?' do
+    describe "with a subscription" do
+      it "should be true"
+    end
+    
+    describe "with a subscription" do
+      it "should be false"
+    end
+  end
 end

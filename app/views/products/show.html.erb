@@ -1,7 +1,7 @@
-<%= javascript_pack_tag 'ProductShowPage' %>
+<%= javascript_pack_tag 'ProductShow' %>
 <%= javascript_pack_tag 'PriceTestContainer' %>
 <%= javascript_pack_tag 'PriceTestForm' %>
-
+<%= link_to "Create Recurring Charge", recurring_charges_path, method: :post %>
 <h2 class="large-product-heading Polaris-Heading Polaris-DisplayText--sizeExtraLarge"><%= @product.title %></h1>
 <%= content_tag :div, 
   id: "product-page",

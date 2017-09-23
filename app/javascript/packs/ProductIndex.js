@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 import ReactTable from 'react-table'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+
 
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
         Thumbnail, ResourceList, Pagination, Layout, Checkbox, 
         FooterHelp } from '@shopify/polaris';
 
-class ProductIndexPage extends React.Component {
+class ProductIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,6 +55,8 @@ class ProductIndexPage extends React.Component {
       return collection.title
     }
     return (
+      <div>
+      
       <Layout>
         <Layout.Section>
         <Card>
@@ -82,6 +86,26 @@ class ProductIndexPage extends React.Component {
             </Card.Section>
             <Card.Section>
              <ReactTable
+             getTdProps={(state, rowInfo, column, instance) => {
+              return {
+                onClick: (e, handleOriginal) => {
+                  console.log('A Td Element was clicked!')
+                  console.log('it produced this event:', e)
+                  console.log('It was in this column:', column)
+                  console.log('It was in this row:', rowInfo)
+                  console.log('It was in this table instance:', instance)
+                  
+                  // IMPORTANT! React-Table uses onClick internally to trigger
+                  // events like expanding SubComponents and pivots.
+                  // By default a custom 'onClick' handler will override this functionality.
+                  // If you want to fire the original onClick handler, call the
+                  // 'handleOriginal' function.
+                  if (handleOriginal) {
+                    handleOriginal()
+                  }
+                }
+              }
+            }}
                   data={this.state.products.map(CreateItem)}
                   columns={[
                   {
@@ -109,6 +133,7 @@ class ProductIndexPage extends React.Component {
           </FooterHelp>
         </Layout.Section>
       </Layout>
+      </div>
     );  
   }
 searchProducts() {
@@ -127,7 +152,7 @@ searchProducts() {
 document.addEventListener('DOMContentLoaded', () => {
   const node = document.getElementById('product-index-page')
   const data = JSON.parse(node.getAttribute('data'))
-ReactDOM.render(<ProductIndexPage {...data}/>, node)
+ReactDOM.render(<ProductIndex {...data}/>, node)
 })
 
     

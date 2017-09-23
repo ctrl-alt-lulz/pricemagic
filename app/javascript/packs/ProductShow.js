@@ -7,7 +7,7 @@ import PriceTestContainer from './PriceTestContainer.js'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
-export default class ProductShowPage extends React.Component {
+export default class ProductShow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -120,5 +120,5 @@ export default class ProductShowPage extends React.Component {
 document.addEventListener('DOMContentLoaded', () => {
   const node = document.getElementById('product-page')
   const data= JSON.parse(node.getAttribute('data'))
-ReactDOM.render(<ProductShowPage {...data}/>, node)
+ReactDOM.render(<ProductShow {...data}/>, node)
 })
