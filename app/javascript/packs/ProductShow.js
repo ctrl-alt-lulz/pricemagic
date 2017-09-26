@@ -49,7 +49,7 @@ export default class ProductShow extends React.Component {
     var percent_decrease = 1 - this.state.percent_decrease/100
     var price_points = this.state.price_points
     var price_multipler = [percent_increase]
-    
+
     if (price_points == 1) return this.setState({price_multipler: price_multipler}) 
     if (price_points == 2) {
       price_multipler.unshift(percent_decrease)
@@ -69,7 +69,8 @@ export default class ProductShow extends React.Component {
     const price_points = this.state.price_points
     const end_digits = this.state.end_digits
     const price_multipler = this.state.price_multipler
-    
+        console.log('here')
+    console.log(this.props.price_test)
     return (<div>
             <PriceTestForm 
               percent_increase = {percent_increase}
@@ -103,15 +104,10 @@ export default class ProductShow extends React.Component {
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
       success: function(data) {
-        console.log('success')
-        console.log(this.state.price_points)
-        console.log(data)
-        this.setState({ products: data });
+        window.location = '/products/' + this.props.product.id
       }.bind(this),
       error: function(data) {
         console.log('fail')
-        console.log(data)
-        console.log(this.state.price_points)
       }.bind(this)
     });
   }

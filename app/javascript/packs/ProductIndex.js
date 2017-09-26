@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 import ReactTable from 'react-table'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
-
-
+import { BrowserRouter, Route, Link, Switch, NavLink  } from 'react-router-dom'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
         Thumbnail, ResourceList, Pagination, Layout, Checkbox, 
         FooterHelp } from '@shopify/polaris';
@@ -24,6 +22,10 @@ class ProductIndex extends React.Component {
     this.col_hash = this.props.collections.reduce(function ( total, current ) {
         total[ current.title ] = current.id;
         return total;
+    }, {});
+    this.product_hash = this.props.products.reduce(function ( total, current ) {
+      total[ current.title ] = current.id;
+      return total;
     }, {});
   }
 
@@ -48,7 +50,7 @@ class ProductIndex extends React.Component {
     function CreateItem(product) {
       return { 
         title: product.title,
-        price_test_status: product.price_tests
+        price_test_status: product.has_active_price_test //this.props.price_test.active
       }
     }
     function CollectionTitles(collection) {
@@ -56,7 +58,6 @@ class ProductIndex extends React.Component {
     }
     return (
       <div>
-      
       <Layout>
         <Layout.Section>
         <Card>
@@ -89,12 +90,9 @@ class ProductIndex extends React.Component {
              getTdProps={(state, rowInfo, column, instance) => {
               return {
                 onClick: (e, handleOriginal) => {
-                  console.log('A Td Element was clicked!')
-                  console.log('it produced this event:', e)
-                  console.log('It was in this column:', column)
-                  console.log('It was in this row:', rowInfo)
-                  console.log('It was in this table instance:', instance)
-                  
+                  if (column.Header == 'Product Title') {
+                    window.location = '/products/' + this.product_hash[rowInfo.original.title];
+                  }
                   // IMPORTANT! React-Table uses onClick internally to trigger
                   // events like expanding SubComponents and pivots.
                   // By default a custom 'onClick' handler will override this functionality.
