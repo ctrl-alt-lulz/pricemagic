@@ -46,10 +46,11 @@ class ProductIndex extends React.Component {
       this.searchProducts()
     });
   }
+  
   render() {
     function CreateItem(product) {
       return { 
-        title: product.title,
+        title: product.title, //make a link if possible
         price_test_status: product.has_active_price_test //this.props.price_test.active
       }
     }
@@ -58,6 +59,7 @@ class ProductIndex extends React.Component {
     }
     return (
       <div>
+      
       <Layout>
         <Layout.Section>
         <Card>

@@ -6,7 +6,7 @@ Rails.application.configure do
   # (configured in /config/initializers/shopify_app.rb)
   # and also by ApplicationController
   config.public_url = 'https://price-magic-bytesize.c9users.io/';
-  
+
   # shopify app creds
   config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
   config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']

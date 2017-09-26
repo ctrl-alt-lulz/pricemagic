@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
+import RecurringChargesLink from './RecurringChargesLink.js'
 
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
@@ -15,14 +16,16 @@ export default class ProductShow extends React.Component {
       percent_decrease: '',
       price_points: '1',
       end_digits: 0.99, 
-      price_multipler: [1]
+      price_multipler: [1],
     };
+    
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
       this.CalcPriceMultipler()
@@ -44,6 +47,9 @@ export default class ProductShow extends React.Component {
   handleSubmit(event) {
     this.createPriceTest()
   }
+  // $('#recurring-charges').on('click', function(e) {
+  //   e.preventDefault();
+  // }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100
     var percent_decrease = 1 - this.state.percent_decrease/100
@@ -69,9 +75,12 @@ export default class ProductShow extends React.Component {
     const price_points = this.state.price_points
     const end_digits = this.state.end_digits
     const price_multipler = this.state.price_multipler
-        console.log('here')
+    const href = $('#recurring-charges').attr('href')
+    
+    console.log(href)
     console.log(this.props.price_test)
     return (<div>
+            <RecurringChargesLink />
             <PriceTestForm 
               percent_increase = {percent_increase}
               percent_decrease = {percent_decrease}
