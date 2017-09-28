@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
 import RecurringChargesLink from './RecurringChargesLink.js'
+import ActivePriceTest from './ActivePriceTest.js'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
@@ -22,6 +23,7 @@ export default class ProductShow extends React.Component {
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
   }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
@@ -43,6 +45,11 @@ export default class ProductShow extends React.Component {
   }
   handleSubmit(event) {
     this.createPriceTest()
+  }
+  handleSubmitDestroy(event) {
+    //console.log(this.props.price_test_data.id)
+    console.log(this.props.product.has_active_price_test)
+    this.destroyPriceTest()
   }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100
@@ -69,7 +76,10 @@ export default class ProductShow extends React.Component {
     const price_points = this.state.price_points
     const end_digits = this.state.end_digits
     const price_multipler = this.state.price_multipler
-
+    const product = this.props.product
+    const price_test_active = (this.props.product.has_active_price_test  == 'True');
+    
+//false //this.props.price_test_data.active
     return (<div>
             <RecurringChargesLink />
             <PriceTestForm 
@@ -82,9 +92,12 @@ export default class ProductShow extends React.Component {
               onPricePointChange = {this.handlePricePointChange}
               onEndDigitChange = {this.handleEndDigitChange}
               onSubmitPriceTest = {this.handleSubmit}
+              onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
+              price_test_active = {price_test_active}
+              //price_test_data = {
             />
             <PriceTestContainer 
-              price_test = {this.props.price_test}
+              product = {product}
               price_points = {price_points}
               price_multipler = {price_multipler}
               end_digits = {end_digits}
@@ -103,6 +116,21 @@ export default class ProductShow extends React.Component {
               percent_decrease: this.state.percent_decrease, 
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
+      success: function(data) {
+        window.location = '/products/' + this.props.product.id
+      }.bind(this),
+      error: function(data) {
+        console.log('fail')
+      }.bind(this)
+    });
+  }
+  // define below
+  destroyPriceTest() {
+    $.ajax( {
+      type: "DELETE",
+      dataType: "json",
+      url: '/price_tests/' +this.props.price_test_data.id,
+      //data: { price_test: { id: this.props.price_test_data.id } },
       success: function(data) {
         window.location = '/products/' + this.props.product.id
       }.bind(this),

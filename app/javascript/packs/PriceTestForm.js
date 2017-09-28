@@ -13,6 +13,7 @@ export default class PriceTestForm extends React.Component {
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
   }
   handlePercentIncreaseChange(event) {
     this.props.onPercentIncreaseChange(event)
@@ -22,6 +23,9 @@ export default class PriceTestForm extends React.Component {
   }
   handleSubmit(event) {
     this.props.onSubmitPriceTest()
+  }
+  handleSubmitDestroy(event) {
+    this.props.onSubmitDestroyPriceTest()
   }
   handlePricePointChange(event) {
     this.props.onPricePointChange(event)
@@ -34,7 +38,7 @@ export default class PriceTestForm extends React.Component {
     const percent_decrease = this.props.percent_decrease
     const price_points = this.props.price_points
     const end_digits = this.props.end_digits
-    
+    const price_test_active = this.props.price_test_active
       return (<Card>
                 <FormLayout>
                   <FormLayout.Group>
@@ -43,7 +47,9 @@ export default class PriceTestForm extends React.Component {
                       label="Percent Increase"
                       placeholder="Enter %, i.e. 30"
                       type='number'
+                      min="0"
                       onChange={this.handlePercentIncreaseChange}
+                      disabled={price_test_active}
                     />
                     <TextField 
                       value={percent_decrease}
@@ -53,6 +59,7 @@ export default class PriceTestForm extends React.Component {
                       min="0"
                       max="100"
                       onChange={this.handlePercentDecreaseChange}
+                      disabled={price_test_active}
                     />
                   </FormLayout.Group>
                   <FormLayout.Group>
@@ -62,6 +69,7 @@ export default class PriceTestForm extends React.Component {
                       options={ ['1', '2', '3', '4', '5'] }
                       placeholder="Select"
                       onChange={this.handlePricePointChange}
+                      disabled={price_test_active}
                     />
                     <Select
                       value= {end_digits}
@@ -69,9 +77,13 @@ export default class PriceTestForm extends React.Component {
                       options={ ['.99', '0.95', '0.50', '0.00'] }
                       placeholder="Select"
                       onChange={this.handleEndDigitChange}
+                      disabled={price_test_active}
                     />
                   </FormLayout.Group>
-                  <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
+                  <FormLayout.Group>
+                    <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
+                    <Button primary onClick={this.handleSubmitDestroy}>Destroy Price Test</Button>
+                  </FormLayout.Group>
                </FormLayout>
              </Card>);
   }

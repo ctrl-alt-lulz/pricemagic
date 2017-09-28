@@ -89,23 +89,6 @@ class ProductIndex extends React.Component {
             </Card.Section>
             <Card.Section>
              <ReactTable
-             getTdProps={(state, rowInfo, column, instance) => {
-              return {
-                onClick: (e, handleOriginal) => {
-                  if (column.Header == 'Product Title') {
-                   // window.location = '/products/' + this.product_hash[rowInfo.original.title];
-                  }
-                  // IMPORTANT! React-Table uses onClick internally to trigger
-                  // events like expanding SubComponents and pivots.
-                  // By default a custom 'onClick' handler will override this functionality.
-                  // If you want to fire the original onClick handler, call the
-                  // 'handleOriginal' function.
-                  if (handleOriginal) {
-                    handleOriginal()
-                  }
-                }
-              }
-            }}
                   data={this.state.products.map(CreateItem)}
                   columns={[
                   {

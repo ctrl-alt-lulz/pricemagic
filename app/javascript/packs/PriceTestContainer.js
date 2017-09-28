@@ -14,6 +14,7 @@ export default class PriceTestContainer extends React.Component {
     const price_points = this.props.price_points
     const price_multipler = this.props.price_multipler
     const end_digits = this.props.end_digits
+    const product = this.props.product
     
     function CreateItem(variant) {
       return { 
@@ -22,9 +23,9 @@ export default class PriceTestContainer extends React.Component {
       }
     }
     function CreateColumns() {
-      return {
+        return {
                 columns: SeedColumnData(price_points)
-              }
+               }
     }
     function SeedColumnData(price_points) {
       var columns = [];
@@ -47,7 +48,7 @@ export default class PriceTestContainer extends React.Component {
     function RoundPriceDigits(price) {
       return Math.floor(price) + end_digits
     }
-    const data = this.props.price_test.variants.map(CreateItem).map(CalcPricePointData)
+    const data = this.props.product.variants.map(CreateItem).map(CalcPricePointData)
 
     return (<ReactTable
               data={data}
