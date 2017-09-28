@@ -50,7 +50,7 @@ class ProductIndex extends React.Component {
   render() {
     function CreateItem(product) {
       return { 
-        title: product.title, //make a link if possible
+        title: <a href={'/products/' + product.id} >{product.title}</a>, //product.title, //make a link if possible
         price_test_status: product.has_active_price_test //this.props.price_test.active
       }
     }
@@ -93,7 +93,7 @@ class ProductIndex extends React.Component {
               return {
                 onClick: (e, handleOriginal) => {
                   if (column.Header == 'Product Title') {
-                    window.location = '/products/' + this.product_hash[rowInfo.original.title];
+                   // window.location = '/products/' + this.product_hash[rowInfo.original.title];
                   }
                   // IMPORTANT! React-Table uses onClick internally to trigger
                   // events like expanding SubComponents and pivots.
