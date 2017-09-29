@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
 import RecurringChargesLink from './RecurringChargesLink.js'
-import ActivePriceTest from './ActivePriceTest.js'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
@@ -47,8 +46,6 @@ export default class ProductShow extends React.Component {
     this.createPriceTest()
   }
   handleSubmitDestroy(event) {
-    //console.log(this.props.price_test_data.id)
-    console.log(this.props.product.has_active_price_test)
     this.destroyPriceTest()
   }
   CalcPriceMultipler() {
@@ -79,7 +76,6 @@ export default class ProductShow extends React.Component {
     const product = this.props.product
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     
-//false //this.props.price_test_data.active
     return (<div>
             <RecurringChargesLink />
             <PriceTestForm 
@@ -105,6 +101,7 @@ export default class ProductShow extends React.Component {
             </div>
     );
   }
+  // TODO add javascript alert/flash for failure and show error message
   createPriceTest() {
     $.ajax( {
       type: "POST",
