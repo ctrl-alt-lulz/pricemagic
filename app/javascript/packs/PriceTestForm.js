@@ -38,7 +38,6 @@ export default class PriceTestForm extends React.Component {
     const price_points = this.props.price_points
     const end_digits = this.props.end_digits
     const price_test_active = this.props.price_test_active
-    console.log(this.props.price_test_data)
 
       return (<Card>
                 <FormLayout>

@@ -91,13 +91,13 @@ export default class ProductShow extends React.Component {
               onSubmitPriceTest = {this.handleSubmit}
               onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
               price_test_active = {price_test_active}
-              price_test_data = {price_test_data}
             />
             <PriceTestContainer 
               product = {product}
               price_points = {price_points}
               price_multipler = {price_multipler}
               end_digits = {end_digits}
+              price_test_data = {price_test_data}
             />
             </div>
     );
