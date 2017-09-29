@@ -75,6 +75,7 @@ export default class ProductShow extends React.Component {
     const price_multipler = this.state.price_multipler
     const product = this.props.product
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
+    const price_test_data = this.props.price_test_data
     
     return (<div>
             <RecurringChargesLink />
@@ -90,7 +91,7 @@ export default class ProductShow extends React.Component {
               onSubmitPriceTest = {this.handleSubmit}
               onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
               price_test_active = {price_test_active}
-              //price_test_data = {
+              price_test_data = {price_test_data}
             />
             <PriceTestContainer 
               product = {product}

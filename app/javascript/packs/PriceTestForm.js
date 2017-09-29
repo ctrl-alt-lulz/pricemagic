@@ -38,6 +38,8 @@ export default class PriceTestForm extends React.Component {
     const price_points = this.props.price_points
     const end_digits = this.props.end_digits
     const price_test_active = this.props.price_test_active
+    console.log(this.props.price_test_data)
+
       return (<Card>
                 <FormLayout>
                   <FormLayout.Group>
@@ -73,7 +75,7 @@ export default class PriceTestForm extends React.Component {
                     <Select
                       value= {end_digits}
                       label="Ending Digits"
-                      options={ ['.99', '0.95', '0.50', '0.00'] }
+                      options={ ['.99', '.95', '.50', '.00'] }
                       placeholder="Select"
                       onChange={this.handleEndDigitChange}
                       disabled={price_test_active}
