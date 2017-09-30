@@ -127,7 +127,7 @@ export default class ProductShow extends React.Component {
     $.ajax( {
       type: "DELETE",
       dataType: "json",
-      url: '/price_tests/' +this.props.price_test_data.id,
+      url: '/price_tests/' + this.props.price_test_data.id,
       //data: { price_test: { id: this.props.price_test_data.id } },
       success: function(data) {
         window.location = '/products/' + this.props.product.id

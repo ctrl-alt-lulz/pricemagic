@@ -1,0 +1,11 @@
+<%= javascript_pack_tag 'RecurringChargesLink' %>
+<div id="reccuring_charges"></div>
+
+<% @recurring_charges.each do |charge| %>
+  <div>
+    <h2><%= charge.name %></h2>
+    <h3><%= charge.price %></h3>
+    <h4><%= charge.billing_on %></h4>
+    <%= link_to 'Cancel Charge', recurring_charge_path(charge), method: :delete %>
+  </div>
+<% end %>

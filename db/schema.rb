@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170825005819) do
+ActiveRecord::Schema.define(version: 20170929025449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "charges", force: :cascade do |t|
+    t.string   "type"
+    t.integer  "shopify_id"
+    t.integer  "shop_id"
+    t.integer  "user_id"
+    t.jsonb    "charge_data"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "collections", force: :cascade do |t|
     t.string   "title"
@@ -35,8 +45,8 @@ ActiveRecord::Schema.define(version: 20170825005819) do
 
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.integer  "product_id"
     t.integer  "variant_id"
     t.string   "page_title"
@@ -44,6 +54,7 @@ ActiveRecord::Schema.define(version: 20170825005819) do
     t.integer  "page_views"
     t.float    "page_avg_price"
     t.datetime "acquired_at"
+    t.integer  "page_unique_purchases"
   end
 
   create_table "price_tests", force: :cascade do |t|
@@ -90,7 +101,6 @@ ActiveRecord::Schema.define(version: 20170825005819) do
 
   create_table "variants", force: :cascade do |t|
     t.integer  "product_id"
-    t.string   "shopify_product_id"
     t.string   "shopify_variant_id"
     t.string   "variant_title"
     t.string   "variant_price"

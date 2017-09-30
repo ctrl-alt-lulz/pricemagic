@@ -7,7 +7,7 @@ import PriceTestContainer from './PriceTestContainer.js'
 import { BrowserRouter, Route, Link, Switch, NavLink  } from 'react-router-dom'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
         Thumbnail, ResourceList, Pagination, Layout, Checkbox, 
-        FooterHelp } from '@shopify/polaris';
+        FooterHelp, ActionList } from '@shopify/polaris';
 
 class ProductIndex extends React.Component {
   constructor(props) {
@@ -59,7 +59,12 @@ class ProductIndex extends React.Component {
     }
     return (
       <div>
-      
+         <ActionList
+          items={[
+            {content: <a href={'/recurring_charges'} >recurring charges</a>},
+            {content: 'Export file'},
+          ]}
+        />
       <Layout>
         <Layout.Section>
         <Card>

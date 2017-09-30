@@ -10,5 +10,5 @@ Rails.application.routes.draw do
   delete 'price_tests/bulk_destroy', to: 'price_tests#bulk_destroy', as: 'price_tests_bulk_destroy'
   resources :products, :price_tests, :recurring_charges
   
-  get 'recurring_charges/activate', to: 'recurring_charges#activate', as: 'recurring_charges_activate'
+  get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
 end

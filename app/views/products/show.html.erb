@@ -2,12 +2,16 @@
 <%= javascript_pack_tag 'PriceTestContainer' %>
 <%= javascript_pack_tag 'PriceTestForm' %>
 <h2 class="large-product-heading Polaris-Heading Polaris-DisplayText--sizeExtraLarge"><%= @product.title %></h1>
-<%= content_tag :div, 
-  id: "product-page",
-  data: {
-    product: @product,
-    price_test_data: @price_test_data
-    }.to_json do %>
+<% if current_shop.trial? || current_shop.has_subscription? %>
+  <%= content_tag :div, 
+    id: "product-page",
+    data: {
+      product: @product,
+      price_test_data: @price_test_data
+      }.to_json do %>
+  <% end %>
+<% else %>
+ <%= content_tag :div, id: 'recurring-charges-link-goes-here', data: { keys: 'you need' }.to_json do %><% end %>
 <% end %>
 
 <%= content_tag :div, 

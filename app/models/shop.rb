@@ -7,6 +7,8 @@ class Shop < ActiveRecord::Base
   has_many :metrics, -> { order(created_at: :asc)}, dependent: :destroy
   has_many :products, dependent: :destroy
   has_many :price_tests, through: :products
+  has_many :charges
+  has_many :recurring_charges
   
   has_many :collects, through: :products, dependent: :destroy
   has_many :collections, ->{ uniq }, through: :collects, dependent: :destroy

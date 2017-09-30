@@ -47,3 +47,8 @@ export default class RecurringChargesLink extends React.Component {
     });
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const node = document.getElementById('reccuring_charges')
+ReactDOM.render(<RecurringChargesLink />, node)
+})
