@@ -19,6 +19,7 @@ export default class ProductShow extends React.Component {
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
+    this.handleViewThresholdChange = this.handleViewThresholdChange.bind(this)
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -33,6 +34,9 @@ export default class ProductShow extends React.Component {
     this.setState({percent_decrease: event}, () => {
       this.CalcPriceMultipler()
     });
+  }
+  handleViewThresholdChange(event) {
+    this.setState({view_threshold: event});
   }
   handlePricePointChange(event) {
     this.setState({price_points: event}, () => {
@@ -73,9 +77,11 @@ export default class ProductShow extends React.Component {
     const price_points = this.state.price_points
     const end_digits = this.state.end_digits
     const price_multipler = this.state.price_multipler
+    const view_threshold = this.state.view_threshold
     const product = this.props.product
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const price_test_data = this.props.price_test_data
+    console.log(price_test_data)
     
     return (<div>
             <RecurringChargesLink />
@@ -83,9 +89,11 @@ export default class ProductShow extends React.Component {
               percent_increase = {percent_increase}
               percent_decrease = {percent_decrease}
               price_points = {price_points}
+              view_threshold = {view_threshold}
               end_digits = {end_digits}
               onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
               onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+              onViewThresholdChange = {this.handleViewThresholdChange}
               onPricePointChange = {this.handlePricePointChange}
               onEndDigitChange = {this.handleEndDigitChange}
               onSubmitPriceTest = {this.handleSubmit}
@@ -112,9 +120,11 @@ export default class ProductShow extends React.Component {
               shopify_product_id: this.props.product.shopify_id, 
               percent_increase: this.state.percent_increase, 
               percent_decrease: this.state.percent_decrease, 
+              view_threshold: this.state.view_threshold,
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
       success: function(data) {
+        console.log(this.state.view_threshold)
         window.location = '/products/' + this.props.product.id
       }.bind(this),
       error: function(data) {
@@ -128,7 +138,6 @@ export default class ProductShow extends React.Component {
       type: "DELETE",
       dataType: "json",
       url: '/price_tests/' + this.props.price_test_data.id,
-      //data: { price_test: { id: this.props.price_test_data.id } },
       success: function(data) {
         window.location = '/products/' + this.props.product.id
       }.bind(this),

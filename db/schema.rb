@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170929025449) do
+ActiveRecord::Schema.define(version: 20171001000033) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20170929025449) do
     t.integer  "price_points",             default: 0
     t.integer  "product_id"
     t.datetime "current_price_started_at"
+    t.integer  "view_threshold"
   end
 
   create_table "products", force: :cascade do |t|

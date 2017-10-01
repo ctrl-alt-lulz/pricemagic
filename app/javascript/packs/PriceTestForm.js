@@ -9,6 +9,7 @@ export default class PriceTestForm extends React.Component {
     super(props);
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
+    this.handleViewThresholdChange = this.handleViewThresholdChange.bind(this)
     this.handlePricePointChange = this.handlePricePointChange.bind(this)
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -16,6 +17,9 @@ export default class PriceTestForm extends React.Component {
   }
   handlePercentIncreaseChange(event) {
     this.props.onPercentIncreaseChange(event)
+  }
+  handleViewThresholdChange(event) {
+    this.props.onViewThresholdChange(event)
   }
   handlePercentDecreaseChange(event) {
     this.props.onPercentDecreaseChange(event)
@@ -38,7 +42,7 @@ export default class PriceTestForm extends React.Component {
     const price_points = this.props.price_points
     const end_digits = this.props.end_digits
     const price_test_active = this.props.price_test_active
-
+    const view_threshold = this.props.view_threshold
       return (<Card>
                 <FormLayout>
                   <FormLayout.Group>
@@ -59,6 +63,15 @@ export default class PriceTestForm extends React.Component {
                       min="0"
                       max="100"
                       onChange={this.handlePercentDecreaseChange}
+                      disabled={price_test_active}
+                    />
+                    <TextField 
+                      value={view_threshold}
+                      label="View Threshold"
+                      placeholder="Enter the number of views you want per price test"
+                      type='number'
+                      min="0"
+                      onChange={this.handleViewThresholdChange}
                       disabled={price_test_active}
                     />
                   </FormLayout.Group>

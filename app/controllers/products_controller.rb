@@ -24,6 +24,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @price_test_data = PriceTest.where(product_id: @product.id).last
     @google_analytics_data =  @product.most_recent_metrics
     @price = @product.first_variant_price
+    @current_shop = current_shop
     respond_to do |format|
       format.html # default html response
       format.json { render json: @product }
