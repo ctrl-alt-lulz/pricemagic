@@ -2,8 +2,8 @@ class PriceTest < ActiveRecord::Base
   include PriceTestExtShopifyMethods
   belongs_to :product
   
-  validates :product_id, presence: true
-  validates :price_data, presence: true
+  validates :view_threshold, numericality: { only_integer: true, greater_than: 0 }
+  validates :product_id, :price_data, :view_threshold, presence: true
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
@@ -31,6 +31,14 @@ class PriceTest < ActiveRecord::Base
   def trial_or_subscription
     return if shop.trial? || shop.has_subscription?
     errors.add(:base, "A subscription is required after your first price test!")
+  end
+  
+  def total_views
+    self['view_threshold'] * price_points
+  end
+  
+  def total_views_so_far
+    price_data.values.first['total_variant_views'].reduce(:+)  
   end
   
   def variant_hash(variant, price_multipler)

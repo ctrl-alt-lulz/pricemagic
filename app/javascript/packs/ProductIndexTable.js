@@ -12,6 +12,7 @@ export default class ProductIndexTable extends React.Component {
       return { 
         title: <a href={'/products/' + product.id} >{product.title}</a>,
         price_test_status: product.has_active_price_test 
+        //price_test_completion_percentage: product.price_test_completion_percentage
       }
     }
   return (<ReactTable
@@ -26,6 +27,9 @@ export default class ProductIndexTable extends React.Component {
                 }, {
                   Header: "Price Test Status",
                   accessor: "price_test_status"
+                }, {
+                  Header: "Price Test Completion Percentage",
+                  accessor: "price_test_completion_percentage"
                 }
               ]
             }

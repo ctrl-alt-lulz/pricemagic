@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import ReactTable from 'react-table'
 import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
 import ProductIndexTable from './ProductIndexTable.js'
@@ -97,8 +96,8 @@ class ProductIndex extends React.Component {
           <FooterHelp>
              The Lannister Group © 2017
           </FooterHelp>
-          </Layout.Section>
-        </Layout>
+        </Layout.Section>
+      </Layout>
       </div>
     );  
   }

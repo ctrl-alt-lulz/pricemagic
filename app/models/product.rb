@@ -39,7 +39,16 @@ class Product < ActiveRecord::Base
   end
   alias_method :has_active_price_test, :has_active_price_test?
   
+  def price_test_completion_percentage
+    #price_tests.last.total_views_so_far
+    # if price_tests.any?
+    #   price_tests.last.total_views_so_far/price_tests.last.total_views
+    # else
+    #   "No Tests"
+    # end
+  end
+  
   def as_json(options={})
-    super(:methods => [:variants, :has_active_price_test])
+    super(:methods => [:variants, :has_active_price_test, :price_test_completion_percentage])
   end
 end
