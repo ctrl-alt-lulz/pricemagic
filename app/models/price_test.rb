@@ -41,6 +41,10 @@ class PriceTest < ActiveRecord::Base
     price_data.values.first['total_variant_views'].reduce(:+)  
   end
   
+  def completion_percentage
+    total_views_so_far.presence ? 100 * (total_views_so_far.to_f/total_views) : 0
+  end
+  
   def variant_hash(variant, price_multipler)
     price_points = price_multipler.collect { |n| make_ending_digits(n * variant.variant_price.to_f) }
     validate_price_points(price_points)

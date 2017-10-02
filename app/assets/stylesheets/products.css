@@ -8,21 +8,10 @@
   padding: 10px;
 }
 
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
+label.Polaris-Choice {
+  margin-left: 10px;
 }
 
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-    width: "pixels|%|relative_length";
-}
-
-input.manual_price {
-    width: 100%;
-}
-tr:nth-child(even) {
-    background-color: #dddddd;
+html {
+  line-height: 2.8rem;
 }
