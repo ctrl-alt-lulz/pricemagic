@@ -12,14 +12,8 @@ export default class ProductIndexTable extends React.Component {
      selectAll: 0,
      products: this.props.products
     }
-    //this.handleChange = this.handleChange.bind(this)
     this.toggleRow = this.toggleRow.bind(this);
   }
-  // handleChange(event) {
-  //   console.log('test')
-  //   console.log(this.state.rowInfo)
-  //   console.log('test')
-  // }
 	toggleRow(title) {
 		const newSelected = Object.assign({}, this.state.selected);
 		newSelected[title] = !this.state.selected[title];
@@ -31,8 +25,8 @@ export default class ProductIndexTable extends React.Component {
 	toggleSelectAll() {
 		let newSelected = {};
 		if (this.state.selectAll === 0) {
-			this.state.products.forEach(x => {
-				newSelected[x.title] = true;
+			this.state.products.forEach(product => {
+				newSelected[product.title] = true;
 			});
 		}
 		this.setState({
@@ -51,35 +45,10 @@ export default class ProductIndexTable extends React.Component {
     }
   return (<ReactTable
             data={this.props.products.map(CreateItem)}
-            getTdProps={(state, rowInfo, column, instance) => {
-              return {
-                onClick: (e, handleOriginal) => {
-                  // console.log('A Td Element was clicked!')
-                  // console.log('it produced this event:', e)
-                  // console.log('It was in this column:', column)
-                   console.log('It was in this row:', rowInfo.original.title.props.children)
-                  // console.log('It was in this table instance:', instance)
-               
-                  // IMPORTANT! React-Table uses onClick internally to trigger
-                  // events like expanding SubComponents and pivots.
-                  // By default a custom 'onClick' handler will override this functionality.
-                  // If you want to fire the original onClick handler, call the
-                  // 'handleOriginal' function.
-                  if (handleOriginal) {
-                    handleOriginal()
-                  }
-                }
-              }
-            }}
             columns={[
             {
               Header: "Base",
               columns: [
-                // {
-                //   Header: <Checkbox />,
-                //   maxWidth: 50,
-                //   Cell: rowInfo => (<Checkbox key={rowInfo.index} onChange={this.handleChange} />)
-                // },
           	    {
       						id: "checkbox",
       						accessor: "",
