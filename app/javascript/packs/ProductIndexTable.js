@@ -7,21 +7,46 @@ import { Checkbox } from '@shopify/polaris';
 export default class ProductIndexTable extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this)
+    this.state = {
+     selected: {},
+     selectAll: 0,
+     products: this.props.products
+    }
+    //this.handleChange = this.handleChange.bind(this)
+    this.toggleRow = this.toggleRow.bind(this);
   }
-  handleChange(event) {
-    // const target = event.target;
-    // const value = target.value;
-    // console.log(event)
-    // console.log(value)
-    console.log('test')
-  }
+  // handleChange(event) {
+  //   console.log('test')
+  //   console.log(this.state.rowInfo)
+  //   console.log('test')
+  // }
+	toggleRow(title) {
+		const newSelected = Object.assign({}, this.state.selected);
+		newSelected[title] = !this.state.selected[title];
+		this.setState({
+			selected: newSelected,
+			selectAll: 2
+		});
+	}
+	toggleSelectAll() {
+		let newSelected = {};
+		if (this.state.selectAll === 0) {
+			this.state.products.forEach(x => {
+				newSelected[x.title] = true;
+			});
+		}
+		this.setState({
+			selected: newSelected,
+			selectAll: this.state.selectAll === 0 ? 1 : 0
+		});
+	}
+
   render() {
     function CreateItem(product) {
       return { 
         title: <a href={'/products/' + product.id} >{product.title}</a>,
         price_test_status: product.has_active_price_test,
-        price_test_completion_percentage: product.price_test_completion_percentage,
+        price_test_completion_percentage: product.price_test_completion_percentage
       }
     }
   return (<ReactTable
@@ -29,12 +54,12 @@ export default class ProductIndexTable extends React.Component {
             getTdProps={(state, rowInfo, column, instance) => {
               return {
                 onClick: (e, handleOriginal) => {
-                  console.log('A Td Element was clicked!')
-                  console.log('it produced this event:', e)
-                  console.log('It was in this column:', column)
-                  console.log('It was in this row:', rowInfo)
-                  console.log('It was in this table instance:', instance)
-                  
+                  // console.log('A Td Element was clicked!')
+                  // console.log('it produced this event:', e)
+                  // console.log('It was in this column:', column)
+                   console.log('It was in this row:', rowInfo.original.title.props.children)
+                  // console.log('It was in this table instance:', instance)
+               
                   // IMPORTANT! React-Table uses onClick internally to trigger
                   // events like expanding SubComponents and pivots.
                   // By default a custom 'onClick' handler will override this functionality.
@@ -50,11 +75,43 @@ export default class ProductIndexTable extends React.Component {
             {
               Header: "Base",
               columns: [
+                // {
+                //   Header: <Checkbox />,
+                //   maxWidth: 50,
+                //   Cell: rowInfo => (<Checkbox key={rowInfo.index} onChange={this.handleChange} />)
+                // },
+          	    {
+      						id: "checkbox",
+      						accessor: "",
+      						Cell: ( rowInfo ) => {
+      							return (
+      								<input
+      									type="checkbox"
+      									className="checkbox"
+      								  checked={this.state.selected[rowInfo.original.title.props.children] === true}
+      									onChange={() => this.toggleRow(rowInfo.original.title.props.children)}
+      								/>
+      							);
+      						},
+      						Header: title => {
+      							return (
+      								<input
+      									type="checkbox"
+      									className="checkbox"
+      									checked={this.state.selectAll === 1}
+      									ref={input => {
+      										if (input) {
+      											input.indeterminate = this.state.selectAll === 2;
+      										}
+      									}}
+      									onChange={() => this.toggleSelectAll()}
+      								/>
+      							);
+      						},
+      						sortable: false,
+      						width: 45
+      					},                
                 {
-                  Header: <Checkbox />,
-                  maxWidth: 50,
-                  Cell: row => (<Checkbox onChange={this.handleChange} />)
-                }, {
                   Header: "Product Title",
                   accessor: "title",
                   maxWidth: 400
