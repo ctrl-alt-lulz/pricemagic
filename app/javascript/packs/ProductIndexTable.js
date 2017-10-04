@@ -85,7 +85,7 @@ export default class ProductIndexTable extends React.Component {
       						accessor: "",
       						Cell: ( rowInfo ) => {
       							return (
-      								<input
+      								<Checkbox
       									type="checkbox"
       									className="checkbox"
       								  checked={this.state.selected[rowInfo.original.title.props.children] === true}
@@ -95,7 +95,7 @@ export default class ProductIndexTable extends React.Component {
       						},
       						Header: title => {
       							return (
-      								<input
+      								<Checkbox
       									type="checkbox"
       									className="checkbox"
       									checked={this.state.selectAll === 1}
