@@ -18,6 +18,8 @@ class PriceTest < ActiveRecord::Base
   delegate :variants, to: :product
   delegate :latest_product_google_metric_views, to: :product, :allow_nil => true
   delegate :latest_product_google_metric_views_at, to: :product, :allow_nil => true
+  delegate :latest_variant_google_metric_revenue, to: :variant, :allow_nil => true
+  delegate :latest_variant_google_metric_revenue_at, to: :variant, :allow_nil => true
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
@@ -54,7 +56,10 @@ class PriceTest < ActiveRecord::Base
         current_test_price: price_points.first,
         total_variant_views: [], ## TODO get views from google worker
         price_points: price_points,
-        tested_price_points: []
+        tested_price_points: [],
+        revenue: [], 
+        starting_revenue: variant.latest_variant_google_metric_revenue,
+        starting_page_views: latest_product_google_metric_views
       }
     }
   end
@@ -66,25 +71,65 @@ class PriceTest < ActiveRecord::Base
     empty_hash
   end
   
-  def latest_product_google_metric_views_at_start_of_price 
-    latest_product_google_metric_views_at(current_price_started_at) 
-  end
+  # def latest_product_google_metric_views_at_start_of_price 
+  #   latest_product_google_metric_views_at(current_price_started_at) 
+  # end
 
-  def page_views_since_create
-    if latest_product_google_metric_views_at_start_of_price
-      latest_product_google_metric_views - latest_product_google_metric_views_at_start_of_price
-    else
-      latest_product_google_metric_views
+  # def page_views_since_create
+  #   if latest_product_google_metric_views_at_start_of_price
+  #     latest_product_google_metric_views - latest_product_google_metric_views_at_start_of_price
+  #   else
+  #     latest_product_google_metric_views
+  #   end
+  # end
+  
+  ## TODO need to test below######
+  ## need to have a variant selected
+  ## if on same day logic won't work.. meed to store current value before starting
+  # def latest_variant_google_metric_revenue_at_start_of_price(var)
+  #   var.latest_variant_google_metric_revenue_at(current_price_started_at) 
+  # end
+  
+  # def page_revenue_since_create(var)
+  #   if latest_variant_google_metric_revenue_at_start_of_price(var)
+  #     var.latest_variant_google_metric_revenue - latest_variant_google_metric_revenue_at_start_of_price(var)
+  #   else
+  #     var.latest_variant_google_metric_revenue
+  #   end
+  # end
+  #################
+  
+    ### TODO verify this code works
+  ## get right variant and look up metric
+  def store_revenue_from_test
+    price_data.each do |k, v|
+      var = product.variants.where(shopify_variant_id: k).last
+      v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      v['starting_revenue'] = var.latest_variant_google_metric_revenue
     end
   end
-
-  def hit_threshold?
-    page_views_since_create >= view_threshold
+  #######  
+  
+  def store_view_count_from_test
+    price_data.each do |k, v|
+      v['total_variant_views'] << page_views_since_create
+    end
+    price_data.each do |k, v|
+      v['starting_page_views'] = latest_product_google_metric_views
+    end
   end
   
-  def view_threshold
-    0 ## TODO make this dependent on CI, price, etc.
+  def page_views_since_create
+    latest_product_google_metric_views - price_data.values.first['starting_page_views'].to_i
   end
+  
+  def hit_threshold?
+    page_views_since_create >= self['view_threshold'].to_i
+  end
+  
+  # def view_threshold
+  #   0 ## TODO make this dependent on CI, price, etc.
+  # end
   
   def make_inactive!
     revert_to_original_price!
@@ -101,6 +146,7 @@ class PriceTest < ActiveRecord::Base
   def shift_price_point!
     move_current_test_price_to_tested
     store_view_count_from_test
+    store_revenue_from_test
     set_new_test_price
     apply_current_test_price!
     set_new_current_price_started_at
@@ -123,12 +169,6 @@ class PriceTest < ActiveRecord::Base
   
   def set_to_inactive
     self.active = false
-  end
-  
-  def store_view_count_from_test
-    price_data.each do |k, v|
-      v['total_variant_views'] << page_views_since_create
-    end
   end
   
   def set_new_current_price_started_at
