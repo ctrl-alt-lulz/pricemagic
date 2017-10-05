@@ -1,9 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import PriceTestForm from './PriceTestForm.js'
-import PriceTestContainer from './PriceTestContainer.js'
-import RecurringChargesLink from './RecurringChargesLink.js'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PriceTestForm from './PriceTestForm.js';
+import PriceTestContainer from './PriceTestContainer.js';
+import ProductGraphData from './ProductGraphData.js';
 import { Page, Card, Select, Button, TextField, Stack, FormLayout,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
@@ -17,22 +16,22 @@ export default class ProductShow extends React.Component {
       end_digits: 0.99, 
       price_multipler: [1],
     };
-    this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this)
-    this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this)
-    this.handleViewThresholdChange = this.handleViewThresholdChange.bind(this)
-    this.handlePricePointChange = this.handlePricePointChange.bind(this)
-    this.handleEndDigitChange = this.handleEndDigitChange.bind(this)
+    this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
+    this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
+    this.handleViewThresholdChange = this.handleViewThresholdChange.bind(this);
+    this.handlePricePointChange = this.handlePricePointChange.bind(this);
+    this.handleEndDigitChange = this.handleEndDigitChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
   }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
-      this.CalcPriceMultipler()
+      this.CalcPriceMultipler();
     });
   }
   handlePercentDecreaseChange(event) {
     this.setState({percent_decrease: event}, () => {
-      this.CalcPriceMultipler()
+      this.CalcPriceMultipler();
     });
   }
   handleViewThresholdChange(event) {
@@ -40,51 +39,54 @@ export default class ProductShow extends React.Component {
   }
   handlePricePointChange(event) {
     this.setState({price_points: event}, () => {
-      this.CalcPriceMultipler()
+      this.CalcPriceMultipler();
     });
   }
   handleEndDigitChange(event) {
-    this.setState({end_digits: event})
+    this.setState({end_digits: event});
   }
   handleSubmit(event) {
-    this.createPriceTest()
+    this.createPriceTest();
   }
   handleSubmitDestroy(event) {
-    this.destroyPriceTest()
+    this.destroyPriceTest();
   }
   CalcPriceMultipler() {
-    var percent_increase = 1 + this.state.percent_increase/100
-    var percent_decrease = 1 - this.state.percent_decrease/100
-    var price_points = this.state.price_points
-    var price_multipler = [percent_increase]
+    var percent_increase = 1 + this.state.percent_increase/100;
+    var percent_decrease = 1 - this.state.percent_decrease/100;
+    var price_points = this.state.price_points;
+    var price_multipler = [percent_increase];
 
-    if (price_points == 1) return this.setState({price_multipler: price_multipler}) 
+    if (price_points == 1) return this.setState({price_multipler: price_multipler});
     if (price_points == 2) {
-      price_multipler.unshift(percent_decrease)
-      return this.setState({price_multipler: price_multipler}) 
+      price_multipler.unshift(percent_decrease);
+      return this.setState({price_multipler: price_multipler}) ;
     } else {
-      var step = (percent_increase-percent_decrease)/(price_points-1)
+      var step = (percent_increase-percent_decrease)/(price_points-1);
       for(var i = 1; i < (price_points -1); i++){
-        price_multipler.unshift(price_multipler[i-1] - step*i) 
+        price_multipler.unshift(price_multipler[i-1] - step*i) ;
       } 
-      price_multipler.unshift(percent_decrease)
-      return this.setState({price_multipler: price_multipler}) 
+      price_multipler.unshift(percent_decrease);
+      return this.setState({price_multipler: price_multipler});
     }
   }
   render() {
-    const percent_increase = this.state.percent_increase
-    const percent_decrease = this.state.percent_decrease
-    const price_points = this.state.price_points
-    const end_digits = this.state.end_digits
-    const price_multipler = this.state.price_multipler
-    const view_threshold = this.state.view_threshold
-    const product = this.props.product
+    const percent_increase = this.state.percent_increase;
+    const percent_decrease = this.state.percent_decrease;
+    const price_points = this.state.price_points;
+    const end_digits = this.state.end_digits;
+    const price_multipler = this.state.price_multipler;
+    const view_threshold = this.state.view_threshold;
+    const product = this.props.product;
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
-    const price_test_data = this.props.price_test_data
-    console.log(price_test_data)
-    
+    const price_test_data = this.props.price_test_data;
+    const google_analytics_data = this.props.google_analytics_data;
+
     return (<div>
-            <RecurringChargesLink />
+            <ProductGraphData 
+              price_test_data = {price_test_data}
+              google_analytics_data = {google_analytics_data}
+            />
             <PriceTestForm 
               percent_increase = {percent_increase}
               percent_decrease = {percent_decrease}
@@ -124,11 +126,11 @@ export default class ProductShow extends React.Component {
               ending_digits: this.state.end_digits, 
               price_points: this.state.price_points } },
       success: function(data) {
-        console.log(this.state.view_threshold)
-        window.location = '/products/' + this.props.product.id
+        console.log(this.state.view_threshold);
+        window.location = '/products/' + this.props.product.id;
       }.bind(this),
       error: function(data) {
-        console.log('fail')
+        console.log('fail');
       }.bind(this)
     });
   }
@@ -139,17 +141,17 @@ export default class ProductShow extends React.Component {
       dataType: "json",
       url: '/price_tests/' + this.props.price_test_data.id,
       success: function(data) {
-        window.location = '/products/' + this.props.product.id
+        window.location = '/products/' + this.props.product.id;
       }.bind(this),
       error: function(data) {
-        console.log('fail')
+        console.log('fail');
       }.bind(this)
     });
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('product-page')
-  const data= JSON.parse(node.getAttribute('data'))
-ReactDOM.render(<ProductShow {...data}/>, node)
-})
+  const node = document.getElementById('product-page');
+  const data= JSON.parse(node.getAttribute('data'));
+ReactDOM.render(<ProductShow {...data}/>, node);
+});

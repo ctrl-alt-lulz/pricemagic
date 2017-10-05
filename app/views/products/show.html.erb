@@ -8,20 +8,15 @@
     id: "product-page",
     data: {
       product: @product,
-      price_test_data: @price_test_data
+      price_test_data: @price_test_data,
+      google_analytics_data: @google_analytics_data 
       }.to_json do %>
   <% end %>
 <% else %>
  <%= content_tag :div, id: 'recurring-charges-link-goes-here', data: { keys: 'you need' }.to_json do %><% end %>
 <% end %>
 
-<%= content_tag :div, 
-  id: "price-test-container",
-  data: {
-    product: @product,
-    price_test_data: @price_test_data
-    }.to_json do %>
-<% end %>
+
 <div class='active-price-test-data'>
   <%= render 'price_tests/active_price_test_data', product: @product, price_test_data: @price_test_data if @price_test_data.try(:active) %>
 </div>
