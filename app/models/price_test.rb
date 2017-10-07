@@ -29,6 +29,20 @@ class PriceTest < ActiveRecord::Base
   #    ## TODO sum variant views for current test
   #  end 
   
+  def plot_data
+    price_data.values.map{ |hash| { y: hash['revenue'], x: hash['tested_price_points'] }}
+  end
+  
+  def final_plot
+    plot_data.map{|val| get_value(val) }
+  end
+  
+  def get_value(hash)
+    a = hash[:y].map{|val| { y: val} }  
+    b = hash[:x].map{|val| { x: val} }
+    a.map.with_index{ |val,index| val.merge(b[index])} 
+  end
+
   ## NOTE put in the private
   def trial_or_subscription
     return if shop.trial? || shop.has_subscription?
@@ -162,7 +176,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def as_json(options={})
-    super(:methods => [:variants, :has_active_price_test])
+    super(:methods => [:variants, :has_active_price_test, :final_plot])
   end
   
   private
