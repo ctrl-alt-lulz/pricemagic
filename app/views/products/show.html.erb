@@ -1,7 +1,6 @@
 <%= javascript_pack_tag 'ProductShow' %>
 <%= javascript_pack_tag 'PriceTestContainer' %>
 <%= javascript_pack_tag 'PriceTestForm' %>
-<h2 class="large-product-heading Polaris-Heading Polaris-DisplayText--sizeExtraLarge"><%= @product.title %></h1>
 <% if @current_shop.trial? || @current_shop.has_subscription? %>
 <% puts @test %>
   <%= content_tag :div, 

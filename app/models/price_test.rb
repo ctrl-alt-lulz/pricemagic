@@ -28,9 +28,12 @@ class PriceTest < ActiveRecord::Base
   #  def total_product_views
   #    ## TODO sum variant views for current test
   #  end 
-  
+  ## coding practice to refactor below
   def plot_data
-    price_data.values.map{ |hash| { y: hash['revenue'], x: hash['tested_price_points'] }}
+    price_data.values.map.with_index do |hash, index| { 
+      y: hash['revenue'], x: hash['tested_price_points'],
+      z: variants[index].variant_title} 
+    end
   end
   
   def final_plot
@@ -40,7 +43,7 @@ class PriceTest < ActiveRecord::Base
   def get_value(hash)
     a = hash[:y].map{|val| { y: val} }  
     b = hash[:x].map{|val| { x: val} }
-    a.map.with_index{ |val,index| val.merge(b[index])} 
+    a.map.with_index{ |val,index| val.merge(b[index]).merge({z: hash[:z]}) }
   end
 
   ## NOTE put in the private

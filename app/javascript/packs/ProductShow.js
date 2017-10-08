@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
-import { Page, Card, Select, Button, TextField, Stack, FormLayout,
+import { Page, Card, Select, Button, TextField, Stack, FormLayout, DisplayText,
 Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
@@ -15,6 +15,7 @@ export default class ProductShow extends React.Component {
       price_points: '1',
       end_digits: 0.99, 
       price_multipler: [1],
+      variant_plot_data: this.props.price_test_data.final_plot[0]
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -23,6 +24,7 @@ export default class ProductShow extends React.Component {
     this.handleEndDigitChange = this.handleEndDigitChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
+    this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
   }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
@@ -50,6 +52,10 @@ export default class ProductShow extends React.Component {
   }
   handleSubmitDestroy(event) {
     this.destroyPriceTest();
+  }
+  toggleVariantPlotData() {
+    const plot_data = this.props.price_test_data.final_plot;
+    this.setState({variant_plot_data: plot_data[1]});
   }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100;
@@ -81,11 +87,20 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const price_test_data = this.props.price_test_data;
     const google_analytics_data = this.props.google_analytics_data;
-
+    const variant_plot_data = this.state.variant_plot_data
+    
     return (<div>
+            <DisplayText size="extraLarge">{product.title + '  '}
+              <Pagination
+                hasPrevious
+                onPrevious={() => {}}
+                hasNext
+                onNext={this.toggleVariantPlotData}
+              />
+            </DisplayText>
             <ProductGraphData 
               price_test_data = {price_test_data}
-              google_analytics_data = {google_analytics_data}
+              variant_plot_data = {variant_plot_data}
             />
             <PriceTestForm 
               percent_increase = {percent_increase}
