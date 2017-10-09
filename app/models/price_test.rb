@@ -32,7 +32,9 @@ class PriceTest < ActiveRecord::Base
   def plot_data
     price_data.values.map.with_index do |hash, index| { 
       y: hash['revenue'], x: hash['tested_price_points'],
-      z: variants[index].variant_title} 
+      z: variants[index].variant_title,
+      total_variant_views: hash['total_variant_views']
+    } 
     end
   end
   
@@ -41,9 +43,14 @@ class PriceTest < ActiveRecord::Base
   end
   
   def get_value(hash)
-    a = hash[:y].map{|val| { y: val} }  
+    a = hash[:y].map{|val| { y: val.round(2)} }  
     b = hash[:x].map{|val| { x: val} }
-    a.map.with_index{ |val,index| val.merge(b[index]).merge({z: hash[:z]}) }
+    total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
+    analytics_hash = { z: hash[:z] }
+    a.map.with_index do  |val,index| 
+      val.merge(b[index]).merge(total_variant_views[index]).merge(analytics_hash)
+      .merge({rev_per_view: (a[index][:y]/total_variant_views[index][:total_variant_views]).round(4)})
+    end
   end
 
   ## NOTE put in the private

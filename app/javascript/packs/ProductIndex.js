@@ -52,20 +52,11 @@ class ProductIndex extends React.Component {
     }
     return (
       <div>
-         <ActionList
-          items={[
-            {content: <a href={'/recurring_charges'} >recurring charges</a>},
-            {content: 'Export file'},
-          ]}
-        />
       <Layout>
         <Layout.Section>
-        <Card>
-          <Card.Section>
-            <PriceTestForm />
-          </Card.Section>
-        </Card>
+
         <Card title="Online store dashboard" class="product_list" sectioned>
+          <PriceTestForm />
           <Card.Section>
             <FormLayout>
               <FormLayout.Group>

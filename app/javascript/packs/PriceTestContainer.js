@@ -60,13 +60,13 @@ export default class PriceTestContainer extends React.Component {
                     Header: "Product Title",
                     accessor: "variant_title"
                   },{
-                    Header: "Price",
+                    Header: "Original Price",
                     accessor: "variant_price"
                   }
                 ]
               },CreateColumns()
             ]}
-            defaultPageSize={10}
+            defaultPageSize={5}
             className="-striped -highlight"
             />
     );

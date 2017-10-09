@@ -43,7 +43,8 @@ export default class PriceTestForm extends React.Component {
     const end_digits = this.props.end_digits
     const price_test_active = this.props.price_test_active
     const view_threshold = this.props.view_threshold
-      return (<Card>
+      return (
+              <Card.Section>
                 <FormLayout>
                   <FormLayout.Group>
                     <TextField 
@@ -98,6 +99,7 @@ export default class PriceTestForm extends React.Component {
                     <Button primary onClick={this.handleSubmitDestroy}>Destroy Price Test</Button>
                   </FormLayout.Group>
                </FormLayout>
-             </Card>);
+             </Card.Section>
+              );
   }
 }

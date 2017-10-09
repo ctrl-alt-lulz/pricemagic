@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
+import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
 import { Page, Card, Select, Button, TextField, Stack, FormLayout, DisplayText,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
+Thumbnail, ResourceList, Pagination, Layout, Checkbox, Tabs } from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
   constructor(props) {
@@ -15,7 +16,9 @@ export default class ProductShow extends React.Component {
       price_points: '1',
       end_digits: 0.99, 
       price_multipler: [1],
-      variant_plot_data: this.props.price_test_data.final_plot[0]
+      variant_plot_data: this.props.price_test_data.final_plot[0],
+      plot_count: this.props.price_test_data.final_plot.length,
+      plot_number: 0
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -54,8 +57,24 @@ export default class ProductShow extends React.Component {
     this.destroyPriceTest();
   }
   toggleVariantPlotData() {
-    const plot_data = this.props.price_test_data.final_plot;
-    this.setState({variant_plot_data: plot_data[1]});
+    const plot_number = this.state.plot_number
+    const plot_count = this.state.plot_count
+    console.log(plot_number)
+    if (plot_number == plot_count - 1)
+    {
+      this.setState({plot_number: 0}, () => {
+      this.getNextPlot()
+    });
+    } else {
+      this.setState({plot_number: plot_number + 1}, () => {
+        this.getNextPlot()
+      });
+    }
+  }
+  getNextPlot() {
+      const plot_number = this.state.plot_number
+      this.setState({variant_plot_data: this.props.price_test_data.final_plot[plot_number]
+    });
   }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100;
@@ -90,40 +109,38 @@ export default class ProductShow extends React.Component {
     const variant_plot_data = this.state.variant_plot_data
     
     return (<div>
-            <DisplayText size="extraLarge">{product.title + '  '}
-              <Pagination
-                hasPrevious
-                onPrevious={() => {}}
-                hasNext
-                onNext={this.toggleVariantPlotData}
+              <DisplayText size="extraLarge">{product.title + '  '}
+              </DisplayText>
+              <ProductGraphData 
+                price_test_data = {price_test_data}
+                variant_plot_data = {variant_plot_data}
               />
-            </DisplayText>
-            <ProductGraphData 
-              price_test_data = {price_test_data}
-              variant_plot_data = {variant_plot_data}
-            />
-            <PriceTestForm 
-              percent_increase = {percent_increase}
-              percent_decrease = {percent_decrease}
-              price_points = {price_points}
-              view_threshold = {view_threshold}
-              end_digits = {end_digits}
-              onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
-              onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
-              onViewThresholdChange = {this.handleViewThresholdChange}
-              onPricePointChange = {this.handlePricePointChange}
-              onEndDigitChange = {this.handleEndDigitChange}
-              onSubmitPriceTest = {this.handleSubmit}
-              onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
-              price_test_active = {price_test_active}
-            />
-            <PriceTestContainer 
-              product = {product}
-              price_points = {price_points}
-              price_multipler = {price_multipler}
-              end_digits = {end_digits}
-              price_test_data = {price_test_data}
-            />
+              <Button onClick={this.toggleVariantPlotData}>Next Plot</Button>
+              <LastPriceTestContainer 
+                analytics_data = {variant_plot_data}
+              />
+              <PriceTestForm 
+                percent_increase = {percent_increase}
+                percent_decrease = {percent_decrease}
+                price_points = {price_points}
+                view_threshold = {view_threshold}
+                end_digits = {end_digits}
+                onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
+                onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+                onViewThresholdChange = {this.handleViewThresholdChange}
+                onPricePointChange = {this.handlePricePointChange}
+                onEndDigitChange = {this.handleEndDigitChange}
+                onSubmitPriceTest = {this.handleSubmit}
+                onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
+                price_test_active = {price_test_active}
+              />
+              <PriceTestContainer 
+                product = {product}
+                price_points = {price_points}
+                price_multipler = {price_multipler}
+                end_digits = {end_digits}
+                price_test_data = {price_test_data}
+              />
             </div>
     );
   }
