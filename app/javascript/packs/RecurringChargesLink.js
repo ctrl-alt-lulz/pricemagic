@@ -11,6 +11,7 @@ export default class RecurringChargesLink extends React.Component {
     super(props);
     this.state = {
     };
+    this.handleButtonClick = this.handleButtonClick.bind(this);
   }
   handleButtonClick (e) {
     e.preventDefault();

@@ -8,31 +8,16 @@ export default class ProductIndexTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-     selected: {},
-     selectAll: 0,
-     products: this.props.products
     }
     this.toggleRow = this.toggleRow.bind(this);
+    this.toggleSelectAll = this.toggleSelectAll.bind(this);
   }
 	toggleRow(title) {
-		const newSelected = Object.assign({}, this.state.selected);
-		newSelected[title] = !this.state.selected[title];
-		this.setState({
-			selected: newSelected,
-			selectAll: 2
-		});
+	  this.props.onToggleRow(title)
 	}
 	toggleSelectAll() {
-		let newSelected = {};
-		if (this.state.selectAll === 0) {
-			this.state.products.forEach(product => {
-				newSelected[product.title] = true;
-			});
-		}
-		this.setState({
-			selected: newSelected,
-			selectAll: this.state.selectAll === 0 ? 1 : 0
-		});
+	  console.log('child toggle all')
+	  this.props.onToggleSelectAll()
 	}
 
   render() {
@@ -57,7 +42,7 @@ export default class ProductIndexTable extends React.Component {
       								<Checkbox
       									type="checkbox"
       									className="checkbox"
-      								  checked={this.state.selected[rowInfo.original.title.props.children] === true}
+      								  checked={this.props.selected[rowInfo.original.title.props.children] === true}
       									onChange={() => this.toggleRow(rowInfo.original.title.props.children)}
       								/>
       							);
@@ -67,10 +52,10 @@ export default class ProductIndexTable extends React.Component {
       								<Checkbox
       									type="checkbox"
       									className="checkbox"
-      									checked={this.state.selectAll === 1}
+      									checked={this.props.selectAll === 1}
       									ref={input => {
       										if (input) {
-      											input.indeterminate = this.state.selectAll === 2;
+      											input.indeterminate = this.props.selectAll === 2;
       										}
       									}}
       									onChange={() => this.toggleSelectAll()}

@@ -11,14 +11,53 @@ export default class SettingsPage extends React.Component {
     super(props);
     this.state = {
     };
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+  }
+  handleButtonClick (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('The link was clicked.');
+    console.log('handleClick')
+    console.log(event)
+    this.connectGoogleAnalytics()
   }
   render() {
-    return (<SettingToggle
-              action={{content: 'Enable'}}
-            >
-              This setting is <TextStyle variation="strong">disabled</TextStyle>.
-            </SettingToggle>
+    return (
+            <Page title="Settings" >
+              <Layout>
+                <Layout.AnnotatedSection
+                title="Google Analytics"
+                description="Connect your Google Analytics Account"
+                >
+                <SettingToggle
+                  action={{content: 'Enable'}}
+                >
+                This setting is <TextStyle variation="strong">disabled</TextStyle>.
+                <NativeListener onClick={this.handleButtonClick.bind(this)}>
+                  <a href="/google_auth" data-method="get">Goog Link</a>
+                </NativeListener>
+                </SettingToggle>
+                </Layout.AnnotatedSection>
+              </Layout>
+            </Page>
     );
+  }
+  connectGoogleAnalytics() {
+    $.ajax( {
+      type: "GET",
+      dataType: "json",
+      url: '/google_auth',
+      data: {},
+      success: function(response) {
+        console.log('success');
+        console.log(response);
+        window.top.location.href = response.redirect_url 
+      }.bind(this),
+      error: function(response) {
+        console.log('fail')
+        console.log(response)
+      }.bind(this)
+    });
   }
 }
 
