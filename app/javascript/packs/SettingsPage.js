@@ -34,7 +34,7 @@ export default class SettingsPage extends React.Component {
                 >
                 This setting is <TextStyle variation="strong">disabled</TextStyle>.
                 <NativeListener onClick={this.handleButtonClick.bind(this)}>
-                  <a href="/google_auth" data-method="get">Goog Link</a>
+                  <a href="/google_auth" data-method="get" target="_blank">Goog Link</a>
                 </NativeListener>
                 </SettingToggle>
                 </Layout.AnnotatedSection>
