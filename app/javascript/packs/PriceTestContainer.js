@@ -37,7 +37,6 @@ export default class PriceTestContainer extends React.Component {
       } 
       return columns
     }
-    // TODO Clean Up Names
     function CalcPricePointData(base) {
       var pp = price_points
       for (pp > 0; pp--;) {

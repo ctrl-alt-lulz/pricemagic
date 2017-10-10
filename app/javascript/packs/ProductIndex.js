@@ -72,7 +72,7 @@ class ProductIndex extends React.Component {
       this.searchProducts()
     });
   }
-  
+
   render() {
     const selected = this.state.selected
     const selectAll = this.state.selectAll
@@ -80,11 +80,11 @@ class ProductIndex extends React.Component {
     function CollectionTitles(collection) {
       return collection.title
     }
+    
     return (
       <div>
       <Layout>
         <Layout.Section>
-
         <Card title="Online store dashboard" class="product_list" sectioned>
           <PriceTestForm />
           <Card.Section>

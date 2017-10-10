@@ -24,14 +24,13 @@ class PriceTest < ActiveRecord::Base
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
   
-  ## TODO handle product views across all variants
-  #  def total_product_views
-  #    ## TODO sum variant views for current test
-  #  end 
   ## coding practice to refactor below
+  ## move graphing related code to seperate module
   def plot_data
-    price_data.values.map.with_index do |hash, index| { 
-      y: hash['revenue'], x: hash['tested_price_points'],
+    price_data.values.map.with_index do |hash, index| 
+    { 
+      y: hash['revenue'], 
+      x: hash['tested_price_points'],
       z: variants[index].variant_title,
       total_variant_views: hash['total_variant_views']
     } 
@@ -39,24 +38,31 @@ class PriceTest < ActiveRecord::Base
   end
   
   def final_plot
-    plot_data.map{|val| get_value(val) }
+   plot_data.map {|val| get_value(val) }
+  # puts '*'*50
+  # puts plot_data.map {|val| get_value(val) }.empty?
+  # puts plot_data.map {|val| get_value(val) }
+   
+  # if plot_data.map {|val| get_value(val) }.empty?
+  #   puts '*'*50
+  #   puts plot_data.map {|val| get_value(val) }.empty?
+  #   return wtf_method
+  # end
+  # [{y: 975.64, x: 11.99, total_variant_views: 9342, z: "Gold", rev_per_view: 0.1044},
+  # {y: 975.64, x: 11.99, total_variant_views: 9342, z: "Gold", rev_per_view: 0.1044}]
   end
   
   def get_value(hash)
-    a = hash[:y].map{|val| { y: val.round(2)} }  
-    b = hash[:x].map{|val| { x: val} }
+    a = hash[:y].map {|val| { y: val.round(2)} } 
+    b = hash[:x].map {|val| { x: val} }
     total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
     analytics_hash = { z: hash[:z] }
     a.map.with_index do  |val,index| 
-      val.merge(b[index]).merge(total_variant_views[index]).merge(analytics_hash)
-      .merge({rev_per_view: (a[index][:y]/total_variant_views[index][:total_variant_views]).round(4)})
+      val.merge(b[index]).
+      merge(total_variant_views[index]).
+      merge(analytics_hash).
+      merge({rev_per_view: (a[index][:y]/total_variant_views[index][:total_variant_views]).round(4)})
     end
-  end
-
-  ## NOTE put in the private
-  def trial_or_subscription
-    return if shop.trial? || shop.has_subscription?
-    errors.add(:base, "A subscription is required after your first price test!")
   end
   
   def total_views
@@ -68,7 +74,11 @@ class PriceTest < ActiveRecord::Base
   end
   
   def completion_percentage
-    total_views_so_far.presence ? 100 * (total_views_so_far.to_f/total_views) : 0
+    total_views_so_far.presence ? views_ratio : 0
+  end
+  
+  def views_ratio
+    (100 * (total_views_so_far.to_f/total_views))
   end
   
   def variant_hash(variant, price_multipler)
@@ -95,36 +105,7 @@ class PriceTest < ActiveRecord::Base
     empty_hash
   end
   
-  # def latest_product_google_metric_views_at_start_of_price 
-  #   latest_product_google_metric_views_at(current_price_started_at) 
-  # end
-
-  # def page_views_since_create
-  #   if latest_product_google_metric_views_at_start_of_price
-  #     latest_product_google_metric_views - latest_product_google_metric_views_at_start_of_price
-  #   else
-  #     latest_product_google_metric_views
-  #   end
-  # end
-  
-  ## TODO need to test below######
-  ## need to have a variant selected
-  ## if on same day logic won't work.. meed to store current value before starting
-  # def latest_variant_google_metric_revenue_at_start_of_price(var)
-  #   var.latest_variant_google_metric_revenue_at(current_price_started_at) 
-  # end
-  
-  # def page_revenue_since_create(var)
-  #   if latest_variant_google_metric_revenue_at_start_of_price(var)
-  #     var.latest_variant_google_metric_revenue - latest_variant_google_metric_revenue_at_start_of_price(var)
-  #   else
-  #     var.latest_variant_google_metric_revenue
-  #   end
-  # end
-  #################
-  
-    ### TODO verify this code works
-  ## get right variant and look up metric
+  ### TODO further testing of code
   def store_revenue_from_test
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
@@ -150,10 +131,6 @@ class PriceTest < ActiveRecord::Base
   def hit_threshold?
     page_views_since_create >= self['view_threshold'].to_i
   end
-  
-  # def view_threshold
-  #   0 ## TODO make this dependent on CI, price, etc.
-  # end
   
   def make_inactive!
     revert_to_original_price!
@@ -190,6 +167,11 @@ class PriceTest < ActiveRecord::Base
   end
   
   private
+  
+  def trial_or_subscription
+    return if shop.trial? || shop.has_subscription?
+    errors.add(:base, "A subscription is required after your first price test!")
+  end
   
   def set_to_inactive
     self.active = false

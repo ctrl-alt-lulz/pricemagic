@@ -4,7 +4,6 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   def index
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
     @recurring_charges = current_shop.charges
-    #<%= @reccuring_charges_info.nil? ? "no charges" : @recurring_charges_info %>
   end
   
   def create

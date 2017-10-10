@@ -2,13 +2,14 @@
 <%= javascript_pack_tag 'PriceTestContainer' %>
 <%= javascript_pack_tag 'PriceTestForm' %>
 <% if @current_shop.trial? || @current_shop.has_subscription? %>
-<% puts @test %>
   <%= content_tag :div, 
     id: "product-page",
     data: {
       product: @product,
       price_test_data: @price_test_data,
-      google_analytics_data: @google_analytics_data 
+      final_plot: @final_plot,
+      plot_count: @plot_count,
+      variant_plot_data: @variant_plot_data
       }.to_json do %>
   <% end %>
 <% else %>

@@ -9,7 +9,6 @@ export default class ProductGraphData extends React.Component {
     const price_test_data = this.props.price_test_data;
     const price_points = price_test_data.price_points
     const variant_plot_data = this.props.variant_plot_data
-    console.log(variant_plot_data)
     return (<XYPlot
               xType='ordinal'
               width={window.innerWidth - 50}

@@ -16,9 +16,10 @@ export default class ProductShow extends React.Component {
       price_points: '1',
       end_digits: 0.99, 
       price_multipler: [1],
-      variant_plot_data: this.props.price_test_data.final_plot[0],
-      plot_count: this.props.price_test_data.final_plot.length,
-      plot_number: 0
+      final_plot: this.props.final_plot,
+      variant_plot_data: this.props.variant_plot_data,
+      plot_count: this.props.plot_count,
+      plot_number: 0,
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -73,7 +74,7 @@ export default class ProductShow extends React.Component {
   }
   getNextPlot() {
       const plot_number = this.state.plot_number
-      this.setState({variant_plot_data: this.props.price_test_data.final_plot[plot_number]
+      this.setState({variant_plot_data: this.props.final_plot[plot_number]
     });
   }
   CalcPriceMultipler() {
@@ -82,8 +83,9 @@ export default class ProductShow extends React.Component {
     var price_points = this.state.price_points;
     var price_multipler = [percent_increase];
 
-    if (price_points == 1) return this.setState({price_multipler: price_multipler});
-    if (price_points == 2) {
+    if (price_points == 1) {
+      return this.setState({price_multipler: price_multipler});
+    } else if (price_points == 2) {
       price_multipler.unshift(percent_decrease);
       return this.setState({price_multipler: price_multipler}) ;
     } else {
@@ -107,17 +109,33 @@ export default class ProductShow extends React.Component {
     const price_test_data = this.props.price_test_data;
     const google_analytics_data = this.props.google_analytics_data;
     const variant_plot_data = this.state.variant_plot_data
+    console.log(variant_plot_data)
+
+    function PlotIfDataExists(props) {
+      const dataExists = props.dataExists;
+      console.log(dataExists)
+      if(dataExists) {
+        return (<div>
+                  <ProductGraphData 
+                    price_test_data = {price_test_data}
+                    variant_plot_data = {variant_plot_data}
+                  />
+                  <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+                  <LastPriceTestContainer 
+                    analytics_data = {variant_plot_data}
+                  />
+                </div>
+        );
+      }
+      return null;
+    }
     
     return (<div>
               <DisplayText size="extraLarge">{product.title + '  '}
               </DisplayText>
-              <ProductGraphData 
-                price_test_data = {price_test_data}
-                variant_plot_data = {variant_plot_data}
-              />
-              <Button onClick={this.toggleVariantPlotData}>Next Plot</Button>
-              <LastPriceTestContainer 
-                analytics_data = {variant_plot_data}
+              <PlotIfDataExists 
+                dataExists={variant_plot_data} 
+                toggleVariantPlotData={this.toggleVariantPlotData}
               />
               <PriceTestForm 
                 percent_increase = {percent_increase}
@@ -139,7 +157,6 @@ export default class ProductShow extends React.Component {
                 price_points = {price_points}
                 price_multipler = {price_multipler}
                 end_digits = {end_digits}
-                price_test_data = {price_test_data}
               />
             </div>
     );
@@ -150,13 +167,16 @@ export default class ProductShow extends React.Component {
       type: "POST",
       dataType: "json",
       url: '/price_tests',
-      data: { price_test: { product_id: this.props.product.id, 
-              shopify_product_id: this.props.product.shopify_id, 
-              percent_increase: this.state.percent_increase, 
-              percent_decrease: this.state.percent_decrease, 
-              view_threshold: this.state.view_threshold,
-              ending_digits: this.state.end_digits, 
-              price_points: this.state.price_points } },
+      data: { price_test: 
+              { product_id: this.props.product.id, 
+                shopify_product_id: this.props.product.shopify_id, 
+                percent_increase: this.state.percent_increase, 
+                percent_decrease: this.state.percent_decrease, 
+                view_threshold: this.state.view_threshold,
+                ending_digits: this.state.end_digits, 
+                price_points: this.state.price_points 
+              } 
+            },
       success: function(data) {
         console.log(this.state.view_threshold);
         window.location = '/products/' + this.props.product.id;

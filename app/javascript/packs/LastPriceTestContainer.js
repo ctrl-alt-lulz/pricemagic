@@ -11,8 +11,6 @@ export default class LastPriceTestContainer extends React.Component {
     super(props);
   }
   render() {
-    {console.log('below')}
-    {console.log(this.props.analytics_data)}
     return (<ReactTable
               data={this.props.analytics_data}
               columns={[
