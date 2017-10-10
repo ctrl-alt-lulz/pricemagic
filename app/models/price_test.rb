@@ -39,17 +39,6 @@ class PriceTest < ActiveRecord::Base
   
   def final_plot
    plot_data.map {|val| get_value(val) }
-  # puts '*'*50
-  # puts plot_data.map {|val| get_value(val) }.empty?
-  # puts plot_data.map {|val| get_value(val) }
-   
-  # if plot_data.map {|val| get_value(val) }.empty?
-  #   puts '*'*50
-  #   puts plot_data.map {|val| get_value(val) }.empty?
-  #   return wtf_method
-  # end
-  # [{y: 975.64, x: 11.99, total_variant_views: 9342, z: "Gold", rev_per_view: 0.1044},
-  # {y: 975.64, x: 11.99, total_variant_views: 9342, z: "Gold", rev_per_view: 0.1044}]
   end
   
   def get_value(hash)
@@ -58,10 +47,15 @@ class PriceTest < ActiveRecord::Base
     total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
     analytics_hash = { z: hash[:z] }
     a.map.with_index do  |val,index| 
+      if total_variant_views[index][:total_variant_views] == 0
+        rev_per_view = 0
+      else
+        rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 
+      end
       val.merge(b[index]).
       merge(total_variant_views[index]).
       merge(analytics_hash).
-      merge({rev_per_view: (a[index][:y]/total_variant_views[index][:total_variant_views]).round(4)})
+      merge({rev_per_view: rev_per_view.round(4)})
     end
   end
   
