@@ -41,8 +41,8 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
   
   def bulk_destroy
     session[:return_to] ||= request.referer
-    unless params[:price_tests_ids].nil?
-      BulkDestroyPriceTestsWorker.perform_async(params[:price_tests_ids])
+    unless params[:product_ids].nil?
+      BulkDestroyPriceTestsWorker.perform_async(params[:product_ids])
     end
     redirect_to session.delete(:return_to)
   end

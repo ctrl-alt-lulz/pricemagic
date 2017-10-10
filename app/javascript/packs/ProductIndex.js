@@ -11,12 +11,23 @@ class ProductIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      percent_increase: '',
+      percent_decrease: '',
+      price_points: '1',
+      end_digits: 0.99, 
       term: '',
       collection_id: null,
       products: this.props.products,
       selected: {},
       selectAll: 0,
     };
+    this.handleBulkSubmit = this.handleBulkSubmit.bind(this);
+    this.handleBulkDestroySubmit = this.handleBulkDestroySubmit.bind(this);
+    this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
+    this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
+    this.handleViewThresholdChange = this.handleViewThresholdChange.bind(this);
+    this.handlePricePointChange = this.handlePricePointChange.bind(this);
+    this.handleEndDigitChange = this.handleEndDigitChange.bind(this);
     this.handleTermChange = this.handleTermChange.bind(this);
     this.handleCollectionChange = this.handleCollectionChange.bind(this);
     this.toggleRow = this.toggleRow.bind(this);
@@ -30,8 +41,28 @@ class ProductIndex extends React.Component {
       return total;
     }, {});
   }
+  handlePercentIncreaseChange(event) {
+    this.setState({percent_increase: event});
+  }
+  handlePercentDecreaseChange(event) {
+    this.setState({percent_decrease: event});
+  }
+  handleViewThresholdChange(event) {
+    this.setState({view_threshold: event});
+  }
+  handlePricePointChange(event) {
+    this.setState({price_points: event});
+  }
+  handleEndDigitChange(event) {
+    this.setState({end_digits: event});
+  }
+  handleBulkSubmit(event) {
+    this.createBulkPriceTest();
+  }
+  handleBulkDestroySubmit(event) {
+    this.destroyBulkPriceTest();
+  }
   toggleRow(title) {
-    console.log('toggle row')
 		const newSelected = Object.assign({}, this.state.selected);
 		newSelected[title] = !this.state.selected[title];
 		this.setState({
@@ -40,6 +71,7 @@ class ProductIndex extends React.Component {
 		});
 		console.log(Object.keys(this.state.selected))
 		console.log(this.state.selected)
+		console.log(this.getSelectedProductIds())
 	}
 	toggleSelectAll() {
     console.log('toggle select all')
@@ -54,7 +86,6 @@ class ProductIndex extends React.Component {
 			selectAll: this.state.selectAll === 0 ? 1 : 0
 		});
 	}
-
   handleTermChange(event) {
     this.setState({
       term: event,
@@ -72,11 +103,20 @@ class ProductIndex extends React.Component {
       this.searchProducts()
     });
   }
-
+  getSelectedProductIds() {
+    const selected = this.state.selected
+    return Object.keys(selected).filter(product => selected[product] == true)
+                                .map((product) => this.product_hash[product])
+  }
   render() {
     const selected = this.state.selected
     const selectAll = this.state.selectAll
-    
+    const percent_increase = this.state.percent_increase;
+    const percent_decrease = this.state.percent_decrease;
+    const price_points = this.state.price_points;
+    const end_digits = this.state.end_digits;
+    const view_threshold = this.state.view_threshold;
+
     function CollectionTitles(collection) {
       return collection.title
     }
@@ -86,7 +126,21 @@ class ProductIndex extends React.Component {
       <Layout>
         <Layout.Section>
         <Card title="Online store dashboard" class="product_list" sectioned>
-          <PriceTestForm />
+          <PriceTestForm 
+            percent_increase = {percent_increase}
+            percent_decrease = {percent_decrease}
+            price_points = {price_points}
+            view_threshold = {view_threshold}
+            end_digits = {end_digits}
+            onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
+            onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+            onViewThresholdChange = {this.handleViewThresholdChange}
+            onPricePointChange = {this.handlePricePointChange}
+            onEndDigitChange = {this.handleEndDigitChange}
+            onSubmitPriceTest = {this.handleBulkSubmit}
+            onSubmitDestroyPriceTest = {this.handleBulkDestroySubmit}
+            price_test_active = {false}
+          />
           <Card.Section>
             <FormLayout>
               <FormLayout.Group>
@@ -136,6 +190,46 @@ searchProducts() {
     error: function(data) {
     }.bind(this)
    });
+  }
+  createBulkPriceTest() {
+    $.ajax( {
+      type: "POST",
+      dataType: "json",
+      url: '/price_tests/bulk_create',
+      // 293, 295
+      data: { price_test: 
+              { product_ids: this.getSelectedProductIds(),
+                percent_increase: this.state.percent_increase, 
+                percent_decrease: this.state.percent_decrease, 
+                view_threshold: this.state.view_threshold,
+                ending_digits: this.state.end_digits, 
+                price_points: this.state.price_points 
+              } 
+            },
+      success: function() {
+        console.log('success');
+       // window.location = '/products/' + 293; //this.props.product.id;
+      }.bind(this),
+      error: function() {
+        console.log('fail');
+      }.bind(this)
+    });
+  }
+  destroyBulkPriceTest() {
+    $.ajax( {
+      type: "DELETE",
+      dataType: "json",
+      url: '/price_tests/bulk_destroy',
+      // 293, 295
+      data: { product_ids: this.getSelectedProductIds() },
+      success: function() {
+        console.log('success');
+        //window.location = '/products/' + 293; //this.props.product.id;
+      }.bind(this),
+      error: function() {
+        console.log('fail');
+      }.bind(this)
+    });
   }
 }
   

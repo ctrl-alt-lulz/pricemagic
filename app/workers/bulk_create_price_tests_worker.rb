@@ -4,7 +4,7 @@ class BulkCreatePriceTestsWorker
 
   def perform(params)
     price_test_params = params['price_test']
-    product_ids = price_test_params.delete('product_ids').split(' ')
+    product_ids = price_test_params.delete('product_ids')
     shop = Shop.find(Product.find(product_ids.first).shop.id)
     shop.with_shopify!
     price_test_params = price_test_params.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}

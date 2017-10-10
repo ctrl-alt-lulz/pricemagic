@@ -4,8 +4,7 @@ import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
-import { Page, Card, Select, Button, TextField, Stack, FormLayout, DisplayText,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox, Tabs } from '@shopify/polaris';
+import {Button, DisplayText} from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
   constructor(props) {
@@ -166,7 +165,6 @@ export default class ProductShow extends React.Component {
       url: '/price_tests',
       data: { price_test: 
               { product_id: this.props.product.id, 
-                shopify_product_id: this.props.product.shopify_id, 
                 percent_increase: this.state.percent_increase, 
                 percent_decrease: this.state.percent_decrease, 
                 view_threshold: this.state.view_threshold,
@@ -174,7 +172,7 @@ export default class ProductShow extends React.Component {
                 price_points: this.state.price_points 
               } 
             },
-      success: function(data) {
+      success: function() {
         console.log(this.state.view_threshold);
         window.location = '/products/' + this.props.product.id;
       }.bind(this),
@@ -188,10 +186,10 @@ export default class ProductShow extends React.Component {
       type: "DELETE",
       dataType: "json",
       url: '/price_tests/' + this.props.price_test_data.id,
-      success: function(data) {
+      success: function() {
         window.location = '/products/' + this.props.product.id;
       }.bind(this),
-      error: function(data) {
+      error: function() {
         console.log('fail');
       }.bind(this)
     });
