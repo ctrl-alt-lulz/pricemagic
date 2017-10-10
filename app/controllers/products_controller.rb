@@ -25,7 +25,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
     @plot_count = @price_test_data.try(:final_plot).try(:length)
     @final_plot = @price_test_data.try(:final_plot)
-    puts @final_plot
     @google_analytics_data =  @product.most_recent_metrics
     @price = @product.first_variant_price
     @current_shop = current_shop

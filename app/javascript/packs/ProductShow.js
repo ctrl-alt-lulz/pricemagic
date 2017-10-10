@@ -121,9 +121,7 @@ export default class ProductShow extends React.Component {
                     variant_plot_data = {variant_plot_data}
                   />
                   <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
-                  <LastPriceTestContainer 
-                    analytics_data = {variant_plot_data}
-                  />
+                  <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
         );
       }
@@ -131,8 +129,7 @@ export default class ProductShow extends React.Component {
     }
     
     return (<div>
-              <DisplayText size="extraLarge">{product.title + '  '}
-              </DisplayText>
+              <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
               <PlotIfDataExists 
                 dataExists={variant_plot_data} 
                 toggleVariantPlotData={this.toggleVariantPlotData}
@@ -186,7 +183,6 @@ export default class ProductShow extends React.Component {
       }.bind(this)
     });
   }
-  // define below
   destroyPriceTest() {
     $.ajax( {
       type: "DELETE",
