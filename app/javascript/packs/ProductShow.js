@@ -19,6 +19,7 @@ export default class ProductShow extends React.Component {
       variant_plot_data: this.props.variant_plot_data,
       plot_count: this.props.plot_count,
       plot_number: 0,
+      all_data: this.props.all_data
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -108,17 +109,13 @@ export default class ProductShow extends React.Component {
     const price_test_data = this.props.price_test_data;
     const google_analytics_data = this.props.google_analytics_data;
     const variant_plot_data = this.state.variant_plot_data
-    console.log(variant_plot_data)
+    console.log(this.props.all_data)
 
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
-      console.log(dataExists)
       if(dataExists) {
         return (<div>
-                  <ProductGraphData 
-                    price_test_data = {price_test_data}
-                    variant_plot_data = {variant_plot_data}
-                  />
+                  <ProductGraphData variant_plot_data = {variant_plot_data} />
                   <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
