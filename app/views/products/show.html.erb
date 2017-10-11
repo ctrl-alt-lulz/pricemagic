@@ -1,6 +1,4 @@
 <%= javascript_pack_tag 'ProductShow' %>
-<%= javascript_pack_tag 'PriceTestContainer' %>
-<%= javascript_pack_tag 'PriceTestForm' %>
 <% if @current_shop.trial? || @current_shop.has_subscription? %>
   <%= content_tag :div, 
     id: "product-page",

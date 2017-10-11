@@ -16,7 +16,6 @@ export default class ProductIndexTable extends React.Component {
 	  this.props.onToggleRow(title)
 	}
 	toggleSelectAll() {
-	  console.log('child toggle all')
 	  this.props.onToggleSelectAll()
 	}
 

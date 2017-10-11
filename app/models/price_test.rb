@@ -82,7 +82,7 @@ class PriceTest < ActiveRecord::Base
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
-        total_variant_views: [], ## TODO get views from google worker
+        total_variant_views: [], 
         price_points: price_points,
         tested_price_points: [],
         revenue: [], 
@@ -202,16 +202,15 @@ class PriceTest < ActiveRecord::Base
   end
   
   def calc_price_multipler(number_of_test_points)
-    percent_increase = self[:percent_increase]
-    percent_decrease = self[:percent_decrease]
     price_points = number_of_test_points
     price_multipler = [percent_increase]
     
-    return price_multipler if (price_points == 1) 
-    if (price_points == 2) 
+    if (price_points == 1) 
+      return price_multipler 
+    elsif (price_points == 2) 
       price_multipler.unshift(percent_decrease)
       return price_multipler
-     else 
+    else 
       step = (percent_increase-percent_decrease)/(price_points-1)
       for i in 1...(price_points - 1)
         price_multipler.unshift(price_multipler[i-1] - step*i) 

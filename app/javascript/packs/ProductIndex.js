@@ -69,12 +69,8 @@ class ProductIndex extends React.Component {
 			selected: newSelected,
 			selectAll: 2
 		});
-		console.log(Object.keys(this.state.selected))
-		console.log(this.state.selected)
-		console.log(this.getSelectedProductIds())
 	}
 	toggleSelectAll() {
-    console.log('toggle select all')
 		let newSelected = {};
 		if (this.state.selectAll === 0) {
 			this.state.products.forEach(product => {
@@ -106,7 +102,7 @@ class ProductIndex extends React.Component {
   getSelectedProductIds() {
     const selected = this.state.selected
     return Object.keys(selected).filter(product => selected[product] == true)
-                                .map((product) => this.product_hash[product])
+                                .map(product => this.product_hash[product])
   }
   render() {
     const selected = this.state.selected
@@ -196,7 +192,6 @@ searchProducts() {
       type: "POST",
       dataType: "json",
       url: '/price_tests/bulk_create',
-      // 293, 295
       data: { price_test: 
               { product_ids: this.getSelectedProductIds(),
                 percent_increase: this.state.percent_increase, 
@@ -208,7 +203,7 @@ searchProducts() {
             },
       success: function() {
         console.log('success');
-       // window.location = '/products/' + 293; //this.props.product.id;
+        // TODO figure out why worker requests go to failure
       }.bind(this),
       error: function() {
         console.log('fail');
@@ -220,11 +215,10 @@ searchProducts() {
       type: "DELETE",
       dataType: "json",
       url: '/price_tests/bulk_destroy',
-      // 293, 295
       data: { product_ids: this.getSelectedProductIds() },
       success: function() {
         console.log('success');
-        //window.location = '/products/' + 293; //this.props.product.id;
+        // TODO figure out why worker requests go to failure
       }.bind(this),
       error: function() {
         console.log('fail');
