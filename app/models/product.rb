@@ -13,7 +13,13 @@ class Product < ActiveRecord::Base
   
   # ## TODO change name to be more descriptive
   # ## Should be singular, most_recent_google_metric?
-  ## TODO figure out joins/includes, previous code doesn't work
+
+  def variant_unit_cost_hash
+    hash = Hash.new
+    variants.each {|var| hash[var.id] = var.unit_cost}
+    hash
+  end
+  
   def most_recent_metrics
     variants.includes(:metrics).select{ |m| m if m.metrics.any? }.map {|m| m.metrics.last}
   end

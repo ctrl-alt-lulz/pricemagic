@@ -28,6 +28,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @all_data = @price_test_data.try(:final_plot).try(:flatten)
     @google_analytics_data =  @product.most_recent_metrics
     @price = @product.first_variant_price
+    @unitPriceValueHash = @product.variant_unit_cost_hash
     @current_shop = current_shop
     respond_to do |format|
       format.html # default html response
