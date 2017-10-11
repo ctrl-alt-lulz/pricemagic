@@ -11,4 +11,17 @@ class ApplicationController < ActionController::Base
   def current_shop
     @shop ||= Shop.where(shopify_domain: session['shopify_domain']).first
   end
+  
+  def redirect_to_root
+    redirect_to root_url
+  end
+  
+  def current_charge?
+        puts '*'*50
+
+    !!ShopifyAPI::RecurringApplicationCharge.current
+        puts '*'*50
+    puts !!ShopifyAPI::RecurringApplicationCharge.current
+
+  end
 end

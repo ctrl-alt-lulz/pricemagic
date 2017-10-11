@@ -25,11 +25,16 @@ gem 'sidekiq'
 gem 'sidekiq-scheduler', '~> 2.1.7'
 gem 'google-api-client', '~> 0.11'
 gem "activerecord-import", ">= 0.2.0"
+gem 'webpacker', '~> 2.0'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
   gem 'pry-rails'
+  gem 'factory_girl'
+  gem 'faker'
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -42,4 +47,9 @@ end
 group :production do
 	# required to deploy to heroku
 	gem 'rails_12factor'
+end
+
+group :test do
+  gem 'shoulda-matchers'
+  gem 'database_cleaner'
 end

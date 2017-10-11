@@ -2,11 +2,12 @@ class PriceTest < ActiveRecord::Base
   include PriceTestExtShopifyMethods
   belongs_to :product
   
-  validates :product_id, presence: true
-  validates :price_data, presence: true
+  validates :view_threshold, numericality: { only_integer: true, greater_than: 0 }
+  validates :product_id, :price_data, :view_threshold, presence: true
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
+  validate :trial_or_subscription
   before_validation :seed_price_data, if: proc { price_data.nil? }
   before_create :set_new_current_price_started_at
   after_create :apply_current_test_price_async!
@@ -17,50 +18,114 @@ class PriceTest < ActiveRecord::Base
   delegate :variants, to: :product
   delegate :latest_product_google_metric_views, to: :product, :allow_nil => true
   delegate :latest_product_google_metric_views_at, to: :product, :allow_nil => true
+  delegate :latest_variant_google_metric_revenue, to: :variant, :allow_nil => true
+  delegate :latest_variant_google_metric_revenue_at, to: :variant, :allow_nil => true
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
   
-  ## TODO handle product views across all variants
-  #  def total_product_views
-  #    ## TODO sum variant views for current test
-  #  end 
+  ## coding practice to refactor below
+  ## move graphing related code to seperate module
+  def plot_data
+    price_data.values.map.with_index do |hash, index| 
+    { 
+      y: hash['revenue'], 
+      x: hash['tested_price_points'],
+      z: variants[index].variant_title,
+      total_variant_views: hash['total_variant_views']
+    } 
+    end
+  end
   
-  def variant_hash(variant)
-    upperValue = make_ending_digits(variant.variant_price.to_f * percent_increase)
-    lowerValue =  make_ending_digits(variant.variant_price.to_f * percent_decrease)
-    price_points = step_price_points(upperValue, lowerValue, self[:price_points])
+  def final_plot
+   plot_data.map {|val| get_value(val) }
+  end
+  
+  def get_value(hash)
+    a = hash[:y].map {|val| { y: val.round(2)} } 
+    b = hash[:x].map {|val| { x: val} }
+    total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
+    analytics_hash = { z: hash[:z] }
+    a.map.with_index do  |val,index| 
+      if total_variant_views[index][:total_variant_views] == 0
+        rev_per_view = 0
+      else
+        rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 
+      end
+      val.merge(b[index]).
+      merge(total_variant_views[index]).
+      merge(analytics_hash).
+      merge({rev_per_view: rev_per_view.round(4)})
+    end
+  end
+  
+  def total_views
+    self['view_threshold'] * price_points
+  end
+  
+  def total_views_so_far
+    price_data.values.first['total_variant_views'].reduce(:+)  
+  end
+  
+  def completion_percentage
+    total_views_so_far.presence ? views_ratio : 0
+  end
+  
+  def views_ratio
+    (100 * (total_views_so_far.to_f/total_views))
+  end
+  
+  def variant_hash(variant, price_multipler)
+    price_points = price_multipler.collect { |n| make_ending_digits(n * variant.variant_price.to_f) }
+    validate_price_points(price_points)
     {
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
-        total_variant_views: [], ## TODO get views from google worker
+        total_variant_views: [], 
         price_points: price_points,
-        tested_price_points: []
+        tested_price_points: [],
+        revenue: [], 
+        starting_revenue: variant.latest_variant_google_metric_revenue,
+        starting_page_views: latest_product_google_metric_views
       }
     }
   end
   
-  def latest_product_google_metric_views_at_start_of_price 
-    latest_product_google_metric_views_at(current_price_started_at) 
-  end
-
-  def page_views_since_create
-    if latest_product_google_metric_views_at_start_of_price
-      latest_product_google_metric_views - latest_product_google_metric_views_at_start_of_price
-    else
-      latest_product_google_metric_views
-    end
-  end
-
-  def hit_threshold?
-    page_views_since_create >= view_threshold
+  def raw_price_data
+    empty_hash = {}
+    price_multipler = calc_price_multipler(self[:price_points])
+    variants.each{ |variant| empty_hash.merge!(variant_hash(variant, price_multipler)) }
+    empty_hash
   end
   
-  def view_threshold
-    2 ## TODO make this dependent on CI, price, etc.
+  ### TODO further testing of code
+  def store_revenue_from_test
+    price_data.each do |k, v|
+      var = product.variants.where(shopify_variant_id: k).last
+      v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      v['starting_revenue'] = var.latest_variant_google_metric_revenue
+    end
   end
-
+  #######  
+  
+  def store_view_count_from_test
+    price_data.each do |k, v|
+      v['total_variant_views'] << page_views_since_create
+    end
+    price_data.each do |k, v|
+      v['starting_page_views'] = latest_product_google_metric_views
+    end
+  end
+  
+  def page_views_since_create
+    latest_product_google_metric_views - price_data.values.first['starting_page_views'].to_i
+  end
+  
+  def hit_threshold?
+    page_views_since_create >= self['view_threshold'].to_i
+  end
+  
   def make_inactive!
     revert_to_original_price!
     set_to_inactive
@@ -76,18 +141,13 @@ class PriceTest < ActiveRecord::Base
   def shift_price_point!
     move_current_test_price_to_tested
     store_view_count_from_test
+    store_revenue_from_test
     set_new_test_price
     apply_current_test_price!
     set_new_current_price_started_at
     save
   end
   
-  def raw_price_data
-    empty_hash = {}
-    variants.each{ |variant| empty_hash.merge!(variant_hash(variant)) }
-    empty_hash
-  end
-
   def percent_increase=(percent)
     self[:percent_increase] = 1 + percent.to_f/100
   end
@@ -96,16 +156,19 @@ class PriceTest < ActiveRecord::Base
     self[:percent_decrease] = 1 - percent.to_f/100
   end
   
+  def as_json(options={})
+    super(:methods => [:variants, :has_active_price_test, :final_plot])
+  end
+  
   private
+  
+  def trial_or_subscription
+    return if shop.trial? || shop.has_subscription?
+    errors.add(:base, "A subscription is required after your first price test!")
+  end
   
   def set_to_inactive
     self.active = false
-  end
-  
-  def store_view_count_from_test
-    price_data.each do |k, v|
-      v['total_variant_views'] << page_views_since_create
-    end
   end
   
   def set_new_current_price_started_at
@@ -138,19 +201,24 @@ class PriceTest < ActiveRecord::Base
     price.floor + self.ending_digits
   end
   
-  ## TODO refactor this
-  def step_price_points(upper, lower, number_of_test_points)
-    number_of_test_points -= 1
-    pricePoints = []
-    pricePoints.push(lower) if(number_of_test_points > 0) 
-    step = (upper - lower)/number_of_test_points;
-    for number_of_test_points in (1...number_of_test_points) do
-      pricePoints.push(make_ending_digits(pricePoints[number_of_test_points-1] + step))
+  def calc_price_multipler(number_of_test_points)
+    price_points = number_of_test_points
+    price_multipler = [percent_increase]
+    
+    if (price_points == 1) 
+      return price_multipler 
+    elsif (price_points == 2) 
+      price_multipler.unshift(percent_decrease)
+      return price_multipler
+    else 
+      step = (percent_increase-percent_decrease)/(price_points-1)
+      for i in 1...(price_points - 1)
+        price_multipler.unshift(price_multipler[i-1] - step*i) 
+      end
+      price_multipler.unshift(percent_decrease)
+      return price_multipler
     end
-    pricePoints.push(upper)
-    pricePoints = validate_price_points(pricePoints)
   end
-  
     ## TODO maybe there is a better way? like stopping execution?
     ## How to only return one of error type? Currently using uniq method in pricetest controller
   def validate_price_points(pricePoints)

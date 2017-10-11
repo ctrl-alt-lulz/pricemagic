@@ -1,18 +1,22 @@
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
+.button{
+  margin: auto;
+}
+.large-product-heading {
+  margin: 0 2rem;
+}
+.polaris-card-with-table {
+  padding: 10px;
 }
 
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-    width: "pixels|%|relative_length";
+label.Polaris-Choice {
+  margin-left: 10px;
 }
 
-input.manual_price {
-    width: 100%;
+html {
+  line-height: 2.8rem;
 }
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
+
+/*#center {*/
+/*    margin: auto;*/
+/*    width: 20%;*/
+/*}*/

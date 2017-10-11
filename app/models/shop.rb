@@ -7,12 +7,26 @@ class Shop < ActiveRecord::Base
   has_many :metrics, -> { order(created_at: :asc)}, dependent: :destroy
   has_many :products, dependent: :destroy
   has_many :price_tests, through: :products
+  has_many :charges
+  has_many :recurring_charges
   
   has_many :collects, through: :products, dependent: :destroy
   has_many :collections, ->{ uniq }, through: :collects, dependent: :destroy
   
+  validates :shopify_domain, presence: true
+  validates :shopify_token, presence: true
   ## TODO set up metrics to use  by default
   ## ike with Product
+  def trial?
+    !price_tests.any?
+  end
+  
+  def has_subscription?
+    ## TODO make this lookup to shopify each time
+    ## TODO set up association locally and manage with shopify
+    true
+  end
+  
   def latest_metric
     metrics.last
   end

@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815034007) do
+ActiveRecord::Schema.define(version: 20171001000033) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "charges", force: :cascade do |t|
+    t.string   "type"
+    t.integer  "shopify_id"
+    t.integer  "shop_id"
+    t.integer  "user_id"
+    t.jsonb    "charge_data"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "collections", force: :cascade do |t|
     t.string   "title"
@@ -35,8 +45,8 @@ ActiveRecord::Schema.define(version: 20170815034007) do
 
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.integer  "product_id"
     t.integer  "variant_id"
     t.string   "page_title"
@@ -44,6 +54,7 @@ ActiveRecord::Schema.define(version: 20170815034007) do
     t.integer  "page_views"
     t.float    "page_avg_price"
     t.datetime "acquired_at"
+    t.integer  "page_unique_purchases"
   end
 
   create_table "price_tests", force: :cascade do |t|
@@ -57,6 +68,7 @@ ActiveRecord::Schema.define(version: 20170815034007) do
     t.integer  "price_points",             default: 0
     t.integer  "product_id"
     t.datetime "current_price_started_at"
+    t.integer  "view_threshold"
   end
 
   create_table "products", force: :cascade do |t|
@@ -67,6 +79,7 @@ ActiveRecord::Schema.define(version: 20170815034007) do
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.integer  "shop_id"
+    t.string   "main_image_src"
   end
 
   create_table "shops", force: :cascade do |t|

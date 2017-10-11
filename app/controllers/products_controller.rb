@@ -13,12 +13,25 @@ class ProductsController < ShopifyApp::AuthenticatedController
     else
       @products = Product.all
     end
-    @products = @products.includes(:price_tests, :variants).page(params[:page]).per(10)
+    @products = @products.includes(:price_tests, :variants)
+    respond_to do |format|
+      format.html # default html response
+      format.json { render json: @products }
+    end
   end
   
   def show
     @price_test_data = PriceTest.where(product_id: @product.id).last
+    @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
+    @plot_count = @price_test_data.try(:final_plot).try(:length)
+    @final_plot = @price_test_data.try(:final_plot)
     @google_analytics_data =  @product.most_recent_metrics
+    @price = @product.first_variant_price
+    @current_shop = current_shop
+    respond_to do |format|
+      format.html # default html response
+      format.json { render json: @product }
+    end
   end
 
   def update

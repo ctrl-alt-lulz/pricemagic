@@ -28,6 +28,16 @@ module StarterApp
     # test
     config.web_console.development_only = false
 
-
+    # CORS handling
+    config.middleware.insert_before 0, "Rack::Cors" do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get]
+      end
+    end
+    
+    config.generators do |g|
+      g.test_framework :rspec
+    end
   end
 end

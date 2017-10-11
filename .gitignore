@@ -15,3 +15,5 @@ node_modules
 .env
 # Generated js bundles
 /app/assets/webpack/*
+/public/packs
+/node_modules

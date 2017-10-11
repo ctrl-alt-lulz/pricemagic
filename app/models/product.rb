@@ -18,6 +18,10 @@ class Product < ActiveRecord::Base
     variants.includes(:metrics).select{ |m| m if m.metrics.any? }.map {|m| m.metrics.last}
   end
   
+  def first_variant_price
+    main_variant.variant_price
+  end
+  
   def main_variant
     variants.first
   end
@@ -28,5 +32,18 @@ class Product < ActiveRecord::Base
 
   def latest_product_google_metric_views_at(date)
     main_variant.metrics.where('created_at < ?', date).last.try(:page_views).to_i
+  end
+  
+  def has_active_price_test?
+    price_tests.empty? ? "False" : price_tests.last.active.to_s.capitalize
+  end
+  alias_method :has_active_price_test, :has_active_price_test?
+  
+  def price_test_completion_percentage
+    price_tests.any? ? price_tests.last.completion_percentage : 0
+  end
+  
+  def as_json(options={})
+    super(:methods => [:variants, :has_active_price_test, :price_test_completion_percentage])
   end
 end

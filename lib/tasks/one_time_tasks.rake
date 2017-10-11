@@ -9,6 +9,11 @@ namespace :one_time_tasks do
     PriceTest.all.update_all(price_points: 2)
   end
   
+  desc "Back fill view threshold for price test"
+  task set_all_past_view_threshold_number: :environment do
+    PriceTest.all.update_all(view_threshold: 500)
+  end
+  
   desc "Seed price test current test start date, back fill"
   task set_all_current_price_test_start_dates: :environment do
     PriceTest.all.each do |pt|

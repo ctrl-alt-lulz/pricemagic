@@ -1,0 +1,20 @@
+<%= javascript_pack_tag 'RecurringChargesLink' %>
+<%= javascript_pack_tag 'SettingsPage' %>
+<%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
+
+<div id="reccuring_charges"></div>
+
+<% @recurring_charges.each do |charge| %>
+  <div>
+    <h2><%= charge.name %></h2>
+    <h3><%= charge.price %></h3>
+    <h4><%= charge.billing_on %></h4>
+    <%= link_to 'Cancel Charge', recurring_charge_path(charge), method: :delete %>
+  </div>
+<% end %>
+
+<%= content_tag :div,
+  id: "settings-page",
+  data: {
+}.to_json do %>
+<% end %>
