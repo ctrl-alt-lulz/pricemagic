@@ -196,7 +196,6 @@ export default class ProductShow extends React.Component {
     });
   }
   updateVariantUnitCost(id, event) {
-    console.log('ajax')
     $.ajax( {
       type: "PATCH",
       dataType: "json",

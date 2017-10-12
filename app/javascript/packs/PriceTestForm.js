@@ -16,7 +16,6 @@ export default class PriceTestForm extends React.Component {
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
   }
   handlePercentIncreaseChange(event) {
-    console.log('child percent increase')
     this.props.onPercentIncreaseChange(event)
   }
   handleViewThresholdChange(event) {
