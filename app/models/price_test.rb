@@ -30,9 +30,9 @@ class PriceTest < ActiveRecord::Base
     price_data.values.map.with_index do |hash, index| 
     { 
       y: hash['revenue'], 
-      x: hash['tested_price_points'],
+      x: hash['price_points'],  
       z: variants[index].variant_title,
-      total_variant_views: hash['total_variant_views']
+      total_variant_views: hash['total_variant_views'] 
     } 
     end
   end
@@ -43,8 +43,11 @@ class PriceTest < ActiveRecord::Base
   
   def get_value(hash)
     a = hash[:y].map {|val| { y: val.round(2)} } 
+    a = hash[:x].map{ { y: 0 } } if a.empty?
     b = hash[:x].map {|val| { x: val} }
+    b = hash[:x].map{ { x: 0 } } if b.empty?
     total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
+    total_variant_views = hash[:x].map{ { total_variant_views: 0 } } if total_variant_views.empty?
     analytics_hash = { z: hash[:z] }
     a.map.with_index do  |val,index| 
       if total_variant_views[index][:total_variant_views] == 0

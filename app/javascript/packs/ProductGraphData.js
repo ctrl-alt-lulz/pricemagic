@@ -6,8 +6,6 @@ Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class ProductGraphData extends React.Component {
   render() {
-    const price_test_data = this.props.price_test_data;
-    const price_points = price_test_data.price_points
     const variant_plot_data = this.props.variant_plot_data
     return (<XYPlot
               xType='ordinal'

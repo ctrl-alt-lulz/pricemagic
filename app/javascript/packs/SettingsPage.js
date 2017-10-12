@@ -16,8 +16,6 @@ export default class SettingsPage extends React.Component {
   handleButtonClick (e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log('The link was clicked.');
-    console.log('handleClick')
     console.log(event)
     this.connectGoogleAnalytics()
   }

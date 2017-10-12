@@ -19,6 +19,8 @@ export default class ProductShow extends React.Component {
       variant_plot_data: this.props.variant_plot_data,
       plot_count: this.props.plot_count,
       plot_number: 0,
+      all_data: this.props.all_data,
+      unitPriceValueHash: this.props.unitPriceValueHash
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -28,6 +30,10 @@ export default class ProductShow extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
     this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
+    this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+  }
+  handleUnitPriceChange (id, event) {
+    this.updateVariantUnitCost(id, event);
   }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
@@ -57,22 +63,21 @@ export default class ProductShow extends React.Component {
     this.destroyPriceTest();
   }
   toggleVariantPlotData() {
-    const plot_number = this.state.plot_number
-    const plot_count = this.state.plot_count
-    console.log(plot_number)
+    const plot_number = this.state.plot_number;
+    const plot_count = this.state.plot_count;
     if (plot_number == plot_count - 1)
     {
       this.setState({plot_number: 0}, () => {
-      this.getNextPlot()
+      this.getNextPlot();
     });
     } else {
       this.setState({plot_number: plot_number + 1}, () => {
-        this.getNextPlot()
+        this.getNextPlot();
       });
     }
   }
   getNextPlot() {
-      const plot_number = this.state.plot_number
+      const plot_number = this.state.plot_number;
       this.setState({variant_plot_data: this.props.final_plot[plot_number]
     });
   }
@@ -105,20 +110,14 @@ export default class ProductShow extends React.Component {
     const view_threshold = this.state.view_threshold;
     const product = this.props.product;
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
-    const price_test_data = this.props.price_test_data;
-    const google_analytics_data = this.props.google_analytics_data;
-    const variant_plot_data = this.state.variant_plot_data
-    console.log(variant_plot_data)
-
+    const variant_plot_data = this.state.variant_plot_data;
+    const unitPriceValueHash = this.state.unitPriceValueHash;
+  
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
-      console.log(dataExists)
       if(dataExists) {
         return (<div>
-                  <ProductGraphData 
-                    price_test_data = {price_test_data}
-                    variant_plot_data = {variant_plot_data}
-                  />
+                  <ProductGraphData variant_plot_data = {variant_plot_data} />
                   <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
@@ -153,6 +152,9 @@ export default class ProductShow extends React.Component {
                 price_points = {price_points}
                 price_multipler = {price_multipler}
                 end_digits = {end_digits}
+                price_test_active = {price_test_active}
+                onUnitPriceChange = {this.handleUnitPriceChange}
+                unitPriceValueHash = {unitPriceValueHash}
               />
             </div>
     );
@@ -173,7 +175,6 @@ export default class ProductShow extends React.Component {
               } 
             },
       success: function() {
-        console.log(this.state.view_threshold);
         window.location = '/products/' + this.props.product.id;
       }.bind(this),
       error: function(data) {
@@ -188,6 +189,24 @@ export default class ProductShow extends React.Component {
       url: '/price_tests/' + this.props.price_test_data.id,
       success: function() {
         window.location = '/products/' + this.props.product.id;
+      }.bind(this),
+      error: function() {
+        console.log('fail');
+      }.bind(this)
+    });
+  }
+  updateVariantUnitCost(id, event) {
+    $.ajax( {
+      type: "PATCH",
+      dataType: "json",
+      url: '/variants/' + id, 
+      data: { variant: 
+              { unit_cost: event }
+            },
+      success: function(data) {
+        console.log('success')
+        console.log(data)
+        this.setState({ unitPriceValueHash: data['unitPriceValueHash']});
       }.bind(this),
       error: function() {
         console.log('fail');
