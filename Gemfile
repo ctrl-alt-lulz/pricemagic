@@ -47,6 +47,7 @@ end
 group :production do
 	# required to deploy to heroku
 	gem 'rails_12factor'
+	gem 'redis'
 end
 
 group :test do
