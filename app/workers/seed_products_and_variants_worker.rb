@@ -1,6 +1,6 @@
 class SeedProductsAndVariantsWorker
   include Sidekiq::Worker
-  sidekiq_options :retry => 1
+  sidekiq_options :retry => 10
   
   ## Write this as separate workers. 1 worker seeds products, 1 seed variants
   ## Iterate through shops just like you iterate through pages

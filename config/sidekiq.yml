@@ -3,9 +3,7 @@
     every: '2h'
     class: SeedProductsAndVariantsWorker
   query_google_api_worker:
-    # cron: '0 * * * *'
     every: '1h' ## ideally this starts on the hour
-    args: [1] ## TODO how to
     class: QueryGoogleApiWorker
   product_view_threshold_worker:
     every: '90m' ## TODO ideally this start at :30m past the hour
