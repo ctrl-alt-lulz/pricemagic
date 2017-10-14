@@ -6,7 +6,7 @@ class QueryGoogleApiWorker
   include Sidekiq::Worker
   sidekiq_options :retry => 5
 
-  def perform(shop_id)
+  def perform
     Shop.all.each do |shop|
       @view_id = shop.google_profile_id
       @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
