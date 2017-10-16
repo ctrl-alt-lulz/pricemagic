@@ -1,7 +1,6 @@
 <%= javascript_pack_tag 'RecurringChargesLink' %>
 <%= javascript_pack_tag 'SettingsPage' %>
 
-<h1><%= @google_api_id %></h1>
 <% @recurring_charges.each do |charge| %>
   <div>
     <h2><%= charge.name %></h2>
