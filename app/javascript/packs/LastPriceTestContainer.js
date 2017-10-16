@@ -32,6 +32,12 @@ export default class LastPriceTestContainer extends React.Component {
                   }, {
                     Header: "Revenue/View",
                     accessor: "rev_per_view"
+                  }, {
+                    Header: "Profit",
+                    accessor: "profit"
+                  }, {
+                    Header: "Profit/View",
+                    accessor: "profit_per_view"
                   }
                 ]
               }

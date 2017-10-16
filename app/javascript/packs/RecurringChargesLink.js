@@ -34,13 +34,10 @@ export default class RecurringChargesLink extends React.Component {
       url: '/recurring_charges',
       data: {},
       success: function(response) {
-        console.log('success');
-        console.log(response);
         window.top.location.href = response.redirect_url 
       }.bind(this),
       error: function(response) {
         console.log('fail')
-        console.log(response)
       }.bind(this)
     });
   }

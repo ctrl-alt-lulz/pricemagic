@@ -32,6 +32,7 @@ class PriceTest < ActiveRecord::Base
       y: hash['revenue'], 
       x: hash['price_points'],  
       z: variants[index].variant_title,
+      unit_cost: variants[index].unit_cost,
       total_variant_views: hash['total_variant_views'] 
     } 
     end
@@ -42,6 +43,8 @@ class PriceTest < ActiveRecord::Base
   end
   
   def get_value(hash)
+    unit_cost = hash[:unit_cost]
+    unit_cost = 0 if unit_cost.nil?
     a = hash[:y].map {|val| { y: val.round(2)} } 
     a = hash[:x].map{ { y: 0 } } if a.empty?
     b = hash[:x].map {|val| { x: val} }
@@ -58,7 +61,9 @@ class PriceTest < ActiveRecord::Base
       val.merge(b[index]).
       merge(total_variant_views[index]).
       merge(analytics_hash).
-      merge({rev_per_view: rev_per_view.round(4)})
+      merge({rev_per_view: rev_per_view.round(4)}).
+      merge({profit: (a[index][:y]-((a[index][:y]/b[index][:x])*unit_cost)).round(2) }).
+      merge({profit_per_view: ((a[index][:y]-((a[index][:y]/b[index][:x])*unit_cost))/total_variant_views[index][:total_variant_views]).round(4) })
     end
   end
   

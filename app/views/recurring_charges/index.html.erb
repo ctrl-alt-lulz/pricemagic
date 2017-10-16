@@ -1,9 +1,7 @@
 <%= javascript_pack_tag 'RecurringChargesLink' %>
 <%= javascript_pack_tag 'SettingsPage' %>
-<%= link_to "Authorize Google", google_auth_path, target: '_blank' %>
 
-<div id="reccuring_charges"></div>
-
+<h1><%= @google_api_id %></h1>
 <% @recurring_charges.each do |charge| %>
   <div>
     <h2><%= charge.name %></h2>
@@ -15,6 +13,7 @@
 
 <%= content_tag :div,
   id: "settings-page",
-  data: {
+  data: { recurring_charges: @recurring_charges,
+          google_api_id: @google_api_id
 }.to_json do %>
 <% end %>

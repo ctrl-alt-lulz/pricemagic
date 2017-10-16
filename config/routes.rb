@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get 'get_collection', to: 'dashboard#get_collection'
   post 'price_tests/bulk_create', to: 'price_tests#bulk_create', as: 'price_tests_bulk'
   delete 'price_tests/bulk_destroy', to: 'price_tests#bulk_destroy', as: 'price_tests_bulk_destroy'
-  resources :products, :price_tests, :recurring_charges, :variants
+  resources :products, :price_tests, :recurring_charges, :variants, :configurations
   
   get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
 end

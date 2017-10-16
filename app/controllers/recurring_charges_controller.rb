@@ -4,6 +4,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   def index
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
     @recurring_charges = current_shop.charges
+    @google_api_id = current_shop.google_profile_id
   end
   
   def create

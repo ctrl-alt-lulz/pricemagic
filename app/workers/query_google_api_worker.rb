@@ -16,8 +16,6 @@ class QueryGoogleApiWorker
                                           refresh_token: shop.latest_refresh_token,
                                           token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token')
       client.refresh! if client.expired?
-      # time convert created at to google format strftime("%Y-%m-%d")
-      # time = Metric.last.created_at
       service = AnalyticsReportingService.new
       service.authorization = client
       begin

@@ -17,11 +17,6 @@ class ApplicationController < ActionController::Base
   end
   
   def current_charge?
-        puts '*'*50
-
     !!ShopifyAPI::RecurringApplicationCharge.current
-        puts '*'*50
-    puts !!ShopifyAPI::RecurringApplicationCharge.current
-
   end
 end
