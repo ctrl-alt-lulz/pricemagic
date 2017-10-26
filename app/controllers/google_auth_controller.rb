@@ -38,6 +38,15 @@ class GoogleAuthController < ApplicationController
     redirect_to root_url
   end
   
+  def destroy
+    shop = GoogleAuth::Destroy.call(current_shop)
+    if shop.errors.empty?
+      redirect_to recurring_charges_path, notice: 'Google removed!'
+    else
+      redirect_to recurring_charges_path, error: 'Something went wrong.'
+    end
+  end
+  
   private 
   
   def find_google_account_id(service)

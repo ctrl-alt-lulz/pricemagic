@@ -1,5 +1,6 @@
 <%= javascript_pack_tag 'RecurringChargesLink' %>
 <%= javascript_pack_tag 'SettingsPage' %>
+<%=  link_to 'remove google analytics acct', google_auth_destroy_path, method: :delete, data: { confirm: 'This is something you should pay attention to?' } %>
 
 <% @recurring_charges.each do |charge| %>
   <div>

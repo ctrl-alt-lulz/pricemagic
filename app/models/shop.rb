@@ -21,6 +21,10 @@ class Shop < ActiveRecord::Base
     !price_tests.any?
   end
   
+  def stop_price_tests!
+    StopPriceTestsWorker.perform_async(id)
+  end
+  
   def has_subscription?
     ## TODO make this lookup to shopify each time
     ## TODO set up association locally and manage with shopify
@@ -32,6 +36,7 @@ class Shop < ActiveRecord::Base
   end
 
   def latest_access_token
+    return unless users.with_access_token.any?
     users.with_access_token.first.google_access_token
   end
   

@@ -58,12 +58,21 @@ class PriceTest < ActiveRecord::Base
       else
         rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 
       end
+      rev = a[index][:y]
+      price_point = b[index][:x]
+      profit = (rev-((rev/price_point)*unit_cost))
+      views = total_variant_views[index][:total_variant_views]
+      if views == 0 
+        profit_per_view = 0
+      else 
+        profit_per_view = (profit/views).round(4)
+      end
       val.merge(b[index]).
       merge(total_variant_views[index]).
       merge(analytics_hash).
       merge({rev_per_view: rev_per_view.round(4)}).
       merge({profit: (a[index][:y]-((a[index][:y]/b[index][:x])*unit_cost)).round(2) }).
-      merge({profit_per_view: ((a[index][:y]-((a[index][:y]/b[index][:x])*unit_cost))/total_variant_views[index][:total_variant_views]).round(4) })
+      merge({profit_per_view: profit_per_view })
     end
   end
   
