@@ -13,29 +13,20 @@ import { Page, TextStyle, Layout,AccountConnection, SettingToggle, Link } from '
 //     <%= link_to 'Cancel Charge', recurring_charge_path(charge), method: :delete %>
 //   </div>
 // <% end %>
+
 export default class SettingsPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       recurring_charges: this.props.recurring_charges,
       google_api_id: this.props.google_api_id,
-      connected: false,
+      connected: this.props.user_connected,
     };
   }
   render() {
     return (
             <Page title="Settings" >
               <Layout>
-                <Layout.AnnotatedSection
-                title="Google Analytics"
-                description="Connect your Google Analytics Account"
-                >
-                <SettingToggle
-                  action={{content: <a href="/google_auth" data-method="get" target="_blank">Goog Link</a>}}
-                >
-                This setting is <TextStyle variation="strong">disabled</TextStyle>.
-                </SettingToggle>
-                </Layout.AnnotatedSection>
                 {this.renderAccount()}
               </Layout>
             </Page>
@@ -43,44 +34,43 @@ export default class SettingsPage extends React.Component {
   }
   connectAccountMarkup() {
               {console.log(this.props.google_api_id)}
-
+  const linkStyle = {
+      color: 'white',
+    };
     return (
       <Layout.AnnotatedSection
-        title="Account"
-        description="Connect your account to your Shopify store."
+        title="Google Analytics"
+        description="Connect to your Google Analytics account."
       >
         <AccountConnection
-          action={{
-            content: 'Connect',
-            onAction: this.toggleConnection.bind(this, this.state),
-          }}
+          action={{content: <a href="/google_auth" data-method="get" style={linkStyle} target="_blank">Connect</a>}}
           details="No account connected"
-          termsOfService={<p>By clicking Connect, you are accepting Sample’s <Link url="https://polaris.shopify.com">Terms and Conditions</Link>, including a commission rate of 15% on sales.</p>}
+          termsOfService={<p>By clicking Connect, you are accepting Google’s <Link url="https://www.google.com/analytics/terms/us.html">Terms and Conditions</Link>.</p>}
         />
       </Layout.AnnotatedSection>
     );
   }
+  
   disconnectAccountMarkup() {
+    const linkStyle = {
+      color: 'black',
+    };
     return (
       <Layout.AnnotatedSection
           title="Account"
-          description="Disconnect your account from your Shopify store."
+          description="Disconnect your Google Analytics from PriceMagic."
         >
         <AccountConnection
           connected
-          action={{
-            content: 'Disconnect',
-            onAction: this.toggleConnection.bind(this, this.state),
-          }}
+          action={{content: <a href="/google_auth" data-method="delete" style={linkStyle} target="_blank"
+                   data-confirm="Disconnecting your Google Analytics Account will end all active price tests,
+                                 are you sure you want to continue?">Disconnect</a>}}
           accountName="Google Analytics"
           title={<Link url="http://google.com">Google Analytics</Link>}
           details={"Account id: " + this.state.google_api_id}
         />
       </Layout.AnnotatedSection>
     );
-  }
-  toggleConnection() {
-    this.setState(({connected}) => ({connected: !connected}));
   }
   renderAccount() {
     return this.state.connected
