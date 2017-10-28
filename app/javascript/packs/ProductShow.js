@@ -30,6 +30,7 @@ export default class ProductShow extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
     this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
+    this.toggleProfitView = this.toggleProfitView.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
@@ -62,6 +63,19 @@ export default class ProductShow extends React.Component {
   handleSubmitDestroy(event) {
     this.destroyPriceTest();
   }
+  toggleProfitView(key, event) {
+    var plot_number = this.state.plot_number
+     this.setState({variant_plot_data: this.props.final_plot[plot_number]}, () => {
+      this.updatePlots(key);
+    });
+  }
+  updatePlots(key) {
+    var plot = this.state.final_plot
+    var plot_selected = plot.map((obj) => obj.map((obj) => {
+      obj['y'] = obj[key] 
+      return obj;}))
+    this.setState({final_plot: plot_selected})
+  }
   toggleVariantPlotData() {
     const plot_number = this.state.plot_number;
     const plot_count = this.state.plot_count;
@@ -77,9 +91,8 @@ export default class ProductShow extends React.Component {
     }
   }
   getNextPlot() {
-      const plot_number = this.state.plot_number;
-      this.setState({variant_plot_data: this.props.final_plot[plot_number]
-    });
+    const plot_number = this.state.plot_number;
+    this.setState({variant_plot_data: this.props.final_plot[plot_number]});
   }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100;
@@ -112,13 +125,17 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-  
+
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
       if(dataExists) {
         return (<div>
                   <ProductGraphData variant_plot_data = {variant_plot_data} />
                   <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
         );
@@ -131,6 +148,7 @@ export default class ProductShow extends React.Component {
               <PlotIfDataExists 
                 dataExists={variant_plot_data} 
                 toggleVariantPlotData={this.toggleVariantPlotData}
+                toggleProfitView={this.toggleProfitView}
               />
               <PriceTestForm 
                 percent_increase = {percent_increase}
