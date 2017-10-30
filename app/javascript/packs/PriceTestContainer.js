@@ -1,6 +1,33 @@
 import React from 'react';
+import { PureComponent, PropTypes }from 'react'
 import ReactTable from 'react-table';
 import { TextField } from '@shopify/polaris';
+
+class UnitCost extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+  }
+  static propTypes = {
+    variantId: PropTypes.number,
+    variantValue: PropTypes.object,
+    onUnitPriceChange: PropTypes.func,
+  }
+  handleUnitPriceChange(e) {
+    this.props.onUnitPriceChange(this.props.variantId, e)
+  }
+  render() {
+    return (
+      <TextField
+        type="number"
+        id={this.props.variantId}
+        key={this.props.variantId}
+        onChange={this.handleUnitPriceChange}
+        value={this.props.variantValue[this.props.variantId] || ''}
+      />
+    );
+  }
+}
 
 export default class PriceTestContainer extends React.Component {
   constructor(props) {
@@ -11,27 +38,31 @@ export default class PriceTestContainer extends React.Component {
     this.RoundPriceDigits = this.RoundPriceDigits.bind(this);
     this.CreateItem = this.CreateItem.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
     this.props.onUnitPriceChange(id, event);
   }
-  CreateItem(variant, index) {
+  // submitUnitPriceChange (id, event) {
+  //   this.props.onSubmitUnitPriceChange(id, event);
+  // }
+  CreateItem(variant) {
     const unitPriceValueHash = this.props.unitPriceValueHash
     return { 
       variant_title: variant.variant_title,
       variant_price: variant.variant_price,
-      unit_cost: <TextField 
-                  onChange={(event) => this.handleUnitPriceChange(variant.id, event)}
-                  key={index}
-                  value={unitPriceValueHash[variant.id]}
+      unit_cost: <UnitCost 
+                  variantId={variant.id}
+                  variantValue={unitPriceValueHash}
+                  onUnitPriceChange={this.handleUnitPriceChange}
                  />
     };
   }
+
   CreateColumns() {
     const price_points = this.props.price_points;
-    return {
-            columns: this.SeedColumnData(price_points)
-           };
+    const price_test_active = this.props.price_test_active
+    return { columns: this.SeedColumnData(price_points) };
   }
   SeedColumnData(price_points) {
     var columns = [];
@@ -55,10 +86,14 @@ export default class PriceTestContainer extends React.Component {
     const end_digits = this.props.end_digits;
     return Math.floor(price) + end_digits;
   }
+  
   render() {
     const data = this.props.product.variants.map(this.CreateItem).map(this.CalcPricePointData);
-
-    return (<ReactTable
+    const price_test_active = this.props.price_test_active
+    
+    function DisplayBasedOnPriceTestStatus(props) {
+      if (price_test_active) {
+      return(<ReactTable
               data={data}
               columns={[
               {
@@ -75,11 +110,37 @@ export default class PriceTestContainer extends React.Component {
                     accessor: "unit_cost"
                   }
                 ]
-              },this.CreateColumns()
+              }
             ]}
             defaultPageSize={5}
             className="-striped -highlight"
-            />
-    );
+            />);
+    } else {
+      return (<ReactTable
+              data={data}
+              columns={[
+              {
+                Header: "Base",
+                columns: [
+                  {
+                    Header: "Product Title",
+                    accessor: "variant_title"
+                  },{
+                    Header: "Original Price",
+                    accessor: "variant_price"
+                  },{
+                    Header: "Unit Cost",
+                    accessor: "unit_cost"
+                  }
+                ]
+              },props.CreateColumns
+            ]}
+            defaultPageSize={5}
+            className="-striped -highlight"
+            />);
+      }
+    }
+    
+    return (<DisplayBasedOnPriceTestStatus CreateColumns={this.CreateColumns()}/>);
   }
 }

@@ -105,9 +105,9 @@ ActiveRecord::Schema.define(version: 20171011201630) do
     t.string   "shopify_variant_id"
     t.string   "variant_title"
     t.string   "variant_price"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.float    "unit_cost"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.float    "unit_cost",          default: 0.0
   end
 
 end
