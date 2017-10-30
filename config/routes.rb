@@ -1,5 +1,26 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
-  devise_for :admins
+  namespace :admin do
+    resources :shops
+    resources :site_admins
+    resources :charges
+    resources :collects
+    resources :collections
+    resources :metrics
+    resources :price_tests
+    resources :products
+    resources :users
+    resources :variants
+    resources :recurring_charges
+
+    root to: "shops#index"
+    authenticate :site_admin do
+      mount Sidekiq::Web => '/sidekiq'
+    end
+  end
+
+  devise_for :site_admins
   mount ShopifyApp::Engine, at: '/'
   root :to => 'products#index'
   get 'google_auth', to: 'google_auth#new'

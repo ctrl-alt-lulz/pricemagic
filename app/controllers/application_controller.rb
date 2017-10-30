@@ -19,4 +19,9 @@ class ApplicationController < ActionController::Base
   def current_charge?
     !!ShopifyAPI::RecurringApplicationCharge.current
   end
+  
+  ## FOR Devise / SiteAdmin
+  def after_sign_in_path_for(resource)
+    admin_root_path
+  end
 end

@@ -16,6 +16,7 @@ gem 'puma'
 gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
 gem 'devise'
+gem "administrate"
 
 # Assets / views
 gem 'kaminari'
