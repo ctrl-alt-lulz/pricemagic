@@ -7,7 +7,7 @@ Rails.application.configure do
   # using Shopify's Scripttags manager
   # (configured in /config/initializers/shopify_app.rb)
   # and also by ApplicationController
-  config.public_url = 'https://pricemagic.herokuapp.com';
+  config.public_url = 'https://pricemagic.herokuapp.com/';
   
   # shopify app creds
   config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']

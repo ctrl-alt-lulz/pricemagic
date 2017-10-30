@@ -1,6 +1,6 @@
 class UpdateCurrentPriceWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 8
+  sidekiq_options retry: 15
   
   def perform(id)
     price_test = PriceTest.find(id)

@@ -14,8 +14,8 @@ export default class ProductGraphData extends React.Component {
               margin={{left: 50}}>
               <HorizontalGridLines />
               <VerticalBarSeries data =  {variant_plot_data} />
-              <XAxis />
-              <YAxis />
+              <XAxis title="X"/>
+              <YAxis title="Y"/>
             </XYPlot>
     );
   }

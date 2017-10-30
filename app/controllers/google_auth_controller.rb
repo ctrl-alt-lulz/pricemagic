@@ -38,6 +38,20 @@ class GoogleAuthController < ApplicationController
     redirect_to root_url
   end
   
+  def destroy
+    uri = URI('https://accounts.google.com/o/oauth2/revoke')
+    params = { :token => current_shop.latest_access_token }
+    uri.query = URI.encode_www_form(params)
+    response = Net::HTTP.get(uri)
+    shop = GoogleAuth::Destroy.call(current_shop)
+    if shop.errors.empty?
+      redirect_to recurring_charges_path, notice: 'Google removed!'
+    else
+      puts response.inspect
+      redirect_to recurring_charges_path, error: 'Something went wrong.'
+    end
+  end
+  
   private 
   
   def find_google_account_id(service)

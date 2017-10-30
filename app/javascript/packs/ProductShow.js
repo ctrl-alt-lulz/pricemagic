@@ -4,7 +4,7 @@ import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
-import {Button, DisplayText} from '@shopify/polaris';
+import {Button, DisplayText, Stack} from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
   constructor(props) {
@@ -30,11 +30,24 @@ export default class ProductShow extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
     this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
+    this.toggleProfitView = this.toggleProfitView.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
-    this.updateVariantUnitCost(id, event);
+    const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
+    unitPriceValueHash[id] = event;
+    console.log(unitPriceValueHash)
+    this.setState({unitPriceValueHash: unitPriceValueHash});
+    $("input#1894.Polaris-TextField__Input").focus()
+    console.log($("input#1894.Polaris-TextField__Input").focus())
+    //"input#1894.Polaris-TextField__Input"
+    //this.updateVariantUnitCost(id, event);
   }
+  // submitUnitPriceChange(id, event) {
+  //   console.log('blur')
+  //   this.updateVariantUnitCost(id, event);
+  // }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
       this.CalcPriceMultipler();
@@ -62,6 +75,19 @@ export default class ProductShow extends React.Component {
   handleSubmitDestroy(event) {
     this.destroyPriceTest();
   }
+  toggleProfitView(key, event) {
+    var plot_number = this.state.plot_number
+     this.setState({variant_plot_data: this.props.final_plot[plot_number]}, () => {
+      this.updatePlots(key);
+    });
+  }
+  updatePlots(key) {
+    var plot = this.state.final_plot
+    var plot_selected = plot.map((obj) => obj.map((obj) => {
+      obj['y'] = obj[key] 
+      return obj;}))
+    this.setState({final_plot: plot_selected})
+  }
   toggleVariantPlotData() {
     const plot_number = this.state.plot_number;
     const plot_count = this.state.plot_count;
@@ -77,9 +103,8 @@ export default class ProductShow extends React.Component {
     }
   }
   getNextPlot() {
-      const plot_number = this.state.plot_number;
-      this.setState({variant_plot_data: this.props.final_plot[plot_number]
-    });
+    const plot_number = this.state.plot_number;
+    this.setState({variant_plot_data: this.props.final_plot[plot_number]});
   }
   CalcPriceMultipler() {
     var percent_increase = 1 + this.state.percent_increase/100;
@@ -112,13 +137,17 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-  
+
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
       if(dataExists) {
         return (<div>
                   <ProductGraphData variant_plot_data = {variant_plot_data} />
                   <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
+                  <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
         );
@@ -128,34 +157,36 @@ export default class ProductShow extends React.Component {
     
     return (<div>
               <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
-              <PlotIfDataExists 
-                dataExists={variant_plot_data} 
-                toggleVariantPlotData={this.toggleVariantPlotData}
-              />
-              <PriceTestForm 
-                percent_increase = {percent_increase}
-                percent_decrease = {percent_decrease}
-                price_points = {price_points}
-                view_threshold = {view_threshold}
-                end_digits = {end_digits}
-                onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
-                onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
-                onViewThresholdChange = {this.handleViewThresholdChange}
-                onPricePointChange = {this.handlePricePointChange}
-                onEndDigitChange = {this.handleEndDigitChange}
-                onSubmitPriceTest = {this.handleSubmit}
-                onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
-                price_test_active = {price_test_active}
-              />
-              <PriceTestContainer 
-                product = {product}
-                price_points = {price_points}
-                price_multipler = {price_multipler}
-                end_digits = {end_digits}
-                price_test_active = {price_test_active}
-                onUnitPriceChange = {this.handleUnitPriceChange}
-                unitPriceValueHash = {unitPriceValueHash}
-              />
+                <PlotIfDataExists 
+                  dataExists={variant_plot_data} 
+                  toggleVariantPlotData={this.toggleVariantPlotData}
+                  toggleProfitView={this.toggleProfitView}
+                />
+                <PriceTestForm 
+                  percent_increase = {percent_increase}
+                  percent_decrease = {percent_decrease}
+                  price_points = {price_points}
+                  view_threshold = {view_threshold}
+                  end_digits = {end_digits}
+                  onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
+                  onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+                  onViewThresholdChange = {this.handleViewThresholdChange}
+                  onPricePointChange = {this.handlePricePointChange}
+                  onEndDigitChange = {this.handleEndDigitChange}
+                  onSubmitPriceTest = {this.handleSubmit}
+                  onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
+                  price_test_active = {price_test_active}
+                />
+                <PriceTestContainer 
+                  product = {product}
+                  price_points = {price_points}
+                  price_multipler = {price_multipler}
+                  end_digits = {end_digits}
+                  price_test_active = {price_test_active}
+                  onUnitPriceChange = {this.handleUnitPriceChange}
+                  //onSubmitUnitPriceChange = {this.submitUnitPriceChange}
+                  unitPriceValueHash = {unitPriceValueHash}
+                />
             </div>
     );
   }

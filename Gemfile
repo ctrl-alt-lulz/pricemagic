@@ -15,6 +15,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'puma'
 gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
+gem 'devise'
+gem "administrate"
 
 # Assets / views
 gem 'kaminari'
@@ -47,6 +49,7 @@ end
 group :production do
 	# required to deploy to heroku
 	gem 'rails_12factor'
+	gem 'redis'
 end
 
 group :test do

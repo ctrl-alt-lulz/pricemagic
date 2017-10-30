@@ -5,7 +5,7 @@ import PriceTestForm from './PriceTestForm.js'
 import PriceTestContainer from './PriceTestContainer.js'
 import ProductIndexTable from './ProductIndexTable.js'
 import { Page, Card, Select, Button, TextField, Stack, FormLayout, Layout, Checkbox, 
-        FooterHelp, ActionList } from '@shopify/polaris';
+        FooterHelp, ActionList, Popover, Link} from '@shopify/polaris';
 
 class ProductIndex extends React.Component {
   constructor(props) {
@@ -20,7 +20,9 @@ class ProductIndex extends React.Component {
       products: this.props.products,
       selected: {},
       selectAll: 0,
+      settings_toggle: false
     };
+    this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleBulkSubmit = this.handleBulkSubmit.bind(this);
     this.handleBulkDestroySubmit = this.handleBulkDestroySubmit.bind(this);
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
@@ -99,6 +101,10 @@ class ProductIndex extends React.Component {
       this.searchProducts()
     });
   }
+  handleSettingsToggle(){
+    console.log('here')
+  	this.setState({settings_toggle: !this.state.settings_toggle});
+  }
   getSelectedProductIds() {
     const selected = this.state.selected
     return Object.keys(selected).filter(product => selected[product] == true)
@@ -112,16 +118,48 @@ class ProductIndex extends React.Component {
     const price_points = this.state.price_points;
     const end_digits = this.state.end_digits;
     const view_threshold = this.state.view_threshold;
-
+    const settings_toggle = this.state.settings_toggle;
+    const divStyle = {
+      float: 'right',
+      'margin-right' : '20px'
+    };
+    const divStyleIndex = {
+      'margin-left': '20px'
+    };
+    const divStyleForm = {
+      'margin-top': '35px'
+    };
     function CollectionTitles(collection) {
       return collection.title
     }
-    
+    function DashboardActionList(props) {
+      return(
+              <Popover
+                active={settings_toggle}
+                activator={<Button onClick={props.handleSettingsToggle}>Settings</Button>}
+              >
+                <ActionList
+                  items={[
+                    {content: 'Account', url: '/recurring_charges'},
+                    {content: 'Configuration', url: '/configurations'}
+                  ]}
+                />
+              </Popover>
+            )
+    }
+
     return (
-      <div>
+      <div style={divStyleIndex}>
       <Layout>
         <Layout.Section>
-        <Card title="Online store dashboard" class="product_list" sectioned>
+        <Card 
+          title="Online store dashboard" 
+          class="product_list" sectioned  
+        >
+        <div style={divStyle}>
+        <DashboardActionList handleSettingsToggle={this.handleSettingsToggle} />
+        </div>
+          <div style={divStyleForm}>
           <PriceTestForm 
             percent_increase = {percent_increase}
             percent_decrease = {percent_decrease}
@@ -137,6 +175,7 @@ class ProductIndex extends React.Component {
             onSubmitDestroyPriceTest = {this.handleBulkDestroySubmit}
             price_test_active = {false}
           />
+          </div>
           <Card.Section>
             <FormLayout>
               <FormLayout.Group>
@@ -169,7 +208,7 @@ class ProductIndex extends React.Component {
         </Layout.Section>
         <Layout.Section>
           <FooterHelp>
-             The Lannister Group © 2017
+             The Lannister Group LLC © 2017
           </FooterHelp>
         </Layout.Section>
       </Layout>
