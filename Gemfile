@@ -15,6 +15,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'puma'
 gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
+gem 'devise'
 
 # Assets / views
 gem 'kaminari'

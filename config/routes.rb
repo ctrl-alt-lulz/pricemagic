@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :admins
   mount ShopifyApp::Engine, at: '/'
   root :to => 'products#index'
   get 'google_auth', to: 'google_auth#new'
