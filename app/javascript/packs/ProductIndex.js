@@ -102,7 +102,6 @@ class ProductIndex extends React.Component {
     });
   }
   handleSettingsToggle(){
-    console.log('here')
   	this.setState({settings_toggle: !this.state.settings_toggle});
   }
   getSelectedProductIds() {
@@ -141,7 +140,7 @@ class ProductIndex extends React.Component {
                 <ActionList
                   items={[
                     {content: 'Account', url: '/recurring_charges'},
-                    {content: 'Configuration', url: '/configurations'}
+                    //{content: 'Configuration', url: '/configurations'} can include in later version
                   ]}
                 />
               </Popover>

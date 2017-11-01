@@ -18,7 +18,6 @@ export default class SettingsPage extends React.Component {
     return (
             <Page title="Settings" >
               <Layout>
-              {console.log(this.props.recurring_charges)}
                 {this.renderGoogleAccount()}
                 {this.renderAccountInfo()}
                 <RecurringChargesLink />
@@ -59,7 +58,7 @@ export default class SettingsPage extends React.Component {
                    data-confirm="Disconnecting your Google Analytics Account will end all active price tests,
                                  are you sure you want to continue?">Disconnect</a>}}
           accountName="Google Analytics"
-          title={<Link url="http://google.com">Google Analytics</Link>}
+          title={"Google Analytics"}
           details={"Account id: " + this.state.google_api_id}
         />
       </Layout.AnnotatedSection>
