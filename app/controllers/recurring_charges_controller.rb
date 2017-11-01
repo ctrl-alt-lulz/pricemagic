@@ -6,6 +6,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     @recurring_charges = current_shop.charges
     @google_api_id = current_shop.google_profile_id
     @user_connected = !current_shop.users.last.google_profile_id.nil?
+    @subscription_status =  !@recurring_charges.empty?
   end
   
   def create
@@ -44,6 +45,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   end
   
   def destroy
+    ShopifyAPI::RecurringApplicationCharge.current.destroy
     local_recurring_charge = RecurringCharge.find_by(id: params[:id])
     if local_recurring_charge.destroy
       redirect_to recurring_charges_path, notice: "Charge cancelled!"
