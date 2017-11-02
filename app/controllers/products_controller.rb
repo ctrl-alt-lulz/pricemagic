@@ -6,16 +6,14 @@ class ProductsController < ShopifyApp::AuthenticatedController
 
   def index
     @collections = Collection.all
+    @products = Product.all
     if params[:term] 
       products = Product.where('title iLIKE ?', '%' + params[:term] + '%')
+      @products = products
       if params[:collection].present?
         products_col = Collection.find(params[:collection]).products
         @products = products.merge(products_col)
-      else 
-        @products = products
       end
-    else
-      @products = Product.all
     end
     @products = @products.includes(:price_tests, :variants)
     respond_to do |format|

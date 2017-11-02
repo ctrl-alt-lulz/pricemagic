@@ -83,7 +83,6 @@ class ProductIndex extends React.Component {
   handleTermChange(event) {
     this.setState({
       term: event,
-      collection: null
     }, () => {
       this.searchProducts()
     });
