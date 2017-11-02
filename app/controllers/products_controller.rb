@@ -60,10 +60,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def instantiate_price_test
-    @price_test = PriceTest.new
+    @price_test = current_shop.price_tests.new
   end
   
   def define_collection
-    @collections ||=  Product.find(params[:id]).collections.map(&:title)
+    @collections ||=  current_shop.products.find(params[:id]).collections.map(&:title)
   end
 end
