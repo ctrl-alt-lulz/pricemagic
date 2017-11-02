@@ -1,7 +1,7 @@
 class PriceTestsController < ShopifyApp::AuthenticatedController
 
   def create
-    @price_test = PriceTest.new(price_test_params)
+    @price_test = current_shop.price_tests.new(price_test_params)
     if @price_test.save
       respond_to do |format|
         format.html { redirect_to product_path(@price_test.product_id), notice: 'You did it! Hooray!' }
@@ -14,9 +14,10 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
       end
     end
   end
+  
   ## Note to self hidden products can mess with this
   def destroy
-    price_test = PriceTest.find(params[:id])
+    price_test = current_shop.price_tests.find(params[:id])
     product_id = price_test.product_id
     if price_test.destroy
       respond_to do |format|
@@ -46,7 +47,7 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
   end
   
   def update
-    price_test = PriceTest.find(params[:id])
+    price_test = current_shop.price_tests.find(params[:id])
     if price_test.update_attributes(price_test_params)
       redirect_to product_path(price_test.product_id), notice: 'Price test updated!'
     else
