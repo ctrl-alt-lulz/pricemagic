@@ -20,9 +20,12 @@ export default class RecurringChargesLink extends React.Component {
   }
  
   render() {
+    const linkStyle = {
+      color: 'white',
+    };
     return (<div>
               <NativeListener onClick={this.handleButtonClick.bind(this)}>
-                <a href="/recurring_charges" data-method="post">Rec. Charges Link</a>
+                <a href="/recurring_charges" style={linkStyle} data-method="post">Subscribe</a>
               </NativeListener>
             </div>
     );

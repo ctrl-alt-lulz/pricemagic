@@ -5,15 +5,18 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def index
-    @collections = Collection.all
-    if params[:term].present?
-      @products = Product.where('title iLIKE ?', '%' + params[:term] + '%')
-    elsif params[:collection]
-      @products = Collection.find(params[:collection]).products
-    else
-      @products = Product.all
+    @collections = current_shop.collections
+    @products = current_shop.products
+    if params[:term] 
+      @products = @products.where('title iLIKE ?', '%' + params[:term] + '%')
+      if params[:collection].present?
+        products_col = @collections.find(params[:collection]).products
+        @products = @products.merge(products_col)
+      end
     end
     @products = @products.includes(:price_tests, :variants)
+    
+    #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
     respond_to do |format|
       format.html # default html response
       format.json { render json: @products }
@@ -48,7 +51,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   private
   
   def define_product
-     @product = Product.find(params[:id])
+     @product = current_shop.products.find(params[:id])
   end
    
   def convert_percent_to_float

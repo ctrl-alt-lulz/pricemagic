@@ -1,19 +1,11 @@
 <%= javascript_pack_tag 'RecurringChargesLink' %>
 <%= javascript_pack_tag 'SettingsPage' %>
 
-<% @recurring_charges.each do |charge| %>
-  <div>
-    <h2><%= charge.name %></h2>
-    <h3><%= charge.price %></h3>
-    <h4><%= charge.billing_on %></h4>
-    <%= link_to 'Cancel Charge', recurring_charge_path(charge), method: :delete %>
-  </div>
-<% end %>
-
 <%= content_tag :div,
   id: "settings-page",
-  data: { recurring_charges: @recurring_charges,
+  data: { recurring_charges: @recurring_charges[0],
           google_api_id: @google_api_id,
-          user_connected: @user_connected
+          user_connected: @user_connected,
+          subscription_status: @subscription_status
 }.to_json do %>
 <% end %>

@@ -34,10 +34,6 @@ class ProductIndex extends React.Component {
     this.handleCollectionChange = this.handleCollectionChange.bind(this);
     this.toggleRow = this.toggleRow.bind(this);
     this.toggleSelectAll = this.toggleSelectAll.bind(this);
-    this.col_hash = this.props.collections.reduce(function ( total, current ) {
-        total[ current.title ] = current.id;
-        return total;
-    }, {});
     this.product_hash = this.props.products.reduce(function ( total, current ) {
       total[ current.title ] = current.id;
       return total;
@@ -87,22 +83,19 @@ class ProductIndex extends React.Component {
   handleTermChange(event) {
     this.setState({
       term: event,
-      collection: null
     }, () => {
       this.searchProducts()
     });
   }
   handleCollectionChange(event) {
     this.setState({
-      collection_id: this.col_hash[event],
+      collection_id: event,
       collection: event,
-      term: ''
     }, () => {
       this.searchProducts()
     });
   }
   handleSettingsToggle(){
-    console.log('here')
   	this.setState({settings_toggle: !this.state.settings_toggle});
   }
   getSelectedProductIds() {
@@ -121,16 +114,22 @@ class ProductIndex extends React.Component {
     const settings_toggle = this.state.settings_toggle;
     const divStyle = {
       float: 'right',
-      'margin-right' : '20px'
+      'marginRight' : '20px'
     };
     const divStyleIndex = {
-      'margin-left': '20px'
+      'marginLeft': '20px',
+      'marginRight': '20px'
     };
     const divStyleForm = {
-      'margin-top': '35px'
+      'marginTop': '35px'
     };
     function CollectionTitles(collection) {
-      return collection.title
+      return {label: collection.title, value: collection.id}
+    }
+    function getCollectionOptions (collections) {
+     const optionsArray =  collections.map(CollectionTitles)
+     optionsArray.unshift({label: 'select', value: ''})
+     return optionsArray;
     }
     function DashboardActionList(props) {
       return(
@@ -141,13 +140,12 @@ class ProductIndex extends React.Component {
                 <ActionList
                   items={[
                     {content: 'Account', url: '/recurring_charges'},
-                    {content: 'Configuration', url: '/configurations'}
+                    //{content: 'Configuration', url: '/configurations'} can include in later version
                   ]}
                 />
               </Popover>
             )
     }
-
     return (
       <div style={divStyleIndex}>
       <Layout>
@@ -186,9 +184,9 @@ class ProductIndex extends React.Component {
                   onChange={this.handleTermChange}
                 />
                 <Select
-                  value= {this.state.collection}
+                  value={this.state.collection}
                   label="Collection"
-                  options={this.props.collections.map(CollectionTitles)}
+                  options={getCollectionOptions(this.props.collections)}
                   placeholder="Select"
                   onChange={this.handleCollectionChange}
                 />
@@ -217,8 +215,9 @@ class ProductIndex extends React.Component {
   }
 searchProducts() {
   $.ajax( {
-    url: '/products/' + "?term=" + this.state.term + "&collection=" + this.state.collection_id,
+    url: '/products/',
     dataType: 'json',
+    data: { term: this.state.term, collection: this.state.collection_id },
     success: function(data) {
       this.setState({ products: data });
     }.bind(this),
