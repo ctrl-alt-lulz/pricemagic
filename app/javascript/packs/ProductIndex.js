@@ -91,7 +91,6 @@ class ProductIndex extends React.Component {
     this.setState({
       collection_id: event,
       collection: event,
-      //term: ''
     }, () => {
       this.searchProducts()
     });
@@ -115,14 +114,14 @@ class ProductIndex extends React.Component {
     const settings_toggle = this.state.settings_toggle;
     const divStyle = {
       float: 'right',
-      'margin-right' : '20px'
+      'marginRight' : '20px'
     };
     const divStyleIndex = {
-      'margin-left': '20px',
-      'margin-right': '20px'
+      'marginLeft': '20px',
+      'marginRight': '20px'
     };
     const divStyleForm = {
-      'margin-top': '35px'
+      'marginTop': '35px'
     };
     function CollectionTitles(collection) {
       return {label: collection.title, value: collection.id}
