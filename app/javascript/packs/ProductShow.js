@@ -20,7 +20,9 @@ export default class ProductShow extends React.Component {
       plot_count: this.props.plot_count,
       plot_number: 0,
       all_data: this.props.all_data,
-      unitPriceValueHash: this.props.unitPriceValueHash
+      unitPriceValueHash: this.props.unitPriceValueHash,
+      button_states: { revenue: false, profit: false, 
+                       profit_per_view: false, rev_per_view: false } 
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -30,7 +32,7 @@ export default class ProductShow extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
     this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
-    this.toggleProfitView = this.toggleProfitView.bind(this);
+    this.toggleView = this.toggleView.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
     this.showAllPlots = this.showAllPlots.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
@@ -67,9 +69,16 @@ export default class ProductShow extends React.Component {
   handleSubmitDestroy(event) {
     this.destroyPriceTest();
   }
-  toggleProfitView(key, event) {
+  toggleView(key, event) {
+    console.log(event)
+    console.log(this.state.button_states[key])
+    const button_states_hash = Object.assign({}, this.state.button_states);
+    button_states_hash[key] = !button_states_hash[key]
     var plot_number = this.state.plot_number
-     this.setState({variant_plot_data: this.props.final_plot[plot_number]}, () => {
+     this.setState({
+       variant_plot_data: this.props.final_plot[plot_number],
+       button_states: button_states_hash
+     }, () => {
       this.updatePlots(key);
     });
   }
@@ -151,10 +160,10 @@ export default class ProductShow extends React.Component {
                       onChange={props.handleVariantChange}
                     />
                     <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
-                    <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
-                    <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
-                    <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
-                    <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
+                    <Button primary={props.revenueb} onClick={(event) => props.toggleView('revenue', event)}>Revenue Plot</Button>
+                    <Button primary={props.profitb} onClick={(event) => props.toggleView('profit', event)}>Profit Plot</Button>
+                    <Button primary={props.profitvb} onClick={(event) => props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
+                    <Button primary={props.revenuevb} onClick={(event) => props.toggleView('rev_per_view', event)}>Rev/View Plot</Button>
                     <Button onClick={props.showAllPlots}>Show All</Button>
                   </Stack>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
@@ -169,10 +178,14 @@ export default class ProductShow extends React.Component {
                 <PlotIfDataExists 
                   dataExists={variant_plot_data} 
                   toggleVariantPlotData={this.toggleVariantPlotData}
-                  toggleProfitView={this.toggleProfitView}
+                  toggleView={this.toggleView}
                   showAllPlots={this.showAllPlots}
                   handleVariantChange={this.handleVariantChange}
                   variants={this.props.variants}
+                  revenueb={this.state.button_states['revenue']}
+                  profitb={this.state.button_states['profit']}
+                  profitvb={this.state.button_states['profit_per_view']}
+                  revenuevb={this.state.button_states['rev_per_view']}
                 />
                 <PriceTestForm 
                   percent_increase = {percent_increase}
