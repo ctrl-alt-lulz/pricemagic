@@ -38,14 +38,10 @@ export default class PriceTestContainer extends React.Component {
     this.RoundPriceDigits = this.RoundPriceDigits.bind(this);
     this.CreateItem = this.CreateItem.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
-    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
     this.props.onUnitPriceChange(id, event);
   }
-  // submitUnitPriceChange (id, event) {
-  //   this.props.onSubmitUnitPriceChange(id, event);
-  // }
   CreateItem(variant) {
     const unitPriceValueHash = this.props.unitPriceValueHash
     return { 

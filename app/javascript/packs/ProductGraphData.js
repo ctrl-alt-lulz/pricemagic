@@ -13,7 +13,7 @@ export default class ProductGraphData extends React.Component {
               height={500} 
               margin={{left: 50}}>
               <HorizontalGridLines />
-              <VerticalBarSeries data =  {variant_plot_data} />
+              <VerticalBarSeries data = {variant_plot_data} />
               <XAxis title="X"/>
               <YAxis title="Y"/>
             </XYPlot>

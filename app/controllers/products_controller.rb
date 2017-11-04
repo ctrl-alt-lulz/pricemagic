@@ -25,6 +25,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   
   def show
     @price_test_data = PriceTest.where(product_id: @product.id).last
+    @variants = @price_test_data.product.variants.map(&:variant_title)
     @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
     @plot_count = @price_test_data.try(:final_plot).try(:length)
     @final_plot = @price_test_data.try(:final_plot)

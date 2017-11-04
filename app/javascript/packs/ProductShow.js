@@ -4,7 +4,7 @@ import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
-import {Button, DisplayText, Stack} from '@shopify/polaris';
+import {Button, DisplayText, Stack, Select } from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
   constructor(props) {
@@ -33,22 +33,13 @@ export default class ProductShow extends React.Component {
     this.toggleProfitView = this.toggleProfitView.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
     this.showAllPlots = this.showAllPlots.bind(this);
-    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
+    this.handleVariantChange = this.handleVariantChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
     const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
     unitPriceValueHash[id] = event;
-    console.log(unitPriceValueHash)
     this.setState({unitPriceValueHash: unitPriceValueHash});
-    $("input#1894.Polaris-TextField__Input").focus()
-    console.log($("input#1894.Polaris-TextField__Input").focus())
-    //"input#1894.Polaris-TextField__Input"
-    //this.updateVariantUnitCost(id, event);
   }
-  // submitUnitPriceChange(id, event) {
-  //   console.log('blur')
-  //   this.updateVariantUnitCost(id, event);
-  // }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
       this.CalcPriceMultipler();
@@ -81,6 +72,12 @@ export default class ProductShow extends React.Component {
      this.setState({variant_plot_data: this.props.final_plot[plot_number]}, () => {
       this.updatePlots(key);
     });
+  }
+  handleVariantChange(event) {
+    const plot_number = this.props.variants.indexOf(event)
+    this.setState({plot_number: plot_number}, () => {
+        this.getNextPlot();
+      });
   }
   showAllPlots() {
     this.setState({variant_plot_data: this.props.all_data})
@@ -147,12 +144,19 @@ export default class ProductShow extends React.Component {
       if(dataExists) {
         return (<div>
                   <ProductGraphData variant_plot_data = {variant_plot_data} />
-                  <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
-                  <Button onClick={props.showAllPlots}>Show All</Button>
+                  <Stack spacing="none" distribution="leading">
+                    <Select
+                      options={props.variants}
+                      placeholder="Select"
+                      onChange={props.handleVariantChange}
+                    />
+                    <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+                    <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
+                    <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
+                    <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
+                    <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
+                    <Button onClick={props.showAllPlots}>Show All</Button>
+                  </Stack>
                   <LastPriceTestContainer analytics_data = {variant_plot_data} />
                 </div>
         );
@@ -167,6 +171,8 @@ export default class ProductShow extends React.Component {
                   toggleVariantPlotData={this.toggleVariantPlotData}
                   toggleProfitView={this.toggleProfitView}
                   showAllPlots={this.showAllPlots}
+                  handleVariantChange={this.handleVariantChange}
+                  variants={this.props.variants}
                 />
                 <PriceTestForm 
                   percent_increase = {percent_increase}
@@ -190,7 +196,6 @@ export default class ProductShow extends React.Component {
                   end_digits = {end_digits}
                   price_test_active = {price_test_active}
                   onUnitPriceChange = {this.handleUnitPriceChange}
-                  //onSubmitUnitPriceChange = {this.submitUnitPriceChange}
                   unitPriceValueHash = {unitPriceValueHash}
                 />
             </div>
@@ -242,7 +247,6 @@ export default class ProductShow extends React.Component {
             },
       success: function(data) {
         console.log('success')
-        console.log(data)
         this.setState({ unitPriceValueHash: data['unitPriceValueHash']});
       }.bind(this),
       error: function() {
