@@ -47,11 +47,11 @@ export default class PriceTestContainer extends React.Component {
     return { 
       variant_title: variant.variant_title,
       variant_price: variant.variant_price,
-      unit_cost: <UnitCost 
-                  variantId={variant.id}
-                  variantValue={unitPriceValueHash}
-                  onUnitPriceChange={this.handleUnitPriceChange}
-                 />
+      // unit_cost: <UnitCost 
+      //             variantId={variant.id}
+      //             variantValue={unitPriceValueHash}
+      //             onUnitPriceChange={this.handleUnitPriceChange}
+      //           />
     };
   }
 

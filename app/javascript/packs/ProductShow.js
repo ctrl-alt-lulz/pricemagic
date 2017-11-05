@@ -205,7 +205,6 @@ export default class ProductShow extends React.Component {
             profit_hash={this.props.profit_hash}
             profit_per_view_hash={this.props.profit_per_view_hash}
             revenue_per_view_hash={this.props.revenue_per_view_hash}
-            //button_states={this.state.button_states}
           />
           <PriceTestForm 
             percent_increase = {percent_increase}
