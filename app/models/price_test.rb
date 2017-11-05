@@ -42,6 +42,22 @@ class PriceTest < ActiveRecord::Base
    plot_data.map {|val| get_value(val) }
   end
   
+  def revenue_hash
+    final_plot.map { |val| val.map{ |obj| { y: obj[:revenue], x: obj[:x], variant_title: obj[:z] } } }
+  end
+  
+  def profit_hash
+    final_plot.map { |val| val.map{ |obj| { y: obj[:profit], x: obj[:x], variant_title: obj[:z] } } }
+  end
+  
+  def revenue_per_view_hash
+    final_plot.map { |val| val.map{ |obj| { y: obj[:rev_per_view], x: obj[:x], variant_title: obj[:z] } } }
+  end
+  
+  def profit_per_view_hash
+    final_plot.map { |val| val.map{ |obj| { y: obj[:profit_per_view], x: obj[:x], variant_title: obj[:z] } } }
+  end
+  
   def get_value(hash)
     unit_cost = hash[:unit_cost]
     unit_cost = 0 if unit_cost.nil?

@@ -34,6 +34,11 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @price = @product.first_variant_price
     @unitPriceValueHash = @product.variant_unit_cost_hash
     @current_shop = current_shop
+    @revenue_hash = @price_test_data.revenue_hash
+    @profit_hash = @price_test_data.profit_hash
+    @profit_per_view_hash = @price_test_data.profit_per_view_hash
+    @revenue_per_view_hash = @price_test_data.revenue_per_view_hash
+
     respond_to do |format|
       format.html # default html response
       format.json { render json: @product }

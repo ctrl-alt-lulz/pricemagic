@@ -21,7 +21,7 @@ export default class ProductShow extends React.Component {
       plot_number: 0,
       all_data: this.props.all_data,
       unitPriceValueHash: this.props.unitPriceValueHash,
-      button_states: { revenue: false, profit: false, 
+      button_states: { revenue: true, profit: false, 
                        profit_per_view: false, rev_per_view: false } 
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
@@ -70,8 +70,6 @@ export default class ProductShow extends React.Component {
     this.destroyPriceTest();
   }
   toggleView(key, event) {
-    console.log(event)
-    console.log(this.state.button_states[key])
     const button_states_hash = Object.assign({}, this.state.button_states);
     button_states_hash[key] = !button_states_hash[key]
     var plot_number = this.state.plot_number
@@ -96,6 +94,7 @@ export default class ProductShow extends React.Component {
     var plot_selected = plot.map((obj) => obj.map((obj) => {
       obj['y'] = obj[key] 
       return obj;}))
+    console.log(plot_selected)
     this.setState({final_plot: plot_selected})
   }
   toggleVariantPlotData() {
@@ -147,71 +146,92 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-
+    const plot_number = this.state.plot_number
+    const button_states = this.state.button_states
+    
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
+
       if(dataExists) {
-        return (<div>
-                  <ProductGraphData variant_plot_data = {variant_plot_data} />
-                  <Stack spacing="none" distribution="leading">
-                    <Select
-                      options={props.variants}
-                      placeholder="Select"
-                      onChange={props.handleVariantChange}
-                    />
-                    <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
-                    <Button primary={props.revenueb} onClick={(event) => props.toggleView('revenue', event)}>Revenue Plot</Button>
-                    <Button primary={props.profitb} onClick={(event) => props.toggleView('profit', event)}>Profit Plot</Button>
-                    <Button primary={props.profitvb} onClick={(event) => props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
-                    <Button primary={props.revenuevb} onClick={(event) => props.toggleView('rev_per_view', event)}>Rev/View Plot</Button>
-                    <Button onClick={props.showAllPlots}>Show All</Button>
-                  </Stack>
-                  <LastPriceTestContainer analytics_data = {variant_plot_data} />
-                </div>
+        return (
+          <div>
+            <ProductGraphData 
+              variant_plot_data={variant_plot_data}
+              revenue_hash={props.revenue_hash[plot_number]}
+              profit_hash={props.profit_hash[plot_number]}
+              profit_per_view_hash={props.profit_per_view_hash[plot_number]}
+              revenue_per_view_hash={props.revenue_per_view_hash[plot_number]}
+              button_states={button_states}
+            />
+            <Stack spacing="none" distribution="leading">
+              <Select
+                options={props.variants}
+                placeholder="Select"
+                onChange={props.handleVariantChange}
+              />
+              <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+              <Button primary={props.revenueb} onClick={(event) => 
+                props.toggleView('revenue', event)}>Revenue Plot</Button>
+              <Button primary={props.profitb} onClick={(event) => 
+                props.toggleView('profit', event)}>Profit Plot</Button>
+              <Button primary={props.profitvb} onClick={(event) => 
+                props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
+              <Button primary={props.revenuevb} onClick={(event) => 
+                props.toggleView('rev_per_view', event)}>Rev/View Plot</Button>
+              <Button onClick={props.showAllPlots}>Show All</Button>
+            </Stack>
+            <LastPriceTestContainer analytics_data = {variant_plot_data} />
+          </div>
         );
       }
       return null;
     }
     
-    return (<div>
-              <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
-                <PlotIfDataExists 
-                  dataExists={variant_plot_data} 
-                  toggleVariantPlotData={this.toggleVariantPlotData}
-                  toggleView={this.toggleView}
-                  showAllPlots={this.showAllPlots}
-                  handleVariantChange={this.handleVariantChange}
-                  variants={this.props.variants}
-                  revenueb={this.state.button_states['revenue']}
-                  profitb={this.state.button_states['profit']}
-                  profitvb={this.state.button_states['profit_per_view']}
-                  revenuevb={this.state.button_states['rev_per_view']}
-                />
-                <PriceTestForm 
-                  percent_increase = {percent_increase}
-                  percent_decrease = {percent_decrease}
-                  price_points = {price_points}
-                  view_threshold = {view_threshold}
-                  end_digits = {end_digits}
-                  onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
-                  onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
-                  onViewThresholdChange = {this.handleViewThresholdChange}
-                  onPricePointChange = {this.handlePricePointChange}
-                  onEndDigitChange = {this.handleEndDigitChange}
-                  onSubmitPriceTest = {this.handleSubmit}
-                  onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
-                  price_test_active = {price_test_active}
-                />
-                <PriceTestContainer 
-                  product = {product}
-                  price_points = {price_points}
-                  price_multipler = {price_multipler}
-                  end_digits = {end_digits}
-                  price_test_active = {price_test_active}
-                  onUnitPriceChange = {this.handleUnitPriceChange}
-                  unitPriceValueHash = {unitPriceValueHash}
-                />
-            </div>
+    return (
+      <div>
+        <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
+          <PlotIfDataExists 
+            dataExists={variant_plot_data} 
+            toggleVariantPlotData={this.toggleVariantPlotData}
+            toggleView={this.toggleView}
+            showAllPlots={this.showAllPlots}
+            handleVariantChange={this.handleVariantChange}
+            variants={this.props.variants}
+            revenueb={this.state.button_states['revenue']}
+            profitb={this.state.button_states['profit']}
+            profitvb={this.state.button_states['profit_per_view']}
+            revenuevb={this.state.button_states['rev_per_view']}
+            revenue_hash={this.props.revenue_hash}
+            profit_hash={this.props.profit_hash}
+            profit_per_view_hash={this.props.profit_per_view_hash}
+            revenue_per_view_hash={this.props.revenue_per_view_hash}
+            //button_states={this.state.button_states}
+          />
+          <PriceTestForm 
+            percent_increase = {percent_increase}
+            percent_decrease = {percent_decrease}
+            price_points = {price_points}
+            view_threshold = {view_threshold}
+            end_digits = {end_digits}
+            onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
+            onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+            onViewThresholdChange = {this.handleViewThresholdChange}
+            onPricePointChange = {this.handlePricePointChange}
+            onEndDigitChange = {this.handleEndDigitChange}
+            onSubmitPriceTest = {this.handleSubmit}
+            onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
+            price_test_active = {price_test_active}
+          />
+          <PriceTestContainer 
+            product = {product}
+            price_points = {price_points}
+            price_multipler = {price_multipler}
+            end_digits = {end_digits}
+            price_test_active = {price_test_active}
+            onUnitPriceChange = {this.handleUnitPriceChange}
+            unitPriceValueHash = {unitPriceValueHash}
+          />
+        </div>
     );
   }
   // TODO add javascript alert/flash for failure and show error message
