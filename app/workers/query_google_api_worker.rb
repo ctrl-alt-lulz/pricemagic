@@ -8,7 +8,7 @@ class QueryGoogleApiWorker
 
   def perform
     Shop.all.each do |shop|
-      unless shop.users.empty? 
+      unless shop.users.empty? || shop.price_tests.where(active: true).count == 0  
         @view_id = shop.google_profile_id
         @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
         client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
