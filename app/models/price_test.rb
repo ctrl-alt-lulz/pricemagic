@@ -27,7 +27,7 @@ class PriceTest < ActiveRecord::Base
   ## coding practice to refactor below
   ## move graphing related code to seperate module
   def plot_data
-    price_data.values.map.with_index do |hash, index| 
+    price_data.values.map.with_index do |hash, index|
     { 
       y: hash['revenue'], 
       x: hash['price_points'],  
@@ -59,15 +59,24 @@ class PriceTest < ActiveRecord::Base
   end
   
   def get_value(hash)
+    puts hash
     unit_cost = hash[:unit_cost]
     unit_cost = 0 if unit_cost.nil?
+    while hash[:y].length < hash[:x].length
+      hash[:y] << 0 
+      hash[:total_variant_views] << 0
+    end
     a = hash[:y].map {|val| { y: val.round(2)} } 
     a = hash[:x].map{ { y: 0 } } if a.empty?
+    puts a
     b = hash[:x].map {|val| { x: val} }
     b = hash[:x].map{ { x: 0 } } if b.empty?
+    puts b
     total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
     total_variant_views = hash[:x].map{ { total_variant_views: 0 } } if total_variant_views.empty?
+    puts total_variant_views
     analytics_hash = { z: hash[:z] }
+    puts analytics_hash
     a.map.with_index do  |val,index| 
       total_variant_views[index][:total_variant_views] == 0 ? rev_per_view = 0 : 
         rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 
@@ -136,6 +145,33 @@ class PriceTest < ActiveRecord::Base
   end
   #######  
   
+  ##
+  def update_revenue_view
+    price_data.each do |k, v|
+      var = product.variants.where(shopify_variant_id: k).last
+      if v['revenue'].empty? 
+        v['revenue'][0] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      else
+        v['revenue'][-1] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      end
+    end
+    save
+  end
+  
+  def update_view_count
+    price_data.each do |k, v|
+      puts '*'*50
+      puts v['total_variant_views']
+      puts '*'*50
+      if v['total_variant_views'].empty? 
+        v['total_variant_views'][0] = page_views_since_create
+      else
+        v['total_variant_views'][-1] = page_views_since_create
+      end
+    end
+    save
+  end 
+
   def store_view_count_from_test
     price_data.each do |k, v|
       v['total_variant_views'] << page_views_since_create

@@ -101,9 +101,6 @@ export default class PriceTestContainer extends React.Component {
                   },{
                     Header: "Original Price",
                     accessor: "variant_price"
-                  },{
-                    Header: "Unit Cost",
-                    accessor: "unit_cost"
                   }
                 ]
               }
@@ -124,10 +121,7 @@ export default class PriceTestContainer extends React.Component {
                   },{
                     Header: "Original Price",
                     accessor: "variant_price"
-                  },{
-                    Header: "Unit Cost",
-                    accessor: "unit_cost"
-                  }
+                  },
                 ]
               },props.CreateColumns
             ]}

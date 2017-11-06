@@ -1,3 +1,4 @@
+# removed bulk import because of random attributes error, fix if time allows
 module ShopifySeeds
   def seed_products!
     shop = self.with_shopify!
@@ -5,15 +6,16 @@ module ShopifySeeds
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
     # create local products
-    sp = products.map do |product|
+    products.map do |product|
       ## What if product title changes? update attribute condition?
       ## What about deleting products that don't exist anymore?
       next if Product.where(shopify_product_id: product.id).any?
-      Product.new(title: product.title, shopify_product_id: product.id,
+      new_product = Product.new(title: product.title, shopify_product_id: product.id,
                       product_type: product.product_type, tags: product.tags, 
                       shop_id: id, main_image_src: product.images.first.try(:src))
+      new_product.save
+      puts new_product.errors.inspect if new_product.errors.any?
     end
-    Product.import sp
     puts Product.count
   end
   
@@ -66,22 +68,24 @@ module ShopifySeeds
     sc = (1..(ShopifyAPI::SmartCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::SmartCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
-    smart_col = sc.map do |collect|
+    sc.map do |collect|
       next if Collection.find_by(shopify_collection_id: collect.id)
       col = Collection.new(title: collect.title, 
                         shopify_collection_id: collect.id,
                         collection_type: "Smart")  
+      col.save
+      puts col.errors.inspect if col.errors.any?
     end
-    Collection.import smart_col
     cc = (1..(ShopifyAPI::CustomCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::CustomCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
-    cust_col = cc.map do |collect|
+    cc.map do |collect|
       next if Collection.find_by(shopify_collection_id: collect.id)
       col = Collection.new(title: collect.title, 
                         shopify_collection_id: collect.id,
                         collection_type: "Custom")  
+      col.save
+      puts col.errors.inspect if col.errors.any?
     end
-    Collection.import cust_col
   end
 end
