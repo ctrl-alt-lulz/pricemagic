@@ -27,6 +27,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @price_test_data = PriceTest.where(product_id: @product.id).last
     @variants = @price_test_data.try(:product).try(:variants)
     @variants = @variants.map(&:variant_title) if @variants 
+    @unitPriceValueHash = @product.variant_unit_cost_hash
     if @price_test_data
       @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
       @plot_count = @price_test_data.try(:final_plot).try(:length)
@@ -34,7 +35,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
       @all_data = @price_test_data.try(:final_plot).try(:flatten)
       @google_analytics_data = @product.most_recent_metrics
       @price = @product.first_variant_price
-      @unitPriceValueHash = @product.variant_unit_cost_hash
       @current_shop = current_shop
       @revenue_hash = @price_test_data.revenue_hash
       @profit_hash = @price_test_data.profit_hash

@@ -5,7 +5,8 @@ import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
 import {Button, DisplayText, Stack, Select } from '@shopify/polaris';
-
+import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries, 
+DiscreteColorLegend} from 'react-vis';
 export default class ProductShow extends React.Component {
   constructor(props) {
     super(props);
@@ -41,6 +42,7 @@ export default class ProductShow extends React.Component {
     const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
     unitPriceValueHash[id] = event;
     this.setState({unitPriceValueHash: unitPriceValueHash});
+    this.updateVariantUnitCost(id, event);
   }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
@@ -94,7 +96,6 @@ export default class ProductShow extends React.Component {
     var plot_selected = plot.map((obj) => obj.map((obj) => {
       obj['y'] = obj[key] 
       return obj;}))
-    console.log(plot_selected)
     this.setState({final_plot: plot_selected})
   }
   toggleVariantPlotData() {
@@ -148,10 +149,12 @@ export default class ProductShow extends React.Component {
     const unitPriceValueHash = this.state.unitPriceValueHash;
     const plot_number = this.state.plot_number
     const button_states = this.state.button_states
-    
+    const divMargin = {
+      'marginLeft': '20px',
+      'marginRight': '20px'
+    };
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
-
       if(dataExists) {
         return (
           <div>
@@ -174,10 +177,10 @@ export default class ProductShow extends React.Component {
                 props.toggleView('revenue', event)}>Revenue Plot</Button>
               <Button primary={props.profitb} onClick={(event) => 
                 props.toggleView('profit', event)}>Profit Plot</Button>
-              <Button primary={props.profitvb} onClick={(event) => 
-                props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
               <Button primary={props.revenuevb} onClick={(event) => 
                 props.toggleView('rev_per_view', event)}>Rev/View Plot</Button>
+              <Button primary={props.profitvb} onClick={(event) => 
+                props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
               <Button onClick={props.showAllPlots}>Show All</Button>
             </Stack>
             <LastPriceTestContainer analytics_data = {variant_plot_data} />
@@ -188,7 +191,7 @@ export default class ProductShow extends React.Component {
     }
     
     return (
-      <div>
+      <div style={divMargin}>
         <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
           <PlotIfDataExists 
             dataExists={variant_plot_data} 

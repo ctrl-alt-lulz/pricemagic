@@ -59,7 +59,6 @@ class PriceTest < ActiveRecord::Base
   end
   
   def get_value(hash)
-    puts hash
     unit_cost = hash[:unit_cost]
     unit_cost = 0 if unit_cost.nil?
     while hash[:y].length < hash[:x].length
@@ -68,15 +67,11 @@ class PriceTest < ActiveRecord::Base
     end
     a = hash[:y].map {|val| { y: val.round(2)} } 
     a = hash[:x].map{ { y: 0 } } if a.empty?
-    puts a
     b = hash[:x].map {|val| { x: val} }
     b = hash[:x].map{ { x: 0 } } if b.empty?
-    puts b
     total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
     total_variant_views = hash[:x].map{ { total_variant_views: 0 } } if total_variant_views.empty?
-    puts total_variant_views
     analytics_hash = { z: hash[:z] }
-    puts analytics_hash
     a.map.with_index do  |val,index| 
       total_variant_views[index][:total_variant_views] == 0 ? rev_per_view = 0 : 
         rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 

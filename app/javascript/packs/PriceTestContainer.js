@@ -3,27 +3,30 @@ import { PureComponent, PropTypes }from 'react'
 import ReactTable from 'react-table';
 import { TextField } from '@shopify/polaris';
 
-class UnitCost extends PureComponent {
+class TextFieldWrapper extends React.Component {
   constructor(props) {
     super(props);
-    this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+    this.state = {
+      value: this.props.variantValue[this.props.variantId] || '',
+    }
   }
-  static propTypes = {
-    variantId: PropTypes.number,
-    variantValue: PropTypes.object,
-    onUnitPriceChange: PropTypes.func,
+  updateValue(value){
+    this.setState({
+      value: value,
+    });
   }
-  handleUnitPriceChange(e) {
-    this.props.onUnitPriceChange(this.props.variantId, e)
+  handleUnitPriceChange() {
+    this.props.onUnitPriceChange(this.props.variantId, this.state.value);
   }
-  render() {
+  render(){
     return (
       <TextField
         type="number"
         id={this.props.variantId}
         key={this.props.variantId}
-        onChange={this.handleUnitPriceChange}
-        value={this.props.variantValue[this.props.variantId] || ''}
+        onChange={this.updateValue.bind(this)}
+        onBlur={this.handleUnitPriceChange.bind(this)}
+        value={this.state.value}
       />
     );
   }
@@ -47,11 +50,11 @@ export default class PriceTestContainer extends React.Component {
     return { 
       variant_title: variant.variant_title,
       variant_price: variant.variant_price,
-      // unit_cost: <UnitCost 
-      //             variantId={variant.id}
-      //             variantValue={unitPriceValueHash}
-      //             onUnitPriceChange={this.handleUnitPriceChange}
-      //           />
+      unit_cost: <TextFieldWrapper 
+                  variantId={variant.id}
+                  variantValue={unitPriceValueHash}
+                  onUnitPriceChange={this.handleUnitPriceChange}
+                />
     };
   }
 
@@ -101,6 +104,9 @@ export default class PriceTestContainer extends React.Component {
                   },{
                     Header: "Original Price",
                     accessor: "variant_price"
+                  },{
+                    Header: "Unit Cost",
+                    accessor: "unit_cost"
                   }
                 ]
               }
@@ -121,7 +127,10 @@ export default class PriceTestContainer extends React.Component {
                   },{
                     Header: "Original Price",
                     accessor: "variant_price"
-                  },
+                  },{
+                    Header: "Unit Cost",
+                    accessor: "unit_cost"
+                  }
                 ]
               },props.CreateColumns
             ]}
