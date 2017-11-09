@@ -8,6 +8,7 @@
     });
   </script>
 <% end %>
+
 <%= content_tag :div,
   id: "product-index-page",
   data: {
@@ -15,6 +16,7 @@
     products: @products,
     shop_session: @shop_session,
     collections: @collections,
+    shop_id: @shop.id,
     products_path: products_path(:json)
 }.to_json do %>
 <% end %>

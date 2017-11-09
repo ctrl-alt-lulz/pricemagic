@@ -5,8 +5,7 @@ import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
 import {Button, DisplayText, Stack, Select } from '@shopify/polaris';
-import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries, 
-DiscreteColorLegend} from 'react-vis';
+
 export default class ProductShow extends React.Component {
   constructor(props) {
     super(props);
@@ -149,12 +148,9 @@ export default class ProductShow extends React.Component {
     const unitPriceValueHash = this.state.unitPriceValueHash;
     const plot_number = this.state.plot_number
     const button_states = this.state.button_states
-    const divMargin = {
-      'marginLeft': '20px',
-      'marginRight': '20px'
-    };
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
+
       if(dataExists) {
         return (
           <div>
@@ -191,7 +187,7 @@ export default class ProductShow extends React.Component {
     }
     
     return (
-      <div style={divMargin}>
+      <div>
         <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
           <PlotIfDataExists 
             dataExists={variant_plot_data} 
@@ -254,8 +250,9 @@ export default class ProductShow extends React.Component {
       success: function() {
         window.location = '/products/' + this.props.product.id;
       }.bind(this),
-      error: function(data) {
-        console.log('fail');
+      error:function (data) {
+        console.log(data.responseJSON['message']);
+        alert(data.responseJSON['message'])
       }.bind(this)
     });
   }

@@ -140,7 +140,7 @@ class ProductIndex extends React.Component {
                 <ActionList
                   items={[
                     {content: 'Account', url: '/recurring_charges'},
-                    //{content: 'Configuration', url: '/configurations'} can include in later version
+                    {content: 'Configuration', url: '/configurations'}
                   ]}
                 />
               </Popover>
@@ -213,17 +213,56 @@ class ProductIndex extends React.Component {
       </div>
     );  
   }
-searchProducts() {
-  $.ajax( {
-    url: '/products/',
-    dataType: 'json',
-    data: { term: this.state.term, collection: this.state.collection_id },
-    success: function(data) {
-      this.setState({ products: data });
-    }.bind(this),
-    error: function(data) {
-    }.bind(this)
-   });
+  seedProducts() {
+    $.ajax( {
+      url: '/seed_products_and_variants/',
+      dataType: 'json',
+      data: { id: this.props.shop_id },
+      success: function(data) {
+        console.log('success')
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
+  }
+  queryGoogle() {
+    $.ajax( {
+      url: '/query_google/',
+      dataType: 'json',
+      data: { id: this.props.shop_id },
+      success: function(data) {
+        console.log('success')
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
+  }
+  updatePriceTests() {
+    $.ajax( {
+      url: '/update_price_tests_statuses/',
+      dataType: 'json',
+      data: { id: this.props.shop_id },
+      success: function(data) {
+        console.log('success')
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
+  }
+  searchProducts() {
+    $.ajax( {
+      url: '/products/',
+      dataType: 'json',
+      data: { term: this.state.term, collection: this.state.collection_id },
+      success: function(data) {
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
   }
   createBulkPriceTest() {
     $.ajax( {
@@ -241,7 +280,6 @@ searchProducts() {
             },
       success: function() {
         console.log('success');
-        // TODO figure out why worker requests go to failure
       }.bind(this),
       error: function() {
         console.log('fail');

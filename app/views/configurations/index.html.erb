@@ -1,1 +1,11 @@
-<h1> hello</h1>
+<%= javascript_pack_tag 'ConfigurationsPage' %>
+<% puts '*'*50 %>
+<% puts @shop %>
+<% puts @shop.id %>
+
+<% puts '*'*50 %>
+<%= content_tag :div,
+  id: "configurations-page",
+  data: { shop_id: @shop.id
+}.to_json do %>
+<% end %>

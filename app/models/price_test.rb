@@ -155,9 +155,6 @@ class PriceTest < ActiveRecord::Base
   
   def update_view_count
     price_data.each do |k, v|
-      puts '*'*50
-      puts v['total_variant_views']
-      puts '*'*50
       if v['total_variant_views'].empty? 
         v['total_variant_views'][0] = page_views_since_create
       else
