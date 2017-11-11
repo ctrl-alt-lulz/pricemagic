@@ -4,6 +4,8 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
 
+
+## TODO fix merge error!!!
   def index
     @collections = current_shop.collections
     @products = current_shop.products

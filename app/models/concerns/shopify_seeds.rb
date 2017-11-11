@@ -54,7 +54,7 @@ module ShopifySeeds
       next if Collect.find_by(shopify_collect_id: collect.id)
       product = Product.find_by(shopify_product_id: collect.product_id.to_s)
       collection = Collection.find_by(shopify_collection_id: collect.collection_id.to_s)
-      col = Collect.new(shopify_collect_id: collect.collection_id,
+      col = Collect.new(shopify_collect_id: collect.id,
                         position: collect.position,
                         product_id: product.id,
                         collection_id: collection.id)  
