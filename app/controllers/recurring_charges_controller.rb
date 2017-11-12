@@ -24,18 +24,9 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     end
   end
   
-  ## TODO handle this in the model so it looks like a typical rails controller
-  ## with just @recurring_charge = RecurringCharge.find(params[:charge_id)
-  ## @recurring_charge.update_attributes(...)
   def update
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(params[:charge_id])
-    local_recurring_charge = RecurringCharge.find_by(shopify_id: params[:charge_id])
-    if recurring_application_charge.status.eql? "accepted"
-      recurring_application_charge.activate
-      local_recurring_charge.update_attributes(charge_data: recurring_application_charge.attributes)
-      puts '*'*50
-      puts recurring_application_charge.inspect
-      puts '*'*50
+    @recurring_charge = RecurringCharge.find_by(shopify_id: params[:charge_id])
+    if @recurring_charge.update_charge_data(params) 
       flash[:notice] = "Successfully Activated"
       redirect_to root_url
     else 
@@ -45,7 +36,6 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   end
   
   def destroy
-    ShopifyAPI::RecurringApplicationCharge.current.destroy
     local_recurring_charge = RecurringCharge.find_by(id: params[:id])
     if local_recurring_charge.destroy
       redirect_to recurring_charges_path, notice: "Charge cancelled!"
