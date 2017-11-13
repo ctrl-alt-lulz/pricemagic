@@ -13,6 +13,7 @@
  *= require polaris
  *= require react-table
  *= require react-vis
+ *= require joyride
  *= require_tree .
  *= require_self
  *
