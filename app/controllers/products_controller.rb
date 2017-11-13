@@ -4,8 +4,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
 
-
-## TODO fix merge error!!!
   def index
     @collections = current_shop.collections
     @products = current_shop.products
@@ -17,7 +15,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
       end
     end
     @products = @products.includes(:price_tests, :variants)
-    
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
     respond_to do |format|
       format.html # default html response

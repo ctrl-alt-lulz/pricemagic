@@ -64,6 +64,7 @@ class RecurringCharge < Charge
     rescue ActiveResource::ResourceInvalid => e
       puts e.inspect
     end
+    StopPriceTestsWorker.perform_async(shop_id)
   end
 
 end

@@ -33,17 +33,21 @@ class PriceTestsController < ShopifyApp::AuthenticatedController
   end
   
   def bulk_create
-    session[:return_to] ||= request.referer
+    flash[:notice] = "Creating Price Tests in the Background"
     BulkCreatePriceTestsWorker.perform_async(params)
-    redirect_to session.delete(:return_to)
+    respond_to do |format|
+      format.json { render json: { success: true }, status: 201 }
+    end
   end
   
   def bulk_destroy
-    session[:return_to] ||= request.referer
+    flash[:notice] = "Deleting Price Tests in the Background"
     unless params[:product_ids].nil?
       BulkDestroyPriceTestsWorker.perform_async(params[:product_ids])
     end
-    redirect_to session.delete(:return_to)
+    respond_to do |format|
+      format.json { render json: { success: true }, status: 201 }
+    end
   end
   
   def update

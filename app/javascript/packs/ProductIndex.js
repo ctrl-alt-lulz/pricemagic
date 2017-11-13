@@ -250,32 +250,6 @@ class ProductIndex extends React.Component {
       </div>
     );  
   }
-  seedProducts() {
-    $.ajax( {
-      url: '/seed_products_and_variants/',
-      dataType: 'json',
-      data: { id: this.props.shop_id },
-      success: function(data) {
-        console.log('success')
-        this.setState({ products: data });
-      }.bind(this),
-      error: function(data) {
-      }.bind(this)
-    });
-  }
-  queryGoogle() {
-    $.ajax( {
-      url: '/query_google/',
-      dataType: 'json',
-      data: { id: this.props.shop_id },
-      success: function(data) {
-        console.log('success')
-        this.setState({ products: data });
-      }.bind(this),
-      error: function(data) {
-      }.bind(this)
-    });
-  }
   updatePriceTests() {
     $.ajax( {
       url: '/update_price_tests_statuses/',
@@ -317,9 +291,11 @@ class ProductIndex extends React.Component {
             },
       success: function() {
         console.log('success');
+        window.location = '/'
       }.bind(this),
       error: function() {
         console.log('fail');
+        window.location = '/'
       }.bind(this)
     });
   }
@@ -331,9 +307,10 @@ class ProductIndex extends React.Component {
       data: { product_ids: this.getSelectedProductIds() },
       success: function() {
         console.log('success');
-        // TODO figure out why worker requests go to failure
+        window.location = '/'
       }.bind(this),
       error: function() {
+        window.location = '/'
         console.log('fail');
       }.bind(this)
     });

@@ -15,33 +15,32 @@ export default class ConfigurationsPage extends React.Component {
             
               <Layout>
                  <Layout.AnnotatedSection
-                    title="Seed"
-                    description="Seed and Update Products"
+                    title="Seed and Update Products"
                  >
                   <SettingToggle
                     action={{content: 'Update', url: '#', onAction: () => this.seedProducts() }}
                   >
-                    This setting is <TextStyle variation="strong">disabled</TextStyle>.
+                    This will update the app with your latest products.
                   </SettingToggle>
                 </Layout.AnnotatedSection>
                 <Layout.AnnotatedSection
                     title="Google Analytics Refresh"
-                    description="Refresh Google Analytics."
                  >
                   <SettingToggle
                     action={{content: 'Update', url: '#', onAction: () => this.queryGoogle() }}
                   >
-                    This setting is <TextStyle variation="strong">disabled</TextStyle>.
+                    This will send your app the latest Google Analytics Metrics manually. 
+                    The app will automatically update this every 4 hours.
                   </SettingToggle>
                 </Layout.AnnotatedSection>
                 <Layout.AnnotatedSection
                     title="Update Price Tests"
-                    description="price tests"
                  >
                   <SettingToggle
                     action={{content: 'Update', url: '#', onAction: () => this.updatePriceTests() }}
                   >
-                    This setting is <TextStyle variation="strong">disabled</TextStyle>.
+                    This will update all your price tests manually. 
+                    The app will automatically update this every 4 hours.
                   </SettingToggle>
                 </Layout.AnnotatedSection>
               </Layout>
@@ -56,9 +55,8 @@ export default class ConfigurationsPage extends React.Component {
       url: '/seed_products_and_variants/',
       dataType: 'json',
       data: { id: this.props.shop_id },
-      success: function(data) {
+      success: function() {
         console.log('success')
-        this.setState({ products: data });
       }.bind(this),
       error: function(data) {
       }.bind(this)
@@ -69,9 +67,8 @@ export default class ConfigurationsPage extends React.Component {
       url: '/query_google/',
       dataType: 'json',
       data: { id: this.props.shop_id },
-      success: function(data) {
+      success: function() {
         console.log('success')
-        this.setState({ products: data });
       }.bind(this),
       error: function(data) {
       }.bind(this)
@@ -82,9 +79,9 @@ export default class ConfigurationsPage extends React.Component {
       url: '/update_price_tests_statuses/',
       dataType: 'json',
       data: { id: this.props.shop_id },
-      success: function(data) {
+      success: function() {
         console.log('success')
-        this.setState({ products: data });
+        //window.location = '/configurations'
       }.bind(this),
       error: function(data) {
       }.bind(this)

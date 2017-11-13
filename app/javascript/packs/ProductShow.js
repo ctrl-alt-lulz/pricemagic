@@ -21,8 +21,8 @@ export default class ProductShow extends React.Component {
       plot_number: 0,
       all_data: this.props.all_data,
       unitPriceValueHash: this.props.unitPriceValueHash,
-      button_states: { revenue: true, profit: false, 
-                       profit_per_view: false, rev_per_view: false } 
+      button_states: { revenue: true, profit: true, 
+                       profit_per_view: true, rev_per_view: true } 
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);

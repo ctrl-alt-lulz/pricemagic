@@ -8,8 +8,7 @@ class WebhooksController < ShopifyApp::AuthenticatedController
   end
   
   def receive
-        head :ok
-
+    head :ok
     puts params.inspect
     puts 'webhook'
     SingleShopSeedProductsAndVariantsWorker.perform_async(1)
@@ -18,7 +17,6 @@ class WebhooksController < ShopifyApp::AuthenticatedController
     end
   end
    
-   # SingleShopSeedProductsAndVariantsWorker.perform_async(shop_id)
   def verify_webhook(request)
     header_hmac = request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"]
     digest = OpenSSL::Digest.new("sha256")
