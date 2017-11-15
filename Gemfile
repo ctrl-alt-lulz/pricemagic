@@ -29,6 +29,7 @@ gem 'google-api-client', '~> 0.11'
 gem "activerecord-import", ">= 0.2.0"
 gem 'webpacker', '~> 2.0'
 gem 'rack-cors', :require => 'rack/cors'
+gem 'aws-sdk-ses', '~> 1'
 
 group :development, :test do
   gem 'byebug'
