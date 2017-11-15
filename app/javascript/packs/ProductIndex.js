@@ -127,20 +127,29 @@ class ProductIndex extends React.Component {
       'marginTop': '35px'
     };
     const steps = [{
-                title: 'Trigger Action',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Initial Setup and Configuration',
+                text: 'Connect your Google Analytics Account to get started, ' +
+                      'make sure you have enabled enhanced ecommerce on your Google Account. ' +
+                      'Visit the configuration section to upload product information to the app. ' +
+                      'After initialization your products will automatically stay up-to-date.',
                 selector: '.joyride_step1',
                 position: 'top',
                 type: 'hover',
       }, {
-                title: 'Product Index',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Bulk Price Test Creation and Deletion',
+                text: 'Set a percentage range boundary for your price tests, and the number of test points ' +
+                      'within this boundary, ie. 50% higher and 25% lower for a product with a base price of ' + 
+                      '$100 would test prices between $75 and $150. Select the products below by clicking the ' +
+                      'checkbox and then press "Start Price Test". Likewise, select any products currently being ' +
+                      'tested and click "Destroy Price Test" to end them early.',
                 selector: '.joyride_step2',
                 position: 'top',
                 type: 'hover',
       }, {
-                title: 'Prorr32r3 Index',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Products',
+                text: "When you've loaded in products you'll be able to click each product title and  "+
+                " view analytics data and you'll be able to create price tests that show a " + 
+                "preview of what your test prices will be.",
                 selector: '.joyride_step3',
                 position: 'top',
                 type: 'hover',
@@ -191,7 +200,7 @@ class ProductIndex extends React.Component {
         <DashboardActionList handleSettingsToggle={this.handleSettingsToggle} />
         </div>
           <div style={divStyleForm}>
-          <div className='joyride_step3'>
+          <div className='joyride_step2'>
           <PriceTestForm 
             percent_increase = {percent_increase}
             percent_decrease = {percent_decrease}
@@ -229,7 +238,7 @@ class ProductIndex extends React.Component {
             </FormLayout>
           </Card.Section>
           <Card.Section>
-          <div className='joyride_step2'>
+          <div className='joyride_step3'>
             <ProductIndexTable 
               products={this.state.products} 
               selected={selected}

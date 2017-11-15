@@ -20,6 +20,7 @@ export default class ProductGraphData extends React.Component {
       {title: "Revenue/View", color: '#1a3177' }, 
       {title: "Profit/View", color: '#ff9833' }
     ];
+    
     return (
       <div>
         <XYPlot

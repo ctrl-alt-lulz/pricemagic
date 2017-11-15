@@ -15,7 +15,7 @@ export default class LastPriceTestContainer extends React.Component {
               data={this.props.analytics_data}
               columns={[
               {
-                Header: "Base",
+                Header: "Price Test Data",
                 columns: [
                   {
                     Header: "Product Title",
