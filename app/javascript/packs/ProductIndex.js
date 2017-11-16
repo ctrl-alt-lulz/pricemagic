@@ -148,8 +148,8 @@ class ProductIndex extends React.Component {
       }, {
                 title: 'Products',
                 text: "When you've loaded in products you'll be able to click each product title and  "+
-                " view analytics data and you'll be able to create price tests that show a " + 
-                "preview of what your test prices will be.",
+                " view analytics data and you'll be able to create price tests that show " + 
+                "a preview of what your test prices will be.",
                 selector: '.joyride_step3',
                 position: 'top',
                 type: 'hover',
