@@ -11,11 +11,12 @@ Rails.application.configure do
   config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
   config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
 
-  config.action_mailer.default_url_options = { host: $IP, port: $PORT }
+  config.action_mailer.default_url_options = { host: 'price-magic-bytesize.c9users.io' }
   config.action_mailer.perform_deliveries = true
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :address => "email-smtp.us-west-2.amazonaws.com",
-    :port => 465,
+    :port => 587,
     :user_name => ENV["SES_SMTP_USERNAME"], #Your SMTP user
     :password => ENV["SES_SMTP_PASSWORD"], #Your SMTP password
     :authentication => :login,
