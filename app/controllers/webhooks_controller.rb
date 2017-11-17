@@ -12,13 +12,21 @@ class WebhooksController < ShopifyApp::AuthenticatedController
   end
   
   def receive
+    # head :ok
+    # puts params.inspect
+    # puts 'webhook'
+    # SingleShopSeedProductsAndVariantsWorker.perform_async(1)
+    # respond_to do |format|
+    #   format.json { render json: { success: true }, status: 200 }
+    # end
+    puts '*'*50
+    puts "We're HERE!"
+    puts '*'*50
+    
+    verify_webhook(request)
+
+    # Send back a 200 OK response
     head :ok
-    puts params.inspect
-    puts 'webhook'
-    SingleShopSeedProductsAndVariantsWorker.perform_async(1)
-    respond_to do |format|
-      format.json { render json: { success: true }, status: 200 }
-    end
   end
    
   def verify_webhook(request)
