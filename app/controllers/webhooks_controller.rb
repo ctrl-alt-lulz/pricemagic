@@ -1,6 +1,10 @@
 class WebhooksController < ShopifyApp::AuthenticatedController
   
   def create 
+    puts '*'*50
+    puts "We're HERE!"
+    puts '*'*50
+    
     verify_webhook(request)
 
     # Send back a 200 OK response
