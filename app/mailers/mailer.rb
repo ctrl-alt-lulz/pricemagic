@@ -6,5 +6,13 @@ class Mailer < ApplicationMailer
     @message = options[:message]
     mail(:to=>"alexg89@vt.edu", :subject=>"Amazon SES Email")
   end
-  
+
 end
+
+# class PriceTestMailer
+#   def price_increased(price_test)
+#     @users = price_test.shop.users
+#     @subject = "Price increased!"
+#     mail(:to=>@user.map(&:email), :subject=> @subject)
+#   end
+# end

@@ -26,6 +26,7 @@ class WebhooksController < ShopifyApp::AuthenticatedController
     verify_webhook(request)
 
     # Send back a 200 OK response
+    User.create(name: "Delete Me", email: 'test@me.com', password: 'password')
     head :ok
   end
    
