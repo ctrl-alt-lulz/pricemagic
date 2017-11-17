@@ -1,15 +1,20 @@
 <%= javascript_pack_tag 'ProductShow' %>
-<% if @current_shop.trial? || @current_shop.has_subscription? %>
+<% if @shop.trial? || @shop.has_subscription? %>
   <%= content_tag :div, 
     id: "product-page",
     data: {
       product: @product,
+      variants: @variants,
       price_test_data: @price_test_data,
       final_plot: @final_plot,
       plot_count: @plot_count,
       variant_plot_data: @variant_plot_data,
       all_data: @all_data,
-      unitPriceValueHash: @unitPriceValueHash
+      unitPriceValueHash: @unitPriceValueHash,
+      revenue_hash: @revenue_hash,
+      profit_hash: @profit_hash,
+      profit_per_view_hash: @profit_per_view_hash,
+      revenue_per_view_hash: @revenue_per_view_hash,
       }.to_json do %>
   <% end %>
 <% else %>

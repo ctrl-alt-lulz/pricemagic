@@ -4,7 +4,7 @@ import PriceTestForm from './PriceTestForm.js';
 import PriceTestContainer from './PriceTestContainer.js';
 import LastPriceTestContainer from './LastPriceTestContainer.js';
 import ProductGraphData from './ProductGraphData.js';
-import {Button, DisplayText, Stack} from '@shopify/polaris';
+import {Button, DisplayText, Stack, Select } from '@shopify/polaris';
 
 export default class ProductShow extends React.Component {
   constructor(props) {
@@ -20,7 +20,9 @@ export default class ProductShow extends React.Component {
       plot_count: this.props.plot_count,
       plot_number: 0,
       all_data: this.props.all_data,
-      unitPriceValueHash: this.props.unitPriceValueHash
+      unitPriceValueHash: this.props.unitPriceValueHash,
+      button_states: { revenue: true, profit: true, 
+                       profit_per_view: true, rev_per_view: true } 
     };
     this.handlePercentIncreaseChange = this.handlePercentIncreaseChange.bind(this);
     this.handlePercentDecreaseChange = this.handlePercentDecreaseChange.bind(this);
@@ -30,25 +32,17 @@ export default class ProductShow extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmitDestroy = this.handleSubmitDestroy.bind(this);
     this.toggleVariantPlotData = this.toggleVariantPlotData.bind(this);
-    this.toggleProfitView = this.toggleProfitView.bind(this);
+    this.toggleView = this.toggleView.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
     this.showAllPlots = this.showAllPlots.bind(this);
-    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
+    this.handleVariantChange = this.handleVariantChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
     const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
     unitPriceValueHash[id] = event;
-    console.log(unitPriceValueHash)
     this.setState({unitPriceValueHash: unitPriceValueHash});
-    $("input#1894.Polaris-TextField__Input").focus()
-    console.log($("input#1894.Polaris-TextField__Input").focus())
-    //"input#1894.Polaris-TextField__Input"
-    //this.updateVariantUnitCost(id, event);
+    this.updateVariantUnitCost(id, event);
   }
-  // submitUnitPriceChange(id, event) {
-  //   console.log('blur')
-  //   this.updateVariantUnitCost(id, event);
-  // }
   handlePercentIncreaseChange(event) {
     this.setState({percent_increase: event}, () => {
       this.CalcPriceMultipler();
@@ -76,11 +70,22 @@ export default class ProductShow extends React.Component {
   handleSubmitDestroy(event) {
     this.destroyPriceTest();
   }
-  toggleProfitView(key, event) {
+  toggleView(key, event) {
+    const button_states_hash = Object.assign({}, this.state.button_states);
+    button_states_hash[key] = !button_states_hash[key]
     var plot_number = this.state.plot_number
-     this.setState({variant_plot_data: this.props.final_plot[plot_number]}, () => {
+     this.setState({
+       variant_plot_data: this.props.final_plot[plot_number],
+       button_states: button_states_hash
+     }, () => {
       this.updatePlots(key);
     });
+  }
+  handleVariantChange(event) {
+    const plot_number = this.props.variants.indexOf(event)
+    this.setState({plot_number: plot_number}, () => {
+        this.getNextPlot();
+      });
   }
   showAllPlots() {
     this.setState({variant_plot_data: this.props.all_data})
@@ -141,59 +146,90 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True');
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-
+    const plot_number = this.state.plot_number
+    const button_states = this.state.button_states
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
+
       if(dataExists) {
-        return (<div>
-                  <ProductGraphData variant_plot_data = {variant_plot_data} />
-                  <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('revenue', event)}>Revenue Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('profit', event)}>Profit Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('profit_per_view', event)}>Profit/View Plot</Button>
-                  <Button onClick={(event) => props.toggleProfitView('rev_per_view', event)}>Rev/View Plot</Button>
-                  <Button onClick={props.showAllPlots}>Show All</Button>
-                  <LastPriceTestContainer analytics_data = {variant_plot_data} />
-                </div>
+        return (
+          <div>
+            <ProductGraphData 
+              variant_plot_data={variant_plot_data}
+              revenue_hash={props.revenue_hash[plot_number]}
+              profit_hash={props.profit_hash[plot_number]}
+              profit_per_view_hash={props.profit_per_view_hash[plot_number]}
+              revenue_per_view_hash={props.revenue_per_view_hash[plot_number]}
+              button_states={button_states}
+            />
+            <Stack spacing="none" distribution="leading">
+              <Select
+                options={props.variants}
+                placeholder="Select"
+                onChange={props.handleVariantChange}
+              />
+              <Button onClick={props.toggleVariantPlotData}>Next Plot</Button>
+              <Button primary={props.revenueb} onClick={(event) => 
+                props.toggleView('revenue', event)}>Revenue Plot</Button>
+              <Button primary={props.profitb} onClick={(event) => 
+                props.toggleView('profit', event)}>Profit Plot</Button>
+              <Button primary={props.revenuevb} onClick={(event) => 
+                props.toggleView('rev_per_view', event)}>Rev/View Plot</Button>
+              <Button primary={props.profitvb} onClick={(event) => 
+                props.toggleView('profit_per_view', event)}>Profit/View Plot</Button>
+              <Button onClick={props.showAllPlots}>Show All</Button>
+            </Stack>
+            <LastPriceTestContainer analytics_data = {variant_plot_data} />
+          </div>
         );
       }
       return null;
     }
     
-    return (<div>
-              <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
-                <PlotIfDataExists 
-                  dataExists={variant_plot_data} 
-                  toggleVariantPlotData={this.toggleVariantPlotData}
-                  toggleProfitView={this.toggleProfitView}
-                  showAllPlots={this.showAllPlots}
-                />
-                <PriceTestForm 
-                  percent_increase = {percent_increase}
-                  percent_decrease = {percent_decrease}
-                  price_points = {price_points}
-                  view_threshold = {view_threshold}
-                  end_digits = {end_digits}
-                  onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
-                  onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
-                  onViewThresholdChange = {this.handleViewThresholdChange}
-                  onPricePointChange = {this.handlePricePointChange}
-                  onEndDigitChange = {this.handleEndDigitChange}
-                  onSubmitPriceTest = {this.handleSubmit}
-                  onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
-                  price_test_active = {price_test_active}
-                />
-                <PriceTestContainer 
-                  product = {product}
-                  price_points = {price_points}
-                  price_multipler = {price_multipler}
-                  end_digits = {end_digits}
-                  price_test_active = {price_test_active}
-                  onUnitPriceChange = {this.handleUnitPriceChange}
-                  //onSubmitUnitPriceChange = {this.submitUnitPriceChange}
-                  unitPriceValueHash = {unitPriceValueHash}
-                />
-            </div>
+    return (
+      <div>
+        <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
+          <PlotIfDataExists 
+            dataExists={variant_plot_data} 
+            toggleVariantPlotData={this.toggleVariantPlotData}
+            toggleView={this.toggleView}
+            showAllPlots={this.showAllPlots}
+            handleVariantChange={this.handleVariantChange}
+            variants={this.props.variants}
+            revenueb={this.state.button_states['revenue']}
+            profitb={this.state.button_states['profit']}
+            profitvb={this.state.button_states['profit_per_view']}
+            revenuevb={this.state.button_states['rev_per_view']}
+            revenue_hash={this.props.revenue_hash}
+            profit_hash={this.props.profit_hash}
+            profit_per_view_hash={this.props.profit_per_view_hash}
+            revenue_per_view_hash={this.props.revenue_per_view_hash}
+          />
+          <PriceTestForm 
+            percent_increase = {percent_increase}
+            percent_decrease = {percent_decrease}
+            price_points = {price_points}
+            view_threshold = {view_threshold}
+            end_digits = {end_digits}
+            onPercentIncreaseChange = {this.handlePercentIncreaseChange} 
+            onPercentDecreaseChange = {this.handlePercentDecreaseChange} 
+            onViewThresholdChange = {this.handleViewThresholdChange}
+            onPricePointChange = {this.handlePricePointChange}
+            onEndDigitChange = {this.handleEndDigitChange}
+            onSubmitPriceTest = {this.handleSubmit}
+            onSubmitDestroyPriceTest = {this.handleSubmitDestroy}
+            price_test_active = {price_test_active}
+          />
+          <PriceTestContainer 
+            product = {product}
+            price_points = {price_points}
+            price_multipler = {price_multipler}
+            end_digits = {end_digits}
+            price_test_active = {price_test_active}
+            onUnitPriceChange = {this.handleUnitPriceChange}
+            unitPriceValueHash = {unitPriceValueHash}
+          />
+        </div>
     );
   }
   // TODO add javascript alert/flash for failure and show error message
@@ -214,8 +250,9 @@ export default class ProductShow extends React.Component {
       success: function() {
         window.location = '/products/' + this.props.product.id;
       }.bind(this),
-      error: function(data) {
-        console.log('fail');
+      error:function (data) {
+        console.log(data.responseJSON['message']);
+        alert(data.responseJSON['message'])
       }.bind(this)
     });
   }
@@ -242,7 +279,6 @@ export default class ProductShow extends React.Component {
             },
       success: function(data) {
         console.log('success')
-        console.log(data)
         this.setState({ unitPriceValueHash: data['unitPriceValueHash']});
       }.bind(this),
       error: function() {

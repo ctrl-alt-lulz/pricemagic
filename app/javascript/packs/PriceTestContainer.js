@@ -3,27 +3,30 @@ import { PureComponent, PropTypes }from 'react'
 import ReactTable from 'react-table';
 import { TextField } from '@shopify/polaris';
 
-class UnitCost extends PureComponent {
+class TextFieldWrapper extends React.Component {
   constructor(props) {
     super(props);
-    this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
+    this.state = {
+      value: this.props.variantValue[this.props.variantId] || '',
+    }
   }
-  static propTypes = {
-    variantId: PropTypes.number,
-    variantValue: PropTypes.object,
-    onUnitPriceChange: PropTypes.func,
+  updateValue(value){
+    this.setState({
+      value: value,
+    });
   }
-  handleUnitPriceChange(e) {
-    this.props.onUnitPriceChange(this.props.variantId, e)
+  handleUnitPriceChange() {
+    this.props.onUnitPriceChange(this.props.variantId, this.state.value);
   }
-  render() {
+  render(){
     return (
       <TextField
         type="number"
         id={this.props.variantId}
         key={this.props.variantId}
-        onChange={this.handleUnitPriceChange}
-        value={this.props.variantValue[this.props.variantId] || ''}
+        onChange={this.updateValue.bind(this)}
+        onBlur={this.handleUnitPriceChange.bind(this)}
+        value={this.state.value}
       />
     );
   }
@@ -38,24 +41,20 @@ export default class PriceTestContainer extends React.Component {
     this.RoundPriceDigits = this.RoundPriceDigits.bind(this);
     this.CreateItem = this.CreateItem.bind(this);
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
-    //this.submitUnitPriceChange = this.submitUnitPriceChange.bind(this);
   }
   handleUnitPriceChange (id, event) {
     this.props.onUnitPriceChange(id, event);
   }
-  // submitUnitPriceChange (id, event) {
-  //   this.props.onSubmitUnitPriceChange(id, event);
-  // }
   CreateItem(variant) {
     const unitPriceValueHash = this.props.unitPriceValueHash
     return { 
       variant_title: variant.variant_title,
       variant_price: variant.variant_price,
-      unit_cost: <UnitCost 
+      unit_cost: <TextFieldWrapper 
                   variantId={variant.id}
                   variantValue={unitPriceValueHash}
                   onUnitPriceChange={this.handleUnitPriceChange}
-                 />
+                />
     };
   }
 

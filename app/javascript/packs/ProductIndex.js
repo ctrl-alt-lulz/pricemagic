@@ -1,11 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import PriceTestForm from './PriceTestForm.js'
-import PriceTestContainer from './PriceTestContainer.js'
-import ProductIndexTable from './ProductIndexTable.js'
-import { Page, Card, Select, Button, TextField, Stack, FormLayout, Layout, Checkbox, 
-        FooterHelp, ActionList, Popover, Link} from '@shopify/polaris';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import PriceTestForm from './PriceTestForm.js';
+import PriceTestContainer from './PriceTestContainer.js';
+import ProductIndexTable from './ProductIndexTable.js';
+import Joyride from 'react-joyride';
+import { Card, Select, Button, TextField, FormLayout, Layout,  
+        FooterHelp, ActionList, Popover } from '@shopify/polaris';
 
 class ProductIndex extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class ProductIndex extends React.Component {
       products: this.props.products,
       selected: {},
       selectAll: 0,
-      settings_toggle: false
+      settings_toggle: false,
     };
     this.handleSettingsToggle = this.handleSettingsToggle.bind(this);
     this.handleBulkSubmit = this.handleBulkSubmit.bind(this);
@@ -104,14 +105,16 @@ class ProductIndex extends React.Component {
                                 .map(product => this.product_hash[product])
   }
   render() {
-    const selected = this.state.selected
-    const selectAll = this.state.selectAll
-    const percent_increase = this.state.percent_increase;
-    const percent_decrease = this.state.percent_decrease;
-    const price_points = this.state.price_points;
-    const end_digits = this.state.end_digits;
-    const view_threshold = this.state.view_threshold;
-    const settings_toggle = this.state.settings_toggle;
+    const {
+      selected,
+      selectAll,
+      percent_increase,
+      percent_decrease,
+      price_points,
+      end_digits,
+      settings_toggle,
+      view_threshold,
+    } = this.state;
     const divStyle = {
       float: 'right',
       'marginRight' : '20px'
@@ -123,6 +126,25 @@ class ProductIndex extends React.Component {
     const divStyleForm = {
       'marginTop': '35px'
     };
+    const steps = [{
+                title: 'Trigger Action',
+                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                selector: '.joyride_step1',
+                position: 'top',
+                type: 'hover',
+      }, {
+                title: 'Product Index',
+                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                selector: '.joyride_step2',
+                position: 'top',
+                type: 'hover',
+      }, {
+                title: 'Prorr32r3 Index',
+                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                selector: '.joyride_step3',
+                position: 'top',
+                type: 'hover',
+      }]
     function CollectionTitles(collection) {
       return {label: collection.title, value: collection.id}
     }
@@ -133,21 +155,32 @@ class ProductIndex extends React.Component {
     }
     function DashboardActionList(props) {
       return(
-              <Popover
-                active={settings_toggle}
-                activator={<Button onClick={props.handleSettingsToggle}>Settings</Button>}
-              >
-                <ActionList
-                  items={[
-                    {content: 'Account', url: '/recurring_charges'},
-                    //{content: 'Configuration', url: '/configurations'} can include in later version
-                  ]}
-                />
-              </Popover>
+          <div className='joyride_step1'>
+            <Popover 
+              active={settings_toggle}
+              activator={<Button onClick={props.handleSettingsToggle}>Settings</Button>}
+            >
+              <ActionList
+                items={[
+                  {content: 'Account', url: '/recurring_charges'},
+                  {content: 'Configuration', url: '/configurations'}
+                ]}
+              />
+            </Popover>
+        </div>
             )
     }
     return (
       <div style={divStyleIndex}>
+      <Joyride
+        ref={c => (this.joyride = c)}
+        steps={steps}
+        run={true} // or some other boolean for when you want to start it
+        debug={false}
+        showStepsProgress={true}
+        showSkipButton={true}
+        type={'continuous'}
+      />
       <Layout>
         <Layout.Section>
         <Card 
@@ -158,6 +191,7 @@ class ProductIndex extends React.Component {
         <DashboardActionList handleSettingsToggle={this.handleSettingsToggle} />
         </div>
           <div style={divStyleForm}>
+          <div className='joyride_step3'>
           <PriceTestForm 
             percent_increase = {percent_increase}
             percent_decrease = {percent_decrease}
@@ -173,6 +207,7 @@ class ProductIndex extends React.Component {
             onSubmitDestroyPriceTest = {this.handleBulkDestroySubmit}
             price_test_active = {false}
           />
+          </div>
           </div>
           <Card.Section>
             <FormLayout>
@@ -194,6 +229,7 @@ class ProductIndex extends React.Component {
             </FormLayout>
           </Card.Section>
           <Card.Section>
+          <div className='joyride_step2'>
             <ProductIndexTable 
               products={this.state.products} 
               selected={selected}
@@ -201,6 +237,7 @@ class ProductIndex extends React.Component {
               onToggleRow={this.toggleRow}
               onToggleSelectAll={this.toggleSelectAll}
             />
+          </div>
           </Card.Section>
         </Card>
         </Layout.Section>
@@ -213,17 +250,30 @@ class ProductIndex extends React.Component {
       </div>
     );  
   }
-searchProducts() {
-  $.ajax( {
-    url: '/products/',
-    dataType: 'json',
-    data: { term: this.state.term, collection: this.state.collection_id },
-    success: function(data) {
-      this.setState({ products: data });
-    }.bind(this),
-    error: function(data) {
-    }.bind(this)
-   });
+  updatePriceTests() {
+    $.ajax( {
+      url: '/update_price_tests_statuses/',
+      dataType: 'json',
+      data: { id: this.props.shop_id },
+      success: function(data) {
+        console.log('success')
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
+  }
+  searchProducts() {
+    $.ajax( {
+      url: '/products/',
+      dataType: 'json',
+      data: { term: this.state.term, collection: this.state.collection_id },
+      success: function(data) {
+        this.setState({ products: data });
+      }.bind(this),
+      error: function(data) {
+      }.bind(this)
+    });
   }
   createBulkPriceTest() {
     $.ajax( {
@@ -241,10 +291,11 @@ searchProducts() {
             },
       success: function() {
         console.log('success');
-        // TODO figure out why worker requests go to failure
+        window.location = '/'
       }.bind(this),
       error: function() {
         console.log('fail');
+        window.location = '/'
       }.bind(this)
     });
   }
@@ -256,9 +307,10 @@ searchProducts() {
       data: { product_ids: this.getSelectedProductIds() },
       success: function() {
         console.log('success');
-        // TODO figure out why worker requests go to failure
+        window.location = '/'
       }.bind(this),
       error: function() {
+        window.location = '/'
         console.log('fail');
       }.bind(this)
     });

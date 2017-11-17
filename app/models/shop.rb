@@ -15,6 +15,8 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
+  
+  
   ## TODO set up metrics to use  by default
   ## ike with Product
   def trial?
@@ -51,5 +53,17 @@ class Shop < ActiveRecord::Base
   def with_shopify!
     session = ShopifyAPI::Session.new(shopify_domain, shopify_token)
     ShopifyAPI::Base.activate_session(session)
+  end
+  
+  private
+  
+  #'collection_listings/add, collection_listings/remove, collection_listings/update',  products/delete, products/update
+  def product_update_webhook
+    webhook = {
+      topic: 'products/create',
+      address: Rails.configuration.public_url + 'webhooks',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
   end
 end

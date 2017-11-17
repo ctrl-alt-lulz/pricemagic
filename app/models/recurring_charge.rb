@@ -4,10 +4,9 @@ class RecurringCharge < Charge
   validates :charge_data, presence: true
   
   belongs_to :shop
-
+  after_initialize :store_charge_data
   before_destroy :destroy_on_shopify!
-  before_validation :store_charge_data
-  
+
   def charge_data=(data)
     self.shopify_id = data['id']
     super
@@ -30,13 +29,29 @@ class RecurringCharge < Charge
   end
   
   def store_charge_data
-    self.charge_data = ShopifyAPI::RecurringApplicationCharge.create(
-      name: "Paid Price Test Subscription",
-      price: 19.99,
-      return_url: Rails.configuration.public_url + 'recurring_charges_activate',
-      test: ENV['SHOPIFY_CHARGE_TEST'], 
-      terms: "$19.99 per month for up to 50 tests"
-    ).attributes
+    begin
+      self.charge_data = ShopifyAPI::RecurringApplicationCharge.create(
+        name: "Paid Price Test Subscription",
+        price: 19.99,
+        return_url: Rails.configuration.public_url + 'recurring_charges_activate',
+        test: ENV['SHOPIFY_CHARGE_TEST'], 
+        trial_days: 14,
+        terms: "$19.99 per month for unlimited tests"
+      ).attributes
+    rescue => e
+      puts e.inspect
+    end
+  end
+  
+  def update_charge_data(params)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(params[:charge_id])
+    if recurring_application_charge.status.eql? "accepted"
+      recurring_application_charge.activate
+      self.update_attributes!(charge_data: charge_data.merge(recurring_application_charge.attributes))
+      return true
+    else
+      return false
+    end
   end
   
   private
@@ -45,11 +60,11 @@ class RecurringCharge < Charge
   ## is destroyed on rescue
   def destroy_on_shopify!
     begin
-      ShopifyAPI::RecurringApplicationCharge.find(shopify_id).destroy
+      ShopifyAPI::RecurringApplicationCharge.current.destroy
     rescue ActiveResource::ResourceInvalid => e
-      puts '*'*50
       puts e.inspect
     end
+    StopPriceTestsWorker.perform_async(shop_id)
   end
 
 end

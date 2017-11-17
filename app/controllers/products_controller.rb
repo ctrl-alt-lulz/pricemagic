@@ -15,7 +15,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
       end
     end
     @products = @products.includes(:price_tests, :variants)
-    
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
     respond_to do |format|
       format.html # default html response
@@ -25,14 +24,22 @@ class ProductsController < ShopifyApp::AuthenticatedController
   
   def show
     @price_test_data = PriceTest.where(product_id: @product.id).last
-    @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
-    @plot_count = @price_test_data.try(:final_plot).try(:length)
-    @final_plot = @price_test_data.try(:final_plot)
-    @all_data = @price_test_data.try(:final_plot).try(:flatten)
-    @google_analytics_data = @product.most_recent_metrics
-    @price = @product.first_variant_price
+    @variants = @price_test_data.try(:product).try(:variants)
+    @variants = @variants.map(&:variant_title) if @variants 
     @unitPriceValueHash = @product.variant_unit_cost_hash
-    @current_shop = current_shop
+    if @price_test_data
+      @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
+      @plot_count = @price_test_data.try(:final_plot).try(:length)
+      @final_plot = @price_test_data.try(:final_plot)
+      @all_data = @price_test_data.try(:final_plot).try(:flatten)
+      @google_analytics_data = @product.most_recent_metrics
+      @price = @product.first_variant_price
+      @current_shop = current_shop
+      @revenue_hash = @price_test_data.revenue_hash
+      @profit_hash = @price_test_data.profit_hash
+      @profit_per_view_hash = @price_test_data.profit_per_view_hash
+      @revenue_per_view_hash = @price_test_data.revenue_per_view_hash
+    end
     respond_to do |format|
       format.html # default html response
       format.json { render json: @product }

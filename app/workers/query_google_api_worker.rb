@@ -8,19 +8,22 @@ class QueryGoogleApiWorker
 
   def perform
     Shop.all.each do |shop|
-      @view_id = shop.google_profile_id
-      @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
-      client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
-                                          client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
-                                          access_token: shop.latest_access_token,
-                                          refresh_token: shop.latest_refresh_token,
-                                          token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token')
-      client.refresh! if client.expired?
-      service = AnalyticsReportingService.new
-      service.authorization = client
-      begin
-        @product_performance = service.batch_report_get(get_product_performance)
-        ::Metric.bulk_metric_create_from_google!(shop.id, @product_performance)
+      unless shop.users.empty? || shop.price_tests.where(active: true).count == 0  
+        @view_id = shop.google_profile_id
+        @start_date = "#{(Time.now - shop.created_at).to_i / (24 * 60 * 60)}daysago"
+        client = Signet::OAuth2::Client.new(client_id: ENV.fetch('GOOGLE_API_CLIENT_ID'),
+                                            client_secret: ENV.fetch('GOOGLE_API_CLIENT_SECRET'),
+                                            access_token: shop.latest_access_token,
+                                            refresh_token: shop.latest_refresh_token,
+                                            token_credential_uri:  'https://www.googleapis.com/oauth2/v3/token')
+        client.refresh! if client.expired?
+        service = AnalyticsReportingService.new
+        service.authorization = client
+        begin
+          @product_performance = service.batch_report_get(get_product_performance)
+          puts @product_performance.inspect
+          ::Metric.bulk_metric_create_from_google!(shop.id, @product_performance)
+        end
       end
     end
   end
