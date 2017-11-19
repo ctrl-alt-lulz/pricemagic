@@ -26,7 +26,6 @@ class WebhooksController < ShopifyApp::AuthenticatedController
     verify_webhook(request)
 
     # Send back a 200 OK response
-    SiteAdmin.create(email: 'test@me.com', password: 'password', password_confirmation: 'password')
     head :ok
   end
    
