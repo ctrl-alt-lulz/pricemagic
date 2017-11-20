@@ -8,9 +8,21 @@ class WebhooksController < ApplicationController
   end
 
   def product_new
-    # data = ActiveSupport::JSON.decode(request.body.read)
-    # #puts data
-    # puts '*'* 500
+    data = ActiveSupport::JSON.decode(request.body.read)
+    puts data
+    puts '*'* 500
+    new_product = Product.new(title: params[:title], shopify_product_id: params[:id],
+                              product_type: params[:product_type], tags: params[:tags],
+                              shop_id: 1)
+    new_product.save
+    head :ok
+  end
+
+  def product_delete
+    data = ActiveSupport::JSON.decode(request.body.read)
+    puts data
+    puts '*'* 500
+    ::Product.find_by(shopify_product_id: params[:id]).destroy
     head :ok
   end
 

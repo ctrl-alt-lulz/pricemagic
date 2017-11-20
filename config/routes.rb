@@ -39,6 +39,8 @@ Rails.application.routes.draw do
   resources :products, :price_tests, :recurring_charges, :variants, :configurations
   get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
   post '/webhooks/products/new', to: 'webhooks#product_new'
+  post '/webhooks/products/delete', to: 'webhooks#product_delete'
+
 
   get 'emails', to: 'emails#index'
   post '/send_email', to: 'emails#send_email', as: 'send_email'

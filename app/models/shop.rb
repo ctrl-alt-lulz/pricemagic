@@ -65,5 +65,11 @@ class Shop < ActiveRecord::Base
       format: 'json'
     }
     ShopifyAPI::Webhook.create(webhook)
+    webhook = {
+      topic: 'products/delete',
+      address: Rails.configuration.public_url + 'webhooks/products/delete',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
   end
 end

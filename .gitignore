@@ -19,3 +19,4 @@ node_modules
 /node_modules
 database.yml
 webpacker.yml
+Procfile.dev
