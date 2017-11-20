@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(version: 20171030163057) do
 
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.integer  "product_id"
     t.integer  "variant_id"
     t.string   "page_title"
@@ -54,7 +54,6 @@ ActiveRecord::Schema.define(version: 20171030163057) do
     t.integer  "page_views"
     t.float    "page_avg_price"
     t.datetime "acquired_at"
-    t.integer  "page_unique_purchases"
   end
 
   create_table "price_tests", force: :cascade do |t|
@@ -120,6 +119,7 @@ ActiveRecord::Schema.define(version: 20171030163057) do
 
   create_table "variants", force: :cascade do |t|
     t.integer  "product_id"
+    t.string   "shopify_product_id"
     t.string   "shopify_variant_id"
     t.string   "variant_title"
     t.string   "variant_price"

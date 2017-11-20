@@ -17,3 +17,5 @@ node_modules
 /app/assets/webpack/*
 /public/packs
 /node_modules
+database.yml
+webpacker.yml

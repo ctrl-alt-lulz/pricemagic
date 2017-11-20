@@ -61,7 +61,7 @@ class Shop < ActiveRecord::Base
   def product_update_webhook
     webhook = {
       topic: 'products/create',
-      address: Rails.configuration.public_url + 'webhooks',
+      address: Rails.configuration.public_url + 'webhooks/products/new',
       format: 'json'
     }
     ShopifyAPI::Webhook.create(webhook)
