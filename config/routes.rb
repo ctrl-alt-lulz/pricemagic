@@ -40,7 +40,10 @@ Rails.application.routes.draw do
   get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
   post '/webhooks/products/new', to: 'webhooks#product_new'
   post '/webhooks/products/delete', to: 'webhooks#product_delete'
-
+  post '/webhooks/products/update', to: 'webhooks#product_update'
+  post '/webhooks/collections/delete', to: 'webhooks#collection_delete'
+  post '/webhooks/collections/create', to: 'webhooks#collection_create'
+  post '/webhooks/collections/update', to: 'webhooks#collection_update'
 
   get 'emails', to: 'emails#index'
   post '/send_email', to: 'emails#send_email', as: 'send_email'

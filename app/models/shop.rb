@@ -71,5 +71,31 @@ class Shop < ActiveRecord::Base
       format: 'json'
     }
     ShopifyAPI::Webhook.create(webhook)
+    webhook = {
+      topic: 'products/update',
+      address: Rails.configuration.public_url + 'webhooks/products/update',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
+
+
+    webhook = {
+      topic: 'collections/create',
+      address: Rails.configuration.public_url + 'webhooks/collections/create',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
+    webhook = {
+      topic: 'collections/delete',
+      address: Rails.configuration.public_url + 'webhooks/collections/delete',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
+    webhook = {
+      topic: 'collections/update',
+      address: Rails.configuration.public_url + 'webhooks/collections/update',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
   end
 end
