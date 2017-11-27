@@ -7,6 +7,10 @@ class RecurringCharge < Charge
   after_initialize :store_charge_data
   before_destroy :destroy_on_shopify!
 
+  def active?
+    return charge_data['status'] == 'active'
+  end
+
   def charge_data=(data)
     self.shopify_id = data['id']
     super
