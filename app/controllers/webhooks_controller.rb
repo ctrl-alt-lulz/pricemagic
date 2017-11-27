@@ -62,6 +62,9 @@ class WebhooksController < ApplicationController
 
   def collection_update
     puts params
+    local_collection = shop.collections.find_by(shopify_collection_id: params[:id])
+    local_collection.update_attributes(title: params[:title])
+    shop.seed_collects!
     head :ok
   end
 

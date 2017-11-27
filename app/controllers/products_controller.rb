@@ -75,8 +75,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def check_subscription_status
-    puts current_shop.has_subscription?
-    puts '*'*50
     redirect_to recurring_charges_path unless current_shop.has_subscription?
   end
 end
