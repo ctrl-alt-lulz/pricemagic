@@ -20,7 +20,6 @@ export default class SettingsPage extends React.Component {
               <Layout>
                 {this.renderGoogleAccount()}
                 {this.renderAccountInfo()}
-                <RecurringChargesLink />
               </Layout>
             </Page>
     );

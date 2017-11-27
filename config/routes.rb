@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   post '/webhooks/collections/delete', to: 'webhooks#collection_delete'
   post '/webhooks/collections/create', to: 'webhooks#collection_create'
   post '/webhooks/collections/update', to: 'webhooks#collection_update'
+  post '/webhooks/app/uninstalled', to: 'webhooks#app_uninstalled'
 
   get 'emails', to: 'emails#index'
   post '/send_email', to: 'emails#send_email', as: 'send_email'

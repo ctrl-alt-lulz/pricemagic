@@ -61,7 +61,13 @@ class WebhooksController < ApplicationController
   end
 
   def collection_update
+    puts params
     head :ok
+  end
+
+  def app_uninstalled
+    head :ok
+    StopPriceTestsWorker.perform_async(shop.id)
   end
 
   private

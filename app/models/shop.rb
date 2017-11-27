@@ -15,8 +15,8 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
-  
-  
+  after_create :create_webhooks, :seed_all_product_info
+
   ## TODO set up metrics to use  by default
   ## ike with Product
   def trial?
@@ -28,9 +28,7 @@ class Shop < ActiveRecord::Base
   end
   
   def has_subscription?
-    ## TODO make this lookup to shopify each time
-    ## TODO set up association locally and manage with shopify
-    true
+    recurring_charges.last.nil? ? false : recurring_charges.last.try(:active?)
   end
   
   def latest_metric
@@ -57,8 +55,7 @@ class Shop < ActiveRecord::Base
   
   private
   
-  #'collection_listings/add, collection_listings/remove, collection_listings/update',  products/delete, products/update
-  def product_update_webhook
+  def create_webhooks
     webhook = {
       topic: 'products/create',
       address: Rails.configuration.public_url + 'webhooks/products/new',
@@ -77,8 +74,6 @@ class Shop < ActiveRecord::Base
       format: 'json'
     }
     ShopifyAPI::Webhook.create(webhook)
-
-
     webhook = {
       topic: 'collections/create',
       address: Rails.configuration.public_url + 'webhooks/collections/create',
@@ -97,5 +92,15 @@ class Shop < ActiveRecord::Base
       format: 'json'
     }
     ShopifyAPI::Webhook.create(webhook)
+    webhook = {
+      topic: 'app/uninstalled',
+      address: Rails.configuration.public_url + 'webhooks/app/uninstalled',
+      format: 'json'
+    }
+    ShopifyAPI::Webhook.create(webhook)
+  end
+
+  def seed_all_product_info
+    SingleShopSeedProductsAndVariantsWorker.perform_async(id)
   end
 end
