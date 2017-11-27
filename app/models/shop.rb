@@ -28,7 +28,11 @@ class Shop < ActiveRecord::Base
   end
   
   def has_subscription?
-    recurring_charges.last.nil? ? false : recurring_charges.last.try(:active?)
+    if ShopifyAPI::RecurringApplicationCharge.current.nil?
+      false
+    else
+      ShopifyAPI::RecurringApplicationCharge.current.attributes['status'] == 'active'
+    end
   end
   
   def latest_metric
