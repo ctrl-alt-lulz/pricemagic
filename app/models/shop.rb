@@ -48,7 +48,7 @@ class Shop < ActiveRecord::Base
   end
   
   def google_profile_id
-    users.first.google_profile_id
+    users.first.try(:google_profile_id)
   end
 
   def with_shopify!
