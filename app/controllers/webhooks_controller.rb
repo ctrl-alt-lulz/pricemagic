@@ -1,4 +1,5 @@
 class WebhooksController < ApplicationController
+  include ShopifyApp::WebhookVerification
   before_filter :verify_webhook, :except => 'verify_webhook'
 
   def product_new

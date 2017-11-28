@@ -75,6 +75,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def check_subscription_status
-    redirect_to recurring_charges_path unless current_shop.has_subscription?
+    #redirect_to recurring_charges_path unless current_shop.has_subscription?
   end
 end

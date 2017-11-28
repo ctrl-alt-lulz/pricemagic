@@ -15,7 +15,6 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
-  after_create :create_webhooks, :seed_all_product_info
 
   ## TODO set up metrics to use  by default
   ## ike with Product
@@ -58,51 +57,6 @@ class Shop < ActiveRecord::Base
   end
   
   private
-  
-  def create_webhooks
-    webhook = {
-      topic: 'products/create',
-      address: Rails.configuration.public_url + 'webhooks/products/new',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'products/delete',
-      address: Rails.configuration.public_url + 'webhooks/products/delete',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'products/update',
-      address: Rails.configuration.public_url + 'webhooks/products/update',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'collections/create',
-      address: Rails.configuration.public_url + 'webhooks/collections/create',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'collections/delete',
-      address: Rails.configuration.public_url + 'webhooks/collections/delete',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'collections/update',
-      address: Rails.configuration.public_url + 'webhooks/collections/update',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-    webhook = {
-      topic: 'app/uninstalled',
-      address: Rails.configuration.public_url + 'webhooks/app/uninstalled',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
-  end
 
   def seed_all_product_info
     SingleShopSeedProductsAndVariantsWorker.perform_async(id)
