@@ -5,7 +5,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
     @recurring_charges = current_shop.charges
     @google_api_id = current_shop.google_profile_id
-    @user_connected = !current_shop.users.last.google_profile_id.nil?
+    @user_connected = !current_shop.google_profile_id.nil?
     @subscription_status =  !@recurring_charges.empty?
   end
   
