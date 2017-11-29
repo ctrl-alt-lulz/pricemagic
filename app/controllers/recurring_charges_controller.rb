@@ -22,7 +22,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
         format.json { render json: { success: false, errors: @recurring_charge.errors.full_messages }, status: 201 }
       end
     end
-  end
+  endpr
   
   def update
     @recurring_charge = RecurringCharge.find_by(shopify_id: params[:charge_id])

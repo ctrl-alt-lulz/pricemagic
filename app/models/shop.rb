@@ -15,6 +15,7 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
+  after_create :seed_all_product_info
 
   ## TODO set up metrics to use  by default
   ## ike with Product
