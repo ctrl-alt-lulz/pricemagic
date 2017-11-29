@@ -17,10 +17,11 @@ class WebhooksController < ApplicationController
     local_variants  = shop.products.find_by(shopify_product_id: params[:id]).variants
     local_shopify_variant_id_array = local_variants.map{|variant| variant.shopify_variant_id.to_s }
     new_variant_id_array = ext_shopify_variant_id_array - local_shopify_variant_id_array
+    local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
+    local_product.update_attributes(title: params[:title])
     unless (new_variant_id_array).empty?
       new_variant_id_array.each do |new_variant_id|
         ext_variant = ShopifyAPI::Variant.find(new_variant_id)
-        local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
         local_product.variants.new(shopify_variant_id: new_variant_id,
                                    variant_title: ext_variant.title.to_s,
                                    variant_price: ext_variant.price.to_s)
@@ -34,7 +35,6 @@ class WebhooksController < ApplicationController
         local_variant = Variant.find_by(shopify_variant_id: local_shopify_variant_id )
         local_variant.update_attributes(variant_title: ext_variant.title.to_s,
                                        variant_price: ext_variant.price.to_s)
-        local_variant.save
       else
        dead_variant = local_variants.find_by(shopify_variant_id: local_shopify_variant_id)
        dead_variant.destroy
