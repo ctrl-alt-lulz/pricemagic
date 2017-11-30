@@ -130,8 +130,7 @@ class ProductIndex extends React.Component {
                 title: 'Initial Setup and Configuration',
                 text: 'Connect your Google Analytics Account to get started, ' +
                       'make sure you have enabled enhanced ecommerce on your Google Account. ' +
-                      'Visit the configuration section to upload product information to the app. ' +
-                      'After initialization your products will automatically stay up-to-date.',
+                      'Visit the configuration section to upload product information to the app.',
                 selector: '.joyride_step1',
                 position: 'top',
                 type: 'hover',
@@ -147,8 +146,8 @@ class ProductIndex extends React.Component {
                 type: 'hover',
       }, {
                 title: 'Products',
-                text: "When you've loaded in products you'll be able to click each product title and  "+
-                " view analytics data and you'll be able to create price tests that show " + 
+                text: "Click each product title to  "+
+                " view analytics data and create price tests that show " +
                 "a preview of what your test prices will be.",
                 selector: '.joyride_step3',
                 position: 'top',
@@ -171,8 +170,7 @@ class ProductIndex extends React.Component {
             >
               <ActionList
                 items={[
-                  {content: 'Account', url: '/recurring_charges'},
-                  {content: 'Configuration', url: '/configurations'}
+                  {content: 'Account', url: '/recurring_charges'}
                 ]}
               />
             </Popover>
@@ -258,19 +256,6 @@ class ProductIndex extends React.Component {
       </Layout>
       </div>
     );  
-  }
-  updatePriceTests() {
-    $.ajax( {
-      url: '/update_price_tests_statuses/',
-      dataType: 'json',
-      data: { id: this.props.shop_id },
-      success: function(data) {
-        console.log('success')
-        this.setState({ products: data });
-      }.bind(this),
-      error: function(data) {
-      }.bind(this)
-    });
   }
   searchProducts() {
     $.ajax( {

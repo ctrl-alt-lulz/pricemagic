@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   post 'price_tests/bulk_create', to: 'price_tests#bulk_create', as: 'price_tests_bulk'
   delete 'price_tests/bulk_destroy', to: 'price_tests#bulk_destroy', as: 'price_tests_bulk_destroy'
   delete 'google_auth', to: 'google_auth#destroy', as: 'google_auth_destroy'
-  resources :products, :price_tests, :recurring_charges, :variants, :configurations
+  resources :products, :price_tests, :recurring_charges, :variants
   get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
   post '/webhooks/products/new', to: 'webhooks#product_new'
   post '/webhooks/products/delete', to: 'webhooks#product_delete'
