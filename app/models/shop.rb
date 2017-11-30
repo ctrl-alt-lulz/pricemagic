@@ -60,6 +60,9 @@ class Shop < ActiveRecord::Base
   private
 
   def seed_all_product_info
-    SingleShopSeedProductsAndVariantsWorker.perform_async(id)
+    self.seed_products!
+    self.seed_variants!
+    self.seed_collections!
+    self.seed_collects!
   end
 end
