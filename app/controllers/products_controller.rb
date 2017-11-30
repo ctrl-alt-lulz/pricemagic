@@ -5,6 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def index
+    @run_walkthrough = current_shop.store_created_within_one_hour?
     @collections = current_shop.collections
     @products = current_shop.products
     if params[:term] 

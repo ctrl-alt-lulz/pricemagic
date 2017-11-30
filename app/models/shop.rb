@@ -56,13 +56,14 @@ class Shop < ActiveRecord::Base
     session = ShopifyAPI::Session.new(shopify_domain, shopify_token)
     ShopifyAPI::Base.activate_session(session)
   end
-  
+
+  def store_created_within_one_hour?
+    Time.zone.now - self.created_at < 1.hour
+  end
+
   private
 
   def seed_all_product_info
-    self.seed_products!
-    self.seed_variants!
-    self.seed_collections!
-    self.seed_collects!
+    SingleShopSeedProductsAndVariantsWorker.perform_async(id)
   end
 end

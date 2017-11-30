@@ -129,8 +129,10 @@ class ProductIndex extends React.Component {
     const steps = [{
                 title: 'Initial Setup and Configuration',
                 text: 'Connect your Google Analytics Account to get started, ' +
-                      'make sure you have enabled enhanced ecommerce on your Google Account. ' +
-                      'Visit the configuration section to upload product information to the app.',
+                      'make sure you have enabled enhanced e-commerce on your Google Account. ' +
+                      'Visit the configuration section to upload product information to the app. ' +
+                      "Your products are loading into the app in the background, if they haven't " +
+                      "shown up yet please wait a few minutes and refresh the page.",
                 selector: '.joyride_step1',
                 position: 'top',
                 type: 'hover',
@@ -182,7 +184,7 @@ class ProductIndex extends React.Component {
       <Joyride
         ref={c => (this.joyride = c)}
         steps={steps}
-        run={true} // or some other boolean for when you want to start it
+        run={this.props.run_walkthrough} // or some other boolean for when you want to start it
         debug={false}
         showStepsProgress={true}
         showSkipButton={true}
