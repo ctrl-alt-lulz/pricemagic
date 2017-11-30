@@ -57,8 +57,8 @@ class Shop < ActiveRecord::Base
     ShopifyAPI::Base.activate_session(session)
   end
 
-  def store_created_within_one_hour?
-    Time.zone.now - self.created_at < 1.hour
+  def run_walkthrough?
+    price_tests.count == 0
   end
 
   private
