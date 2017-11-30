@@ -6,13 +6,11 @@ class WebhooksController < ApplicationController
     new_product = shop.products.new(title: params[:title], shopify_product_id: params[:id],
                               product_type: params[:product_type], tags: params[:tags],
                               shop_id: shop.id)
-    new_product.save
     params[:variants].each do |variant|
       new_product.variants.new(shopify_variant_id: variant[:id], variant_title: variant[:title],
                                variant_price: variant[:price])
-      new_product.save
     end
-    new_product.variants
+    new_product.save
     shop.seed_collects!
   end
 
