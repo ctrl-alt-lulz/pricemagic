@@ -3,8 +3,8 @@ module PriceTestExtShopifyMethods
    ext_shopify_product.variants
   end
   
-  def revert_to_original_price!
-    ## TODO make this similar to #apply_current_test_price_async!
+  def revert_to_original_price_async!
+    RevertToOldPriceWorker.perform_in(1.second, id)
   end
   
   def revert_to_original_price!
