@@ -143,7 +143,7 @@ export default class ProductShow extends React.Component {
     const price_multipler = this.state.price_multipler;
     const view_threshold = this.state.view_threshold;
     const product = this.props.product;
-    const price_test_active = (this.props.product.has_active_price_test  == 'True');
+    const price_test_active = (this.props.product.has_active_price_test  == 'True') || this.props.has_subscription;
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
     const plot_number = this.state.plot_number
