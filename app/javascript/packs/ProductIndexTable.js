@@ -1,7 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import ReactTable from 'react-table'
-import PropTypes from 'prop-types'
 import { Checkbox } from '@shopify/polaris';
 
 export default class ProductIndexTable extends React.Component {
