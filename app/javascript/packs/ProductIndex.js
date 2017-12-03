@@ -214,7 +214,7 @@ class ProductIndex extends React.Component {
             onEndDigitChange = {this.handleEndDigitChange}
             onSubmitPriceTest = {this.handleBulkSubmit}
             onSubmitDestroyPriceTest = {this.handleBulkDestroySubmit}
-            price_test_active = {false}
+            price_test_active = {this.props.has_subscription}
           />
           </div>
           </div>

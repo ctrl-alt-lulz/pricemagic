@@ -8,7 +8,7 @@ class PriceTest < ActiveRecord::Base
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
-  validate :trial_or_subscription
+  #validate :trial_or_subscription
   before_validation :seed_price_data, if: proc { price_data.nil? }
   before_create :set_new_current_price_started_at
   after_create :apply_current_test_price_async!
@@ -114,13 +114,13 @@ class PriceTest < ActiveRecord::Base
   end
   
   def make_inactive!
-    revert_to_original_price!
     set_to_inactive
+    revert_to_original_price_async!
     set_new_current_price_started_at
     save
     ## TODO set price to original or best price
   end
-  
+
   def done?
     price_data.try(:first).last['current_test_price'].nil?
   end
@@ -146,7 +146,7 @@ class PriceTest < ActiveRecord::Base
   def as_json(options={})
     super(:methods => [:variants, :has_active_price_test, :final_plot])
   end
-  
+
   private
   
   def trial_or_subscription

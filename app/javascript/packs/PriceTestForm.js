@@ -95,7 +95,7 @@ export default class PriceTestForm extends React.Component {
                     />
                   </FormLayout.Group>
                   <FormLayout.Group>
-                    <Button primary onClick={this.handleSubmit}>Start Price Test</Button>
+                    <Button primary disabled={price_test_active} onClick={this.handleSubmit}>Start Price Test</Button>
                     <Button primary onClick={this.handleSubmitDestroy}>Destroy Price Test</Button>
                   </FormLayout.Group>
                </FormLayout>

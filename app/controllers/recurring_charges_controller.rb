@@ -18,7 +18,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
       end
     else
       respond_to do |format|
-        format.html { redirect_to @recurring_charge.confirmation_url, notice: 'Something went wrong' }
+        format.html { redirect_to root_url, notice: 'Something went wrong' }
         format.json { render json: { success: false, errors: @recurring_charge.errors.full_messages }, status: 201 }
       end
     end
