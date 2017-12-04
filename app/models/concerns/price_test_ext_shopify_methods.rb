@@ -5,6 +5,7 @@ module PriceTestExtShopifyMethods
   
   def revert_to_original_price_async!
     RevertToOldPriceWorker.perform_in(1.second, id)
+    sleep(60)
   end
   
   def revert_to_original_price!
