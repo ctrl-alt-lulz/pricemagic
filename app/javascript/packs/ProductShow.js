@@ -146,8 +146,12 @@ export default class ProductShow extends React.Component {
     const price_test_active = (this.props.product.has_active_price_test  == 'True') || this.props.has_subscription;
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-    const plot_number = this.state.plot_number
-    const button_states = this.state.button_states
+    const plot_number = this.state.plot_number;
+    const button_states = this.state.button_states;
+    const divStyleIndex = {
+      'marginLeft': '20px',
+      'marginRight': '20px'
+    };
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
 
@@ -187,7 +191,7 @@ export default class ProductShow extends React.Component {
     }
     
     return (
-      <div>
+      <div style={divStyleIndex}>
         <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
           <PlotIfDataExists 
             dataExists={variant_plot_data} 
