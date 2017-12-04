@@ -130,7 +130,7 @@ class PriceTest < ActiveRecord::Base
     store_view_count_from_test
     store_revenue_from_test
     set_new_test_price
-    apply_current_test_price!
+    apply_current_test_price_async!
     set_new_current_price_started_at
     save
   end

@@ -4,15 +4,7 @@ module PriceTestExtShopifyMethods
   end
   
   def revert_to_original_price_async!
-    RevertToOldPriceWorker.perform_in(1.second, id)
-    sleep(60)
-  end
-  
-  def revert_to_original_price!
-    ext_shopify_variants.each do |variant|
-      variant.price = price_data[variant.id.to_s]['original_price']
-    end
-    ext_shopify_product.save
+    RevertToOldPriceWorker.perform_in(1.second, shop.id, product.shopify_product_id, price_data)
   end
   
   def apply_current_test_price_async!
