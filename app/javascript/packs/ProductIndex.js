@@ -130,7 +130,7 @@ class ProductIndex extends React.Component {
                 title: 'Initial Setup and Configuration',
                 text: 'Connect your Google Analytics Account to get started, ' +
                       'make sure you have enabled enhanced e-commerce on your Google Account. ' +
-                      'Visit the configuration section to upload product information to the app. ' +
+                      "You'll also need a subscription to create price tests, go to settings to sign up. " +
                       "Your products are loading into the app in the background, if they haven't " +
                       "shown up yet please wait a few minutes and refresh the page.",
                 selector: '.joyride_step1',
