@@ -15,7 +15,7 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
-  after_create :seed_all_product_info
+  after_create :seed_all_product_info, :get_email
 
   ## TODO set up metrics to use  by default
   ## ike with Product
@@ -65,5 +65,9 @@ class Shop < ActiveRecord::Base
 
   def seed_all_product_info
     SingleShopSeedProductsAndVariantsWorker.perform_async(id)
+  end
+
+  def get_email
+    self.update_attributes(shop_email: ShopifyAPI::Shop.current.email)
   end
 end
