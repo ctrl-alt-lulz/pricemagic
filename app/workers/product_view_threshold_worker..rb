@@ -1,6 +1,6 @@
 class ProductViewThresholdWorker
   include Sidekiq::Worker
-  sidekiq_options :retry => 1
+  sidekiq_options :retry => 10
 
   def perform
     Shop.all.each do |shop|

@@ -68,10 +68,10 @@ class PriceTest < ActiveRecord::Base
   def store_revenue_from_test
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
-      if v['revenue'].empty?
-        v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      else
+      if v['tested_price_points'].empty?
         update_revenue_view
+      else
+        v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
       end
       v['starting_revenue'] = var.latest_variant_google_metric_revenue
     end
@@ -79,7 +79,7 @@ class PriceTest < ActiveRecord::Base
 
   def store_view_count_from_test
     price_data.each do |k, v|
-      v['total_variant_views'].empty? ? v['total_variant_views'] << page_views_since_create : update_view_count
+      v['tested_price_points'].empty? ? update_view_count : v['total_variant_views'] << page_views_since_create
     end
     price_data.each do |k, v|
       v['starting_page_views'] = latest_product_google_metric_views
