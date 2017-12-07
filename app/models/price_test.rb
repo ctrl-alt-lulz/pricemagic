@@ -79,10 +79,7 @@ class PriceTest < ActiveRecord::Base
 
   def store_view_count_from_test
     price_data.each do |k, v|
-      if v['total_variant_views'].empty?
-        v['total_variant_views'] << page_views_since_create
-      else
-        update_view_count
+      v['total_variant_views'].empty? ? v['total_variant_views'] << page_views_since_create : update_view_count
     end
     price_data.each do |k, v|
       v['starting_page_views'] = latest_product_google_metric_views
