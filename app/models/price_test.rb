@@ -68,15 +68,31 @@ class PriceTest < ActiveRecord::Base
   def store_revenue_from_test
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
-      v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      if v['revenue'].empty?
+        v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      else
+        update_revenue_view
+      end
       v['starting_revenue'] = var.latest_variant_google_metric_revenue
+    end
+  end
+
+  def store_view_count_from_test
+    price_data.each do |k, v|
+      if v['total_variant_views'].empty?
+        v['total_variant_views'] << page_views_since_create
+      else
+        update_view_count
+    end
+    price_data.each do |k, v|
+      v['starting_page_views'] = latest_product_google_metric_views
     end
   end
 
   def update_revenue_view
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
-      if v['revenue'].empty? 
+      if v['revenue'].empty?
         v['revenue'][0] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
       else
         v['revenue'][-1] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
@@ -84,27 +100,18 @@ class PriceTest < ActiveRecord::Base
     end
     save
   end
-  
+
   def update_view_count
     price_data.each do |k, v|
-      if v['total_variant_views'].empty? 
+      if v['total_variant_views'].empty?
         v['total_variant_views'][0] = page_views_since_create
       else
         v['total_variant_views'][-1] = page_views_since_create
       end
     end
     save
-  end 
-
-  def store_view_count_from_test
-    price_data.each do |k, v|
-      v['total_variant_views'] << page_views_since_create
-    end
-    price_data.each do |k, v|
-      v['starting_page_views'] = latest_product_google_metric_views
-    end
   end
-  
+
   def page_views_since_create
     latest_product_google_metric_views - price_data.values.first['starting_page_views'].to_i
   end
