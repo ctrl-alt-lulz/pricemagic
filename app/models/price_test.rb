@@ -48,10 +48,10 @@ class PriceTest < ActiveRecord::Base
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
-        total_variant_views: [], 
+        total_variant_views: [0],
         price_points: price_points,
         tested_price_points: [],
-        revenue: [], 
+        revenue: [0],
         starting_revenue: variant.latest_variant_google_metric_revenue,
         starting_page_views: latest_product_google_metric_views
       }
@@ -64,49 +64,38 @@ class PriceTest < ActiveRecord::Base
     variants.each{ |variant| empty_hash.merge!(variant_hash(variant, price_multipler)) }
     empty_hash
   end
-  
+
   def store_revenue_from_test
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
-      if v['tested_price_points'].count < 2
-        update_revenue_view
-      else
-        v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      end
+      v['revenue'].pop
+      v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
       v['starting_revenue'] = var.latest_variant_google_metric_revenue
     end
   end
 
   def store_view_count_from_test
     price_data.each do |k, v|
-      v['tested_price_points'].count < 2 ? update_view_count : v['total_variant_views'] << page_views_since_create
+      v['total_variant_views'].pop
+      v['total_variant_views'] << page_views_since_create
     end
     price_data.each do |k, v|
       v['starting_page_views'] = latest_product_google_metric_views
     end
   end
 
-  def update_revenue_view
+  def update_revenue_and_view_metrics
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
-      if v['revenue'].empty?
-        v['revenue'][0] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      else
-        v['revenue'][-1] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      end
+      preview_index = v['tested_price_points'].count
+      v['revenue'][preview_index] =  var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      v['total_variant_views'][preview_index] = page_views_since_create
     end
     save
   end
 
-  def update_view_count
-    price_data.each do |k, v|
-      if v['total_variant_views'].empty?
-        v['total_variant_views'][0] = page_views_since_create
-      else
-        v['total_variant_views'][-1] = page_views_since_create
-      end
-    end
-    save
+  def on_last_price_point
+    price_data.values.first['tested_price_points'].count == price_data.values.first['tested_price_points'].count - 1
   end
 
   def page_views_since_create
@@ -114,7 +103,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def hit_threshold?
-    page_views_since_create >= self['view_threshold'].to_i
+    price_data.values.first['total_variant_views'].last.to_i >= self['view_threshold'].to_i
   end
   
   def make_inactive!
