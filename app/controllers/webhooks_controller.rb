@@ -16,7 +16,10 @@ class WebhooksController < ApplicationController
 
   def product_update
     head :ok
-    UpdateProductWorker.perform_async(JSON.parse(request.body.read), shop.id, params)
+    shopify_product_id = params[:id].to_s
+    variants = params[:variants]
+    title = params[:title]
+    UpdateProductWorker.perform_async(shopify_product_id, variants, title, shop.id)
     # local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
     # unless local_product.price_tests.last.active
     #   ext_shopify_variant_id_array =  params[:variants].map{|variant| variant[:id].to_s}

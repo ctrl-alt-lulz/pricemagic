@@ -2,21 +2,17 @@ class UpdateProductWorker
   include Sidekiq::Worker
   sidekiq_options retry: 15
 
-  def perform(params, id, params2)
-    puts '*'*50
-    puts params.inspect
-    puts '*'*50
-    puts params2.inspect
-    puts '*'*50
+  def perform(shopify_product_id, variants, title, id)
     shop = Shop.find(id)
-    local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
+    #local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
+    local_product = shop.products.find_by(shopify_product_id: shopify_product_id)
     unless local_product.price_tests.last.active
-      ext_shopify_variant_id_array =  params[:variants].map{|variant| variant[:id].to_s}
+      ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
       shop.with_shopify!
-      local_variants  = shop.products.find_by(shopify_product_id: params[:id]).variants
+      local_variants  = shop.products.find_by(shopify_product_id: shopify_product_id).variants
       local_shopify_variant_id_array = local_variants.map{|variant| variant.shopify_variant_id.to_s }
       new_variant_id_array = ext_shopify_variant_id_array - local_shopify_variant_id_array
-      local_product.update_attributes(title: params[:title])
+      local_product.update_attributes(title: title)
       unless (new_variant_id_array).empty?
         new_variant_id_array.each do |new_variant_id|
           ext_variant = ShopifyAPI::Variant.find(new_variant_id)
@@ -38,7 +34,7 @@ class UpdateProductWorker
           dead_variant.destroy
         end
       end
-      shop.products.find_by(shopify_product_id: params[:id]).delete_collects
+      shop.products.find_by(shopify_product_id: shopify_product_id).delete_collects
       shop.seed_collects!
     end
   end
