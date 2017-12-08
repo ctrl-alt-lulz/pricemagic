@@ -2,13 +2,12 @@ class UpdateProductWorker
   include Sidekiq::Worker
   sidekiq_options retry: 15
 
-  def perform(shopify_product_id, variants, title, id)
+  def perform(shopify_product_id, variants, title, id, ext_shopify_variant_id_array )
     shop = Shop.find(id)
-    #local_product = shop.products.find_by(shopify_product_id: params[:variants].first[:product_id].to_s)
+    shop.with_shopify!
     local_product = shop.products.find_by(shopify_product_id: shopify_product_id)
     unless local_product.price_tests.last.active
-      ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
-      shop.with_shopify!
+      #ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
       local_variants  = shop.products.find_by(shopify_product_id: shopify_product_id).variants
       local_shopify_variant_id_array = local_variants.map{|variant| variant.shopify_variant_id.to_s }
       new_variant_id_array = ext_shopify_variant_id_array - local_shopify_variant_id_array
