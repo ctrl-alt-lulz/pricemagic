@@ -6,8 +6,7 @@ class UpdateProductWorker
     shop = Shop.find(id)
     shop.with_shopify!
     local_product = shop.products.find_by(shopify_product_id: shopify_product_id)
-    unless local_product.price_tests.last.active
-      #ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
+    unless local_product.price_tests.last.try(:active)
       local_variants  = shop.products.find_by(shopify_product_id: shopify_product_id).variants
       local_shopify_variant_id_array = local_variants.map{|variant| variant.shopify_variant_id.to_s }
       new_variant_id_array = ext_shopify_variant_id_array - local_shopify_variant_id_array
