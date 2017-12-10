@@ -3,15 +3,22 @@ class WebhooksController < ApplicationController
 
   def product_new
     head :ok
-    new_product = shop.products.new(title: params[:title], shopify_product_id: params[:id],
-                              product_type: params[:product_type], tags: params[:tags],
-                              shop_id: shop.id)
-    params[:variants].each do |variant|
-      new_product.variants.new(shopify_variant_id: variant[:id], variant_title: variant[:title],
-                               variant_price: variant[:price])
-    end
-    new_product.save
-    shop.seed_collects!
+    shopify_product_id = params[:id].to_s
+    variants = params[:variants]
+    product_type = params[:product_type]
+    title = params[:title]
+    tags = params[:tags]
+    variants_2 = params[:variants].map{|variant| variant}
+    NewProductWorker.perform_async(shopify_product_id, title, shop.id, product_type, tags, variants, variants_2)
+    # new_product = shop.products.new(title: params[:title], shopify_product_id: params[:id],
+    #                           product_type: params[:product_type], tags: params[:tags],
+    #                           shop_id: shop.id)
+    # params[:variants].each do |variant|
+    #   new_product.variants.new(shopify_variant_id: variant[:id], variant_title: variant[:title],
+    #                            variant_price: variant[:price])
+    # end
+    # new_product.save
+    # shop.seed_collects!
   end
 
   def product_update
@@ -20,7 +27,7 @@ class WebhooksController < ApplicationController
     variants = params[:variants]
     title = params[:title]
     ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
-    UpdateProductWorker.perform_async(shopify_product_id, variants, title, shop.id, ext_shopify_variant_id_array)
+    UpdateProductWorker.perform_async(shopify_product_id, title, shop.id, ext_shopify_variant_id_array)
   end
 
   def product_delete
