@@ -29,7 +29,7 @@ class WebhooksController < ApplicationController
   def collection_delete
     head :ok
     shopify_collection_id = params[:id].to_s
-    CollectionDeleteWorker.perform_async(shopify_collection_id. shop.id)
+    CollectionDeleteWorker.perform_async(shopify_collection_id, shop.id)
     #shop.collections.find_by(shopify_collection_id: params[:id].to_s).destroy
   end
 
