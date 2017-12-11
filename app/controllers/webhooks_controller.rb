@@ -47,7 +47,6 @@ class WebhooksController < ApplicationController
     head :ok
     StopPriceTestsWorker.perform_async(shop.id)
     DestroyRecurringChargesWorker.perform_async(shop.id)
-    #shop.recurring_charges.last.delete #make into a worker
   end
 
   private
