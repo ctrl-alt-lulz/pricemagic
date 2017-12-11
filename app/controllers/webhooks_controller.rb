@@ -7,8 +7,9 @@ class WebhooksController < ApplicationController
     product_type = params[:product_type]
     title = params[:title]
     tags = params[:tags]
-    variants = params[:variants].map{|variant| { id: variant[:id], variant_title: variant[:title],
-                                                  variant_price: variant[:price]} }
+    variants = params[:variants]
+                 ##.map{|variant| { id: variant[:id], variant_title: variant[:title],
+                  #                                variant_price: variant[:price]} }
     NewProductWorker.perform_async(shopify_product_id, title, shop.id, product_type, tags, variants)
   end
 
