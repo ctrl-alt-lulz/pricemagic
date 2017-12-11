@@ -6,6 +6,8 @@
 # you're free to overwrite the RESTful controller actions.
 module Admin
   class ApplicationController < Administrate::ApplicationController
+    protect_from_forgery with: :exception
+    before_action :authenticate_user!
     before_action :authenticate_admin
 
     def authenticate_admin
