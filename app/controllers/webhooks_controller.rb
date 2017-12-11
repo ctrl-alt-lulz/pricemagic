@@ -8,8 +8,6 @@ class WebhooksController < ApplicationController
     title = params[:title]
     tags = params[:tags]
     variants = params[:variants]
-                 ##.map{|variant| { id: variant[:id], variant_title: variant[:title],
-                  #                                variant_price: variant[:price]} }
     NewProductWorker.perform_async(shopify_product_id, title, shop.id, product_type, tags, variants)
   end
 
@@ -24,7 +22,9 @@ class WebhooksController < ApplicationController
 
   def product_delete
     head :ok
-    shop.products.find_by(shopify_product_id: params[:id]).destroy
+    shopify_product_id = params[:id].to_s
+    #shop.products.find_by(shopify_product_id: params[:id]).destroy
+    ProductDeleteWorker.perform_async(shopify_product_id, shop.id)
   end
 
   def collection_delete
