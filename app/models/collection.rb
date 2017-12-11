@@ -8,6 +8,6 @@ class Collection < ActiveRecord::Base
   private
 
   def delete_collects
-    shop.collects.where(collection_id: id).destroy_all
+    Collect.where(collection_id: id).destroy_all
   end
 end

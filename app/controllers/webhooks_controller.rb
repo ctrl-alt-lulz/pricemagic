@@ -30,20 +30,14 @@ class WebhooksController < ApplicationController
     head :ok
     shopify_collection_id = params[:id].to_s
     CollectionDeleteWorker.perform_async(shopify_collection_id, shop.id)
-    #shop.collections.find_by(shopify_collection_id: params[:id].to_s).destroy
   end
 
   def collection_create
     head :ok
-    # shop.seed_collections!
-    # shop.seed_collects!
     CollectionCreateWorker.perform_async(shop.id)
   end
 
   def collection_update
-    # local_collection = shop.collections.find_by(shopify_collection_id: params[:id])
-    # local_collection.update_attributes(title: params[:title])
-    # shop.seed_collects!
     head :ok
     shopify_collection_id = params[:id]
     CollectionUpdateWorker.perform_async(shop.id, shopify_collection_id, params[:title])
