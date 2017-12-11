@@ -23,33 +23,37 @@ class WebhooksController < ApplicationController
   def product_delete
     head :ok
     shopify_product_id = params[:id].to_s
-    #shop.products.find_by(shopify_product_id: params[:id]).destroy
     ProductDeleteWorker.perform_async(shopify_product_id, shop.id)
   end
 
   def collection_delete
     head :ok
-    shop.collections.find_by(shopify_collection_id: params[:id].to_s).destroy
+    shopify_collection_id = params[:id].to_s
+    CollectionDeleteWorker.perform_async(shopify_collection_id. shop.id)
+    #shop.collections.find_by(shopify_collection_id: params[:id].to_s).destroy
   end
 
   def collection_create
     head :ok
-    shop.seed_collections!
-    shop.seed_collects!
+    # shop.seed_collections!
+    # shop.seed_collects!
+    CollectionCreateWorker.perform_async(shop.id)
   end
 
   def collection_update
-    puts params
-    local_collection = shop.collections.find_by(shopify_collection_id: params[:id])
-    local_collection.update_attributes(title: params[:title])
-    shop.seed_collects!
+    # local_collection = shop.collections.find_by(shopify_collection_id: params[:id])
+    # local_collection.update_attributes(title: params[:title])
+    # shop.seed_collects!
     head :ok
+    shopify_collection_id = params[:id]
+    CollectionUpdateWorker.perform_async(shop.id, shopify_collection_id, params[:title])
   end
 
   def app_uninstalled
     head :ok
     StopPriceTestsWorker.perform_async(shop.id)
-    shop.recurring_charges.last.delete #make into a worker
+    DestroyRecurringChargesWorker.perform_async(shop.id)
+    #shop.recurring_charges.last.delete #make into a worker
   end
 
   private
