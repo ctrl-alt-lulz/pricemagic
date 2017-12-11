@@ -15,7 +15,7 @@ class NewProductWorker
     new_product = shop.products.new(title: title, shopify_product_id: shopify_product_id,
                                     product_type: product_type, tags: tags,
                                     shop_id: shop.id)
-    variants.each do |variant|
+    variants_2.each do |variant|
       new_product.variants.new(shopify_variant_id: variant[:id], variant_title: variant[:title],
                                variant_price: variant[:price])
     end
