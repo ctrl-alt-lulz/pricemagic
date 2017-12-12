@@ -10,7 +10,7 @@ module Admin
     before_action :authenticate_admin
 
     def authenticate_admin
-      redirect_to new_user_session_path unless current_site_admin && current_site_admin.admin?
+      redirect_to new_session_path unless current_site_admin && current_site_admin.admin?
     end
 
     # Override this value to specify the number of elements to display at a time
