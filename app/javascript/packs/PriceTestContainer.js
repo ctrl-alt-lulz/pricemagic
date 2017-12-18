@@ -87,34 +87,9 @@ export default class PriceTestContainer extends React.Component {
   
   render() {
     const data = this.props.product.variants.map(this.CreateItem).map(this.CalcPricePointData);
-    const price_test_active = this.props.price_test_active
-    
+
     function DisplayBasedOnPriceTestStatus(props) {
-      if (price_test_active) {
       return(<ReactTable
-              data={data}
-              columns={[
-              {
-                Header: "Base",
-                columns: [
-                  {
-                    Header: "Product Title",
-                    accessor: "variant_title"
-                  },{
-                    Header: "Original Price",
-                    accessor: "variant_price"
-                  },{
-                    Header: "Unit Cost",
-                    accessor: "unit_cost"
-                  }
-                ]
-              }
-            ]}
-            defaultPageSize={5}
-            className="-striped -highlight"
-            />);
-    } else {
-      return (<ReactTable
               data={data}
               columns={[
               {
@@ -136,7 +111,6 @@ export default class PriceTestContainer extends React.Component {
             defaultPageSize={5}
             className="-striped -highlight"
             />);
-      }
     }
     
     return (<DisplayBasedOnPriceTestStatus CreateColumns={this.CreateColumns()}/>);
