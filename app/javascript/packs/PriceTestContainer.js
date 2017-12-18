@@ -60,7 +60,6 @@ export default class PriceTestContainer extends React.Component {
 
   CreateColumns() {
     const price_points = this.props.price_points;
-    const price_test_active = this.props.price_test_active
     return { columns: this.SeedColumnData(price_points) };
   }
   SeedColumnData(price_points) {

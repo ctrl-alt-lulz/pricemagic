@@ -38,6 +38,9 @@ export default class ProductShow extends React.Component {
     this.showAllPlots = this.showAllPlots.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
   }
+  componentDidMount() {
+    this.CalcPriceMultipler();
+  }
   handleUnitPriceChange (id, event) {
     const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
     unitPriceValueHash[id] = event;
