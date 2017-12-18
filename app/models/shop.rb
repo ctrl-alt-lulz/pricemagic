@@ -64,10 +64,10 @@ class Shop < ActiveRecord::Base
   private
 
   def seed_all_product_info
-    SingleShopSeedProductsAndVariantsWorker.perform_async(id)
+    SingleShopSeedProductsAndVariantsWorker.perform_in(15.seconds, id)
   end
 
   def get_email
-    self.update_attributes(shop_email: ShopifyAPI::Shop.current.email)
+    GetShopOwnerEmailWorker.perform_in(30.seconds, id)
   end
 end
