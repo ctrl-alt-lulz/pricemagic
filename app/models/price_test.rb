@@ -137,7 +137,7 @@ class PriceTest < ActiveRecord::Base
   end
   
   def as_json(options={})
-    super(:methods => [:variants, :has_active_price_test, :final_plot])
+    super(:methods => [:variants, :has_active_price_test, :final_plot, :view_threshold])
   end
 
   private

@@ -1,8 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import { Page, Card, Select, Button, TextField, Stack, FormLayout,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
+import { Card, Select, Button, TextField, FormLayout } from '@shopify/polaris';
 
 export default class PriceTestForm extends React.Component {
   constructor(props) {
@@ -44,6 +41,7 @@ export default class PriceTestForm extends React.Component {
     const end_digits = this.props.end_digits
     const price_test_active = this.props.price_test_active
     const view_threshold = this.props.view_threshold
+      console.log(price_test_active)
       return (
               <Card.Section>
                 <FormLayout>

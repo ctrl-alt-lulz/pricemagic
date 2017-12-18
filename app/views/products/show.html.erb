@@ -14,6 +14,11 @@
   profit_hash: @profit_hash,
   profit_per_view_hash: @profit_per_view_hash,
   has_subscription: !@shop.has_subscription?,
-  revenue_per_view_hash: @revenue_per_view_hash
+  revenue_per_view_hash: @revenue_per_view_hash,
+  percent_increase: @percent_increase,
+  percent_decrease: @percent_decrease,
+  view_threshold: @view_threshold,
+  ending_digits: @ending_digits,
+  price_points: @price_points
 }.to_json do %>
 <% end %>

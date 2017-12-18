@@ -28,6 +28,11 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @variants = @price_test_data.try(:product).try(:variants)
     @variants = @variants.map(&:variant_title) if @variants 
     @unitPriceValueHash = @product.variant_unit_cost_hash
+    @percent_increase = ''
+    @percent_decrease = ''
+    @view_threshold = ''
+    @ending_digits = 0.99
+    @price_points = 1
     if @price_test_data
       @variant_plot_data = @price_test_data.try(:final_plot).try(:first)
       @plot_count = @price_test_data.try(:final_plot).try(:length)
@@ -40,6 +45,11 @@ class ProductsController < ShopifyApp::AuthenticatedController
       @profit_hash = @price_test_data.profit_hash
       @profit_per_view_hash = @price_test_data.profit_per_view_hash
       @revenue_per_view_hash = @price_test_data.revenue_per_view_hash
+      @percent_increase = ((@price_test_data.percent_increase - 1)*100).round(0)
+      @percent_decrease = (@price_test_data.percent_decrease*100).round(0)
+      @view_threshold = @price_test_data.view_threshold
+      @ending_digits = @price_test_data.ending_digits
+      @price_points = @price_test_data.price_points
     end
     respond_to do |format|
       format.html # default html response
