@@ -79,7 +79,7 @@ export default class SettingsPage extends React.Component {
         <AccountConnection
           action={{content: <RecurringChargesLink />}}
           details="No account connected"
-          termsOfService={<p>By clicking Connect, you are accepting PriceMagic’s <Link url="https://www.google.com/analytics/terms/us.html">Terms and Conditions</Link>.</p>}
+          termsOfService={<p>By clicking Connect, you are accepting PriceMagic’s Terms and Conditions.</p>}
         />
       </Layout.AnnotatedSection>
     );
