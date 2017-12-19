@@ -6,6 +6,7 @@ class RecurringCharge < Charge
   belongs_to :shop
   after_initialize :store_charge_data
   before_destroy :destroy_on_shopify!
+  after_create :destroy_model_if_still_pending
 
   def active?
     return charge_data['status'] == 'active'
@@ -63,12 +64,11 @@ class RecurringCharge < Charge
   ## TODO create better handling to ensure someone's shopify recurring charge 
   ## is destroyed on rescue
   def destroy_on_shopify!
-    begin
-      ShopifyAPI::RecurringApplicationCharge.current.destroy
-    rescue ActiveResource::ResourceInvalid => e
-      puts e.inspect
-    end
+    DestroyExtShopifyChargeWorker.perform_async(shop_id)
     StopPriceTestsWorker.perform_async(shop_id)
   end
 
+  def destroy_model_if_still_pending
+    DestroyHangingRecurringChargeWorker.perform_in(60.seconds, shop_id)
+  end
 end

@@ -1,10 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
 import NativeListener from 'react-native-listener';
-
-import { Page, Card, Select, Button, TextField, Stack, FormLayout,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class RecurringChargesLink extends React.Component {
   constructor(props) {

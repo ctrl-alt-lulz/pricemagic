@@ -1,9 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
 import RecurringChargesLink from './RecurringChargesLink.js'
-import NativeListener from 'react-native-listener';
-import { Page, TextStyle, Layout, AccountConnection, SettingToggle, Link } from '@shopify/polaris';
+import { Page, Layout, AccountConnection, Link } from '@shopify/polaris';
 
 export default class SettingsPage extends React.Component {
   constructor(props) {
