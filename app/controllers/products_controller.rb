@@ -5,10 +5,12 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def index
-    @run_walkthrough = current_shop.run_walkthrough?
-    @collections = current_shop.collections
-    @products = current_shop.products
-    if params[:term] 
+    #current_shop.includes(:products, :collections)
+    @shop = current_shop
+    @run_walkthrough = @shop.run_walkthrough?
+    @collections = @shop.collections
+    @products = @shop.products
+    if params[:term]
       @products = @products.where('title iLIKE ?', '%' + params[:term] + '%')
       if params[:collection].present?
         products_col = @collections.find(params[:collection]).products

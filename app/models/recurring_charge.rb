@@ -9,7 +9,7 @@ class RecurringCharge < Charge
   after_create :destroy_model_if_still_pending
 
   def active?
-    return charge_data['status'] == 'active'
+    charge_data['status'] == 'active'
   end
 
   def charge_data=(data)

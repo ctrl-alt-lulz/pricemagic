@@ -84,7 +84,7 @@ class PriceTest < ActiveRecord::Base
     end
   end
 
-  def update_revenue_and_view_metrics
+  def update_revenue_and_view_metrics!
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
       preview_index = v['tested_price_points'].count

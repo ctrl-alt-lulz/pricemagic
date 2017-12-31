@@ -3,9 +3,8 @@ class Product < ActiveRecord::Base
   has_many :variants, ->{ order(:created_at) }, dependent: :destroy
   has_many :price_tests, dependent: :destroy
   has_many :metrics, ->{ order(:created_at) }, dependent: :destroy 
-  has_many :collects
+  has_many :collects, dependent: :destroy
   has_many :collections, through: :collects
-  before_destroy :delete_collects
   # Other validations
   # TODO add validation to make sure shopify_product_id is unique
   
@@ -57,7 +56,4 @@ class Product < ActiveRecord::Base
     super(:methods => [:variants, :has_active_price_test, :price_test_completion_percentage])
   end
 
-  def delete_collects
-    shop.collects.where(product_id: id).destroy_all
-  end
 end

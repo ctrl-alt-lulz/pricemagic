@@ -8,8 +8,8 @@ Rails.application.configure do
   config.public_url = ENV['NGROK_PUBLIC_URL']
 
   # shopify app creds
-  config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
-  config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
+  config.shopify_api_key = ENV['DEV_SHOPIFY_PUBLIC_KEY']
+  config.shopify_secret = ENV['DEV_SHOPIFY_SECRET_KEY']
 
   config.action_mailer.default_url_options = { host: 'price-magic-bytesize.c9users.io' }
   config.action_mailer.perform_deliveries = true

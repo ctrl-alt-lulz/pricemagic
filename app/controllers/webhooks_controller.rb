@@ -55,7 +55,7 @@ class WebhooksController < ApplicationController
     data = request.body.read.to_s
     hmac_header = request.headers['HTTP_X_SHOPIFY_HMAC_SHA256']
     digest  = OpenSSL::Digest.new('sha256')
-    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, ENV['SHOPIFY_SECRET_KEY'], data)).strip
+    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, Rails.configuration.shopify_secret, data)).strip
     unless calculated_hmac == hmac_header
       head :unauthorized
     end
@@ -63,6 +63,7 @@ class WebhooksController < ApplicationController
   end
 
   def shop
-    Shop.where(shopify_domain: request.headers['X-Shopify-Shop-Domain']).first
+    @shop ||= Shop.where(shopify_domain: request.headers['X-Shopify-Shop-Domain']).first
   end
 end
+

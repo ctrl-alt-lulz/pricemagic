@@ -7,7 +7,7 @@ class ProductViewThresholdWorker
       shop.with_shopify!
       shop.price_tests.active.each do |pt|
         ## have pricetest show latest views
-        pt.update_revenue_and_view_metrics
+        pt.update_revenue_and_view_metrics!
         next unless pt.hit_threshold? ## check to see if hit threshold
         pt.shift_price_point!
         pt.make_inactive! if pt.done?
