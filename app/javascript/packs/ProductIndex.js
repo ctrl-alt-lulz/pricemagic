@@ -172,7 +172,8 @@ class ProductIndex extends React.Component {
             >
               <ActionList
                 items={[
-                  {content: 'Account', url: '/recurring_charges'}
+                  {content: 'Account', url: '/recurring_charges'},
+                  {content: 'FAQ', url: '/faq'}
                 ]}
               />
             </Popover>

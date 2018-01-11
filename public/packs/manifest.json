@@ -1,5 +1,6 @@
 {
   "ConfigurationsPage.js": "https://0.0.0.0:8080/packs/ConfigurationsPage.js",
+  "FAQpage.js": "https://0.0.0.0:8080/packs/FAQpage.js",
   "LastPriceTestContainer.js": "https://0.0.0.0:8080/packs/LastPriceTestContainer.js",
   "PriceTestContainer.js": "https://0.0.0.0:8080/packs/PriceTestContainer.js",
   "PriceTestForm.js": "https://0.0.0.0:8080/packs/PriceTestForm.js",
