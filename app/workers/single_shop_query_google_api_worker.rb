@@ -56,7 +56,7 @@ class SingleShopQueryGoogleApiWorker
   end
   
   def metric(params)
-    Metric.new(params)
+    Google::Apis::AnalyticsreportingV4::Metric.new(params)
   end
   
   def sort(params)

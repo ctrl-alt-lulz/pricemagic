@@ -6,10 +6,11 @@
 # you're free to overwrite the RESTful controller actions.
 module Admin
   class ApplicationController < Administrate::ApplicationController
+    protect_from_forgery with: :exception
     before_action :authenticate_admin
 
     def authenticate_admin
-      # TODO Add authentication logic here.
+      redirect_to new_session_path unless site_admin_signed_in? && current_site_admin.admin?
     end
 
     # Override this value to specify the number of elements to display at a time

@@ -1,22 +1,24 @@
 <%= javascript_pack_tag 'ProductShow' %>
-<% if @shop.trial? || @shop.has_subscription? %>
-  <%= content_tag :div, 
-    id: "product-page",
-    data: {
-      product: @product,
-      variants: @variants,
-      price_test_data: @price_test_data,
-      final_plot: @final_plot,
-      plot_count: @plot_count,
-      variant_plot_data: @variant_plot_data,
-      all_data: @all_data,
-      unitPriceValueHash: @unitPriceValueHash,
-      revenue_hash: @revenue_hash,
-      profit_hash: @profit_hash,
-      profit_per_view_hash: @profit_per_view_hash,
-      revenue_per_view_hash: @revenue_per_view_hash,
-      }.to_json do %>
-  <% end %>
-<% else %>
- <%= content_tag :div, id: 'recurring-charges-link-goes-here', data: { keys: 'you need' }.to_json do %><% end %>
+<%= content_tag :div,
+  id: "product-page",
+  data: {
+  product: @product,
+  variants: @variants,
+  price_test_data: @price_test_data,
+  final_plot: @final_plot,
+  plot_count: @plot_count,
+  variant_plot_data: @variant_plot_data,
+  all_data: @all_data,
+  unitPriceValueHash: @unitPriceValueHash,
+  revenue_hash: @revenue_hash,
+  profit_hash: @profit_hash,
+  profit_per_view_hash: @profit_per_view_hash,
+  has_subscription: !@shop.has_subscription?,
+  revenue_per_view_hash: @revenue_per_view_hash,
+  percent_increase: @percent_increase,
+  percent_decrease: @percent_decrease,
+  view_threshold: @view_threshold,
+  ending_digits: @ending_digits,
+  price_points: @price_points
+}.to_json do %>
 <% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030163057) do
+ActiveRecord::Schema.define(version: 20171211054555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20171030163057) do
     t.string   "collection_type"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
+    t.integer  "shop_id"
   end
 
   create_table "collects", force: :cascade do |t|
@@ -45,8 +46,8 @@ ActiveRecord::Schema.define(version: 20171030163057) do
 
   create_table "metrics", force: :cascade do |t|
     t.integer  "shop_id"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.integer  "product_id"
     t.integer  "variant_id"
     t.string   "page_title"
@@ -54,7 +55,6 @@ ActiveRecord::Schema.define(version: 20171030163057) do
     t.integer  "page_views"
     t.float    "page_avg_price"
     t.datetime "acquired_at"
-    t.integer  "page_unique_purchases"
   end
 
   create_table "price_tests", force: :cascade do |t|
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20171030163057) do
     t.string   "shopify_token",  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "shop_email"
   end
 
   add_index "shops", ["shopify_domain"], name: "index_shops_on_shopify_domain", unique: true, using: :btree
@@ -104,6 +105,7 @@ ActiveRecord::Schema.define(version: 20171030163057) do
     t.inet     "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.boolean  "admin"
   end
 
   add_index "site_admins", ["email"], name: "index_site_admins_on_email", unique: true, using: :btree
@@ -120,6 +122,7 @@ ActiveRecord::Schema.define(version: 20171030163057) do
 
   create_table "variants", force: :cascade do |t|
     t.integer  "product_id"
+    t.string   "shopify_product_id"
     t.string   "shopify_variant_id"
     t.string   "variant_title"
     t.string   "variant_price"

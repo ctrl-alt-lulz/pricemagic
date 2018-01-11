@@ -36,10 +36,15 @@ Rails.application.routes.draw do
   post 'price_tests/bulk_create', to: 'price_tests#bulk_create', as: 'price_tests_bulk'
   delete 'price_tests/bulk_destroy', to: 'price_tests#bulk_destroy', as: 'price_tests_bulk_destroy'
   delete 'google_auth', to: 'google_auth#destroy', as: 'google_auth_destroy'
-  resources :products, :price_tests, :recurring_charges, :variants, :configurations
+  resources :products, :price_tests, :recurring_charges, :variants, :faq
   get 'recurring_charges_activate', to: 'recurring_charges#update', as: 'recurring_charges_activate'
-  
-  post 'webhooks/receive', to: 'webhooks#receive', as: 'receive_webhooks'
+  post '/webhooks/products/new', to: 'webhooks#product_new'
+  post '/webhooks/products/delete', to: 'webhooks#product_delete'
+  post '/webhooks/products/update', to: 'webhooks#product_update'
+  post '/webhooks/collections/delete', to: 'webhooks#collection_delete'
+  post '/webhooks/collections/create', to: 'webhooks#collection_create'
+  post '/webhooks/collections/update', to: 'webhooks#collection_update'
+  post '/webhooks/app/uninstalled', to: 'webhooks#app_uninstalled'
 
   get 'emails', to: 'emails#index'
   post '/send_email', to: 'emails#send_email', as: 'send_email'

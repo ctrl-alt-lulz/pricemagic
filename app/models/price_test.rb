@@ -1,5 +1,6 @@
 class PriceTest < ActiveRecord::Base
   include PriceTestExtShopifyMethods
+  include PriceTestGraphMethods
   belongs_to :product
   
   validates :view_threshold, numericality: { only_integer: true, greater_than: 0 }
@@ -7,11 +8,11 @@ class PriceTest < ActiveRecord::Base
   validates :ending_digits, :price_points, presence: true, numericality: true
   validates :percent_increase, :percent_decrease, numericality: true
   validate :no_active_price_tests_for_product
-  validate :trial_or_subscription
+  #validate :trial_or_subscription
   before_validation :seed_price_data, if: proc { price_data.nil? }
   before_create :set_new_current_price_started_at
   after_create :apply_current_test_price_async!
-  before_destroy :revert_to_original_price!, if: :active?
+  before_destroy :revert_to_original_price_async!, if: :active?
   ## OR make best price original price?
   
   delegate :shop, to: :product
@@ -23,72 +24,6 @@ class PriceTest < ActiveRecord::Base
 
   scope :active, ->{ where(active: true) }
   scope :inactive, ->{ where(active: false) }
-  
-  ## coding practice to refactor below
-  ## move graphing related code to seperate module
-  def plot_data
-    price_data.values.map.with_index do |hash, index|
-    { 
-      y: hash['revenue'], 
-      x: hash['price_points'],  
-      z: variants[index].variant_title,
-      unit_cost: variants[index].unit_cost,
-      total_variant_views: hash['total_variant_views'] 
-    } 
-    end
-  end
-  
-  def final_plot
-   plot_data.map {|val| get_value(val) }
-  end
-  
-  def revenue_hash
-    final_plot.map { |val| val.map{ |obj| { y: obj[:revenue], x: obj[:x], variant_title: obj[:z] } } }
-  end
-  
-  def profit_hash
-    final_plot.map { |val| val.map{ |obj| { y: obj[:profit], x: obj[:x], variant_title: obj[:z] } } }
-  end
-  
-  def revenue_per_view_hash
-    final_plot.map { |val| val.map{ |obj| { y: obj[:rev_per_view], x: obj[:x], variant_title: obj[:z] } } }
-  end
-  
-  def profit_per_view_hash
-    final_plot.map { |val| val.map{ |obj| { y: obj[:profit_per_view], x: obj[:x], variant_title: obj[:z] } } }
-  end
-  
-  def get_value(hash)
-    unit_cost = hash[:unit_cost]
-    unit_cost = 0 if unit_cost.nil?
-    while hash[:y].length < hash[:x].length
-      hash[:y] << 0 
-      hash[:total_variant_views] << 0
-    end
-    a = hash[:y].map {|val| { y: val.round(2)} } 
-    a = hash[:x].map{ { y: 0 } } if a.empty?
-    b = hash[:x].map {|val| { x: val} }
-    b = hash[:x].map{ { x: 0 } } if b.empty?
-    total_variant_views = hash[:total_variant_views].map{|val| {total_variant_views: val}}
-    total_variant_views = hash[:x].map{ { total_variant_views: 0 } } if total_variant_views.empty?
-    analytics_hash = { z: hash[:z] }
-    a.map.with_index do  |val,index| 
-      total_variant_views[index][:total_variant_views] == 0 ? rev_per_view = 0 : 
-        rev_per_view = a[index][:y]/total_variant_views[index][:total_variant_views] 
-      rev = a[index][:y]
-      price_point = b[index][:x]
-      profit = (rev-((rev/price_point)*unit_cost))
-      views = total_variant_views[index][:total_variant_views]
-      views == 0.0 ? profit_per_view = 0.0 : profit_per_view = (profit/views).round(4)
-      val.merge(b[index]).
-      merge(total_variant_views[index]).
-      merge(analytics_hash).
-      merge({rev_per_view: rev_per_view.round(4)}).
-      merge({profit: (a[index][:y]-((a[index][:y]/b[index][:x])*unit_cost)).round(2) }).
-      merge({profit_per_view: profit_per_view }).
-      merge({revenue: rev})
-    end
-  end
   
   def total_views
     self['view_threshold'] * price_points
@@ -113,10 +48,10 @@ class PriceTest < ActiveRecord::Base
       variant.shopify_variant_id =>  {
         original_price: make_ending_digits(variant.variant_price.to_f),
         current_test_price: price_points.first,
-        total_variant_views: [], 
+        total_variant_views: [0],
         price_points: price_points,
         tested_price_points: [],
-        revenue: [], 
+        revenue: [0],
         starting_revenue: variant.latest_variant_google_metric_revenue,
         starting_page_views: latest_product_google_metric_views
       }
@@ -129,66 +64,56 @@ class PriceTest < ActiveRecord::Base
     variants.each{ |variant| empty_hash.merge!(variant_hash(variant, price_multipler)) }
     empty_hash
   end
-  
-  ### TODO further testing of code
+
   def store_revenue_from_test
     price_data.each do |k, v|
       var = product.variants.where(shopify_variant_id: k).last
+      v['revenue'].pop
       v['revenue'] << var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
       v['starting_revenue'] = var.latest_variant_google_metric_revenue
     end
   end
-  #######  
-  
-  ##
-  def update_revenue_view
-    price_data.each do |k, v|
-      var = product.variants.where(shopify_variant_id: k).last
-      if v['revenue'].empty? 
-        v['revenue'][0] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      else
-        v['revenue'][-1] = var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
-      end
-    end
-    save
-  end
-  
-  def update_view_count
-    price_data.each do |k, v|
-      if v['total_variant_views'].empty? 
-        v['total_variant_views'][0] = page_views_since_create
-      else
-        v['total_variant_views'][-1] = page_views_since_create
-      end
-    end
-    save
-  end 
 
   def store_view_count_from_test
     price_data.each do |k, v|
+      v['total_variant_views'].pop
       v['total_variant_views'] << page_views_since_create
     end
     price_data.each do |k, v|
       v['starting_page_views'] = latest_product_google_metric_views
     end
   end
-  
+
+  def update_revenue_and_view_metrics!
+    price_data.each do |k, v|
+      var = product.variants.where(shopify_variant_id: k).last
+      preview_index = v['tested_price_points'].count
+      v['revenue'][preview_index] =  var.latest_variant_google_metric_revenue - v['starting_revenue'].to_f
+      v['total_variant_views'][preview_index] = page_views_since_create
+    end
+    save
+  end
+
+  def on_last_price_point
+    price_data.values.first['tested_price_points'].count == price_data.values.first['tested_price_points'].count - 1
+  end
+
   def page_views_since_create
     latest_product_google_metric_views - price_data.values.first['starting_page_views'].to_i
   end
   
   def hit_threshold?
-    page_views_since_create >= self['view_threshold'].to_i
+    price_data.values.first['total_variant_views'].last.to_i >= self['view_threshold'].to_i
   end
   
   def make_inactive!
-    revert_to_original_price!
     set_to_inactive
+    revert_to_original_price_async!
     set_new_current_price_started_at
     save
     ## TODO set price to original or best price
   end
-  
+
   def done?
     price_data.try(:first).last['current_test_price'].nil?
   end
@@ -198,7 +123,7 @@ class PriceTest < ActiveRecord::Base
     store_view_count_from_test
     store_revenue_from_test
     set_new_test_price
-    apply_current_test_price!
+    apply_current_test_price_async!
     set_new_current_price_started_at
     save
   end
@@ -212,9 +137,9 @@ class PriceTest < ActiveRecord::Base
   end
   
   def as_json(options={})
-    super(:methods => [:variants, :has_active_price_test, :final_plot])
+    super(:methods => [:variants, :has_active_price_test, :final_plot, :view_threshold])
   end
-  
+
   private
   
   def trial_or_subscription
