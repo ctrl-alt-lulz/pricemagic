@@ -8,7 +8,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     @user_connected = !current_shop.google_profile_id.nil?
     @subscription_status =  !@recurring_charges.empty?
   end
-  
+
   def create
     @recurring_charge = RecurringCharge.new(recurring_charge_params)
     if @recurring_charge.save
@@ -26,12 +26,11 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   
   def update
     @recurring_charge = RecurringCharge.find_by(shopify_id: params[:charge_id])
-    if @recurring_charge.update_charge_data(params) 
-      flash[:notice] = "Successfully Activated"
-      redirect_to root_url
-    else 
-      flash[:warning] = "Did Not Activated"
-      redirect_to root_url
+    if @recurring_charge.update_charge_data(params)
+      redirect_to root_url, notice: "Successfully Activated!"
+    else
+      DestroyHangingRecurringChargeWorker.perform_async(current_shop.id)
+      redirect_to root_url, notice: "Did Not Activated!"
     end
   end
   
@@ -40,7 +39,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     if local_recurring_charge.destroy
       redirect_to recurring_charges_path, notice: "Charge cancelled!"
     else 
-      redirect_to recurring_charges_path, warning: "Charge was not cancelled"
+      redirect_to recurring_charges_path, notice: "Charge was not cancelled"
     end
   end
   
