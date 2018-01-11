@@ -13,14 +13,14 @@ export default class FAQpage extends React.Component {
             <Page title="FAQ">
                 <Layout>
                     <Layout.AnnotatedSection>
-                      <TextContainer>
-                        <Heading>How do I set up Google Analytics with Enhanced Ecommerce?</Heading>
-                          <p>Please follow the instructions provided by Shopify at: </p>
-                              <Link url="https://help.shopify.com/manual/reports-and-analytics/google-analytics/google-analytics-setup#turn-on-ecommerce-tracking" external>
-                                  https://help.shopify.com/manual/reports-and-analytics/google-analytics/
-                                  google-analytics-setup#turn-on-ecommerce-tracking
-                              </Link>
-                      </TextContainer>
+                        <TextContainer>
+                            <Heading>How do I set up Google Analytics with Enhanced Ecommerce?</Heading>
+                            <p>Please follow the instructions provided by Shopify at: </p>
+                            <Link url="https://help.shopify.com/manual/reports-and-analytics/google-analytics/google-analytics-setup#turn-on-ecommerce-tracking" external>
+                                https://help.shopify.com/manual/reports-and-analytics/google-analytics/
+                                google-analytics-setup#turn-on-ecommerce-tracking
+                            </Link>
+                        </TextContainer>
                     </Layout.AnnotatedSection>
                     <Layout.AnnotatedSection>
                         <TextContainer>
@@ -43,7 +43,7 @@ export default class FAQpage extends React.Component {
                         <TextContainer>
                             <Heading>How do I create a bulk price test?</Heading>
                             <p>First, check the box next to each product you want a test created for on the dashboard page.
-                            Second, enter the price test parameters. Third press "Start Price Test".</p>
+                                Second, enter the price test parameters. Third press "Start Price Test".</p>
                         </TextContainer>
                     </Layout.AnnotatedSection>
                     <Layout.AnnotatedSection>
@@ -53,18 +53,18 @@ export default class FAQpage extends React.Component {
                         </TextContainer>
                     </Layout.AnnotatedSection>
                     <Layout.AnnotatedSection>
-                      <TextContainer>
-                        <Heading>How do I view the results of each test?</Heading>
-                        <p>Click on the product title on the dashboard page to view the detailed product performance.</p>
-                      </TextContainer>
+                        <TextContainer>
+                            <Heading>How do I view the results of each test?</Heading>
+                            <p>Click on the product title on the dashboard page to view the detailed product performance.</p>
+                        </TextContainer>
                     </Layout.AnnotatedSection>
                     <Layout.AnnotatedSection>
-                      <TextContainer>
-                        <Heading>How many views should I set?</Heading>
-                        <p>Our research shows that around 7400 views per price test is ideal for a statistically
-                        significant result. However, the larger the difference between the prices the less views
-                        you should need in general.</p>
-                      </TextContainer>
+                        <TextContainer>
+                            <Heading>How many views should I set?</Heading>
+                            <p>Our research shows that around 7400 views per price test is ideal for a statistically
+                                significant result. However, the larger the difference between the prices the less views
+                                you should need in general.</p>
+                        </TextContainer>
                     </Layout.AnnotatedSection>
                 </Layout>
             </Page>
@@ -74,7 +74,6 @@ export default class FAQpage extends React.Component {
 
 document.addEventListener('DOMContentLoaded', () => {
     const node = document.getElementById('faq-page')
-    //const data = JSON.parse(node.getAttribute('data'))
     ReactDOM.render(<FAQpage />, node)
 })
 
