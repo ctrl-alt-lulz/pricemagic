@@ -1,6 +1,7 @@
 class RecurringChargesController < ShopifyApp::AuthenticatedController
-  before_action :redirect_to_root, if: :current_charge?, only: :create
-  
+  #before_action :redirect_to_root, if: :current_charge?, only: :create
+  skip_before_filter :confirm_billing
+
   def index
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
     @recurring_charges = current_shop.charges
@@ -42,11 +43,6 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
       redirect_to recurring_charges_path, notice: "Charge was not cancelled"
     end
   end
-  
-  private
-  
-  def recurring_charge_params
-    { shop_id: current_shop.id }
-  end
+
 
 end

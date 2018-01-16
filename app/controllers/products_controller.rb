@@ -5,6 +5,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :define_product, only: [:show, :update]
 
   def index
+    Shop.includes(:products, :collections).where(shopify_domain: session['shopify_domain']).first
     #current_shop.includes(:products, :collections)
     @shop = current_shop
     @run_walkthrough = @shop.run_walkthrough?
