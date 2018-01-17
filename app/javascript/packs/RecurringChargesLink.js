@@ -17,7 +17,7 @@ export default class RecurringChargesLink extends React.Component {
  
   render() {
     const linkStyle = {
-      color: 'white',
+      color: this.props.color,
     };
     return (<div>
               <NativeListener onClick={this.handleButtonClick.bind(this)}>

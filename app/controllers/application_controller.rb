@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include ShopifyApp::LoginProtection
-  before_filter :confirm_billing
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -21,9 +20,7 @@ class ApplicationController < ActionController::Base
   end
   
   def current_charge?
-    puts '*'*50
     !!ShopifyAPI::RecurringApplicationCharge.current
-    #puts '*'*50
   end
   
   ## FOR Devise / SiteAdmin
@@ -33,13 +30,8 @@ class ApplicationController < ActionController::Base
     
   private
 
-  def confirm_billing
-    current_shop.with_shopify!
-    initiate_charge unless current_charge?
-  end
 
   def initiate_charge
-    current_shop.with_shopify!
     @recurring_charge = RecurringCharge.new(recurring_charge_params)
     if @recurring_charge.save
       respond_to do |format|
@@ -48,8 +40,6 @@ class ApplicationController < ActionController::Base
       end
     else
       respond_to do |format|
-        puts "in bad path"
-        puts '*'*50
         format.html { redirect_to faq_path, notice: 'Something went wrong' }
         format.json { render json: { success: false, errors: @recurring_charge.errors.full_messages }, status: 201 }
       end
