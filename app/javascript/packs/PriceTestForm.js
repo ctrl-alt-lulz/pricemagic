@@ -67,7 +67,7 @@ export default class PriceTestForm extends React.Component {
                     <TextField 
                       value={view_threshold}
                       label="View Threshold"
-                      placeholder="Enter the number of views you want per price test"
+                      placeholder="Enter desired view count per test price"
                       type='number'
                       min="0"
                       onChange={this.handleViewThresholdChange}

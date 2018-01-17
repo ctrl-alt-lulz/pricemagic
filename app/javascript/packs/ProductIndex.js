@@ -194,7 +194,7 @@ class ProductIndex extends React.Component {
       <Layout>
         <Layout.Section>
         <Card 
-          title="Online store dashboard" 
+          title="Online Store Dashboard"
           class="product_list" sectioned  
         >
         <div style={divStyle}>
