@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import { Page, Layout, AccountConnection, SettingToggle, Button, TextStyle } from '@shopify/polaris';
+import { Page, Layout, SettingToggle } from '@shopify/polaris';
 
 export default class ConfigurationsPage extends React.Component {
   constructor(props) {
@@ -49,8 +48,6 @@ export default class ConfigurationsPage extends React.Component {
   }
 
   seedProducts() {
-    console.log(this.props.shop_id)
-    console.log('seed')
     $.ajax( {
       url: '/seed_products_and_variants/',
       dataType: 'json',

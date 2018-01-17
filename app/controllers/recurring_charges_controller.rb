@@ -1,14 +1,15 @@
 class RecurringChargesController < ShopifyApp::AuthenticatedController
-  before_action :redirect_to_root, if: :current_charge?, only: :create
-  
+  #before_action :redirect_to_root, if: :current_charge?, only: :create
+  skip_before_filter :confirm_billing
+
   def index
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
     @recurring_charges = current_shop.charges
     @google_api_id = current_shop.google_profile_id
-    @user_connected = !current_shop.users.last.google_profile_id.nil?
+    @user_connected = !current_shop.google_profile_id.nil?
     @subscription_status =  !@recurring_charges.empty?
   end
-  
+
   def create
     @recurring_charge = RecurringCharge.new(recurring_charge_params)
     if @recurring_charge.save
@@ -18,7 +19,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
       end
     else
       respond_to do |format|
-        format.html { redirect_to @recurring_charge.confirmation_url, notice: 'Something went wrong' }
+        format.html { redirect_to root_url, notice: 'Something went wrong' }
         format.json { render json: { success: false, errors: @recurring_charge.errors.full_messages }, status: 201 }
       end
     end
@@ -26,12 +27,11 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
   
   def update
     @recurring_charge = RecurringCharge.find_by(shopify_id: params[:charge_id])
-    if @recurring_charge.update_charge_data(params) 
-      flash[:notice] = "Successfully Activated"
-      redirect_to root_url
-    else 
-      flash[:warning] = "Did Not Activated"
-      redirect_to root_url
+    if @recurring_charge.update_charge_data(params)
+      redirect_to root_url, notice: "Successfully Activated!"
+    else
+      DestroyHangingRecurringChargeWorker.perform_async(current_shop.id)
+      redirect_to root_url, notice: "Did Not Activated!"
     end
   end
   
@@ -40,14 +40,9 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
     if local_recurring_charge.destroy
       redirect_to recurring_charges_path, notice: "Charge cancelled!"
     else 
-      redirect_to recurring_charges_path, warning: "Charge was not cancelled"
+      redirect_to recurring_charges_path, notice: "Charge was not cancelled"
     end
   end
-  
-  private
-  
-  def recurring_charge_params
-    { shop_id: current_shop.id }
-  end
+
 
 end

@@ -1,10 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
 import NativeListener from 'react-native-listener';
-
-import { Page, Card, Select, Button, TextField, Stack, FormLayout,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class RecurringChargesLink extends React.Component {
   constructor(props) {
@@ -21,7 +17,7 @@ export default class RecurringChargesLink extends React.Component {
  
   render() {
     const linkStyle = {
-      color: 'white',
+      color: this.props.color,
     };
     return (<div>
               <NativeListener onClick={this.handleButtonClick.bind(this)}>

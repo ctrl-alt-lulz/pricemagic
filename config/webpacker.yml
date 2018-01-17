@@ -25,9 +25,9 @@ development:
   <<: *default
 
   dev_server:
-    host: 'price-magic-bytesize.c9users.io'
-    port: 8081
-    https: false
+    host: '0.0.0.0'
+    port: 8080
+    https: true
 
 test:
   <<: *default

@@ -15,8 +15,8 @@ class Shop < ActiveRecord::Base
   
   validates :shopify_domain, presence: true
   validates :shopify_token, presence: true
-  
-  
+  after_create :seed_all_product_info, :get_email
+
   ## TODO set up metrics to use  by default
   ## ike with Product
   def trial?
@@ -28,9 +28,11 @@ class Shop < ActiveRecord::Base
   end
   
   def has_subscription?
-    ## TODO make this lookup to shopify each time
-    ## TODO set up association locally and manage with shopify
-    true
+    if ShopifyAPI::RecurringApplicationCharge.current.nil?
+      false
+    else
+      ShopifyAPI::RecurringApplicationCharge.current.attributes['status'] == 'active'
+    end
   end
   
   def latest_metric
@@ -47,23 +49,25 @@ class Shop < ActiveRecord::Base
   end
   
   def google_profile_id
-    users.first.google_profile_id
+    users.last.try(:google_profile_id)
   end
 
   def with_shopify!
     session = ShopifyAPI::Session.new(shopify_domain, shopify_token)
     ShopifyAPI::Base.activate_session(session)
   end
-  
+
+  def run_walkthrough?
+    price_tests.count == 0
+  end
+
   private
-  
-  #'collection_listings/add, collection_listings/remove, collection_listings/update',  products/delete, products/update
-  def product_update_webhook
-    webhook = {
-      topic: 'products/create',
-      address: Rails.configuration.public_url + 'webhooks',
-      format: 'json'
-    }
-    ShopifyAPI::Webhook.create(webhook)
+
+  def seed_all_product_info
+    SingleShopSeedProductsAndVariantsWorker.perform_in(15.seconds, id)
+  end
+
+  def get_email
+    GetShopOwnerEmailWorker.perform_in(30.seconds, id)
   end
 end

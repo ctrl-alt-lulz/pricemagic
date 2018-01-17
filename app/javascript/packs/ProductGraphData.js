@@ -1,14 +1,9 @@
 import React from 'react';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries, 
 DiscreteColorLegend} from 'react-vis';
-import { Page, Card, Select, Button, TextField, Stack, FormLayout, DisplayText,
-Thumbnail, ResourceList, Pagination, Layout, Checkbox } from '@shopify/polaris';
 
 export default class ProductGraphData extends React.Component {
   render() {
-    const variant_plot_data = this.props.variant_plot_data
-    const revenue_hash = this.props.revenue_hash
-    const profit_hash = this.props.profit_hash
     const button_states = this.props.button_states
     const rev_plot = button_states['revenue']
     const profit_plot = button_states['profit']
@@ -20,6 +15,7 @@ export default class ProductGraphData extends React.Component {
       {title: "Revenue/View", color: '#1a3177' }, 
       {title: "Profit/View", color: '#ff9833' }
     ];
+    
     return (
       <div>
         <XYPlot

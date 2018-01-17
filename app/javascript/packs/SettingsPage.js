@@ -1,9 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
 import RecurringChargesLink from './RecurringChargesLink.js'
-import NativeListener from 'react-native-listener';
-import { Page, TextStyle, Layout, AccountConnection, SettingToggle, Link } from '@shopify/polaris';
+import { Page, Layout, AccountConnection, Link } from '@shopify/polaris';
 
 export default class SettingsPage extends React.Component {
   constructor(props) {
@@ -20,7 +18,6 @@ export default class SettingsPage extends React.Component {
               <Layout>
                 {this.renderGoogleAccount()}
                 {this.renderAccountInfo()}
-                <RecurringChargesLink />
               </Layout>
             </Page>
     );
@@ -71,18 +68,15 @@ export default class SettingsPage extends React.Component {
   }
   
   connectAccountPlan() {
-  const linkStyle = {
-      color: 'white',
-    };
     return (
       <Layout.AnnotatedSection
         title="Subscription Status"
         description="Begin your subscription with PriceMagic."
       >
         <AccountConnection
-          action={{content: <RecurringChargesLink />}}
+          action={{content: <RecurringChargesLink color='white'/>}}
           details="No account connected"
-          termsOfService={<p>By clicking Connect, you are accepting PriceMagic’s <Link url="https://www.google.com/analytics/terms/us.html">Terms and Conditions</Link>.</p>}
+          termsOfService={<p>By clicking Connect, you are accepting PriceMagic’s Terms and Conditions.</p>}
         />
       </Layout.AnnotatedSection>
     );

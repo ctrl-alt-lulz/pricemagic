@@ -14,7 +14,11 @@ class Metric < ActiveRecord::Base
   def product_and_variant_name=(product_variant_string)
     self.product = Product.where(title: product_variant_string.split(' - ').first).first
     if product
-      self.variant = product.variants.where(variant_title: product_variant_string.split(' - ').last).first
+      if product.variants.where(variant_title: product_variant_string.split(' - ').last).first.nil?
+        self.variant = product.variants.where(variant_title: "Default Title").first
+      else
+        self.variant = product.variants.where(variant_title: product_variant_string.split(' - ').last).first
+      end
     end
   end
   

@@ -10,10 +10,11 @@ export default class ProductShow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      percent_increase: '',
-      percent_decrease: '',
-      price_points: '1',
-      end_digits: 0.99, 
+      percent_increase: this.props.percent_increase,
+      percent_decrease: this.props.percent_decrease,
+      view_threshold: this.props.view_threshold,
+      price_points: this.props.price_points,
+      end_digits: this.props.ending_digits,
       price_multipler: [1],
       final_plot: this.props.final_plot,
       variant_plot_data: this.props.variant_plot_data,
@@ -36,6 +37,9 @@ export default class ProductShow extends React.Component {
     this.handleUnitPriceChange = this.handleUnitPriceChange.bind(this);
     this.showAllPlots = this.showAllPlots.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
+  }
+  componentDidMount() {
+    this.CalcPriceMultipler();
   }
   handleUnitPriceChange (id, event) {
     const unitPriceValueHash = Object.assign({}, this.state.unitPriceValueHash);
@@ -143,11 +147,15 @@ export default class ProductShow extends React.Component {
     const price_multipler = this.state.price_multipler;
     const view_threshold = this.state.view_threshold;
     const product = this.props.product;
-    const price_test_active = (this.props.product.has_active_price_test  == 'True');
+    const price_test_active = (this.props.product.has_active_price_test  == 'Active') || this.props.has_subscription;
     const variant_plot_data = this.state.variant_plot_data;
     const unitPriceValueHash = this.state.unitPriceValueHash;
-    const plot_number = this.state.plot_number
-    const button_states = this.state.button_states
+    const plot_number = this.state.plot_number;
+    const button_states = this.state.button_states;
+    const divStyleIndex = {
+      'marginLeft': '20px',
+      'marginRight': '20px'
+    };
     function PlotIfDataExists(props) {
       const dataExists = props.dataExists;
 
@@ -155,7 +163,6 @@ export default class ProductShow extends React.Component {
         return (
           <div>
             <ProductGraphData 
-              variant_plot_data={variant_plot_data}
               revenue_hash={props.revenue_hash[plot_number]}
               profit_hash={props.profit_hash[plot_number]}
               profit_per_view_hash={props.profit_per_view_hash[plot_number]}
@@ -187,7 +194,7 @@ export default class ProductShow extends React.Component {
     }
     
     return (
-      <div>
+      <div style={divStyleIndex}>
         <DisplayText size="extraLarge">{product.title + '  '}</DisplayText>
           <PlotIfDataExists 
             dataExists={variant_plot_data} 

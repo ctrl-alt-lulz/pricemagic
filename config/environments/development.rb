@@ -5,11 +5,11 @@ Rails.application.configure do
   # using Shopify's Scripttags manager
   # (configured in /config/initializers/shopify_app.rb)
   # and also by ApplicationController
-  config.public_url = 'https://price-magic-bytesize.c9users.io/';
+  config.public_url = ENV['NGROK_PUBLIC_URL']
 
   # shopify app creds
-  config.shopify_api_key = ENV['SHOPIFY_PUBLIC_KEY']
-  config.shopify_secret = ENV['SHOPIFY_SECRET_KEY']
+  config.shopify_api_key = ENV['DEV_SHOPIFY_PUBLIC_KEY']
+  config.shopify_secret = ENV['DEV_SHOPIFY_SECRET_KEY']
 
   config.action_mailer.default_url_options = { host: 'price-magic-bytesize.c9users.io' }
   config.action_mailer.perform_deliveries = true

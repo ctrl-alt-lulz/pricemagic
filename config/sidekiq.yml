@@ -1,7 +1,4 @@
 :schedule:
-  seed_products_and_variants_worker:
-    every: '4h'
-    class: SeedProductsAndVariantsWorker
   query_google_api_worker:
     every: '4h' ## ideally this starts on the hour
     class: QueryGoogleApiWorker

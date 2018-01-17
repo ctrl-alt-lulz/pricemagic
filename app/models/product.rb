@@ -3,9 +3,8 @@ class Product < ActiveRecord::Base
   has_many :variants, ->{ order(:created_at) }, dependent: :destroy
   has_many :price_tests, dependent: :destroy
   has_many :metrics, ->{ order(:created_at) }, dependent: :destroy 
-  has_many :collects
+  has_many :collects, dependent: :destroy
   has_many :collections, through: :collects
-  
   # Other validations
   # TODO add validation to make sure shopify_product_id is unique
   
@@ -41,15 +40,20 @@ class Product < ActiveRecord::Base
   end
   
   def has_active_price_test?
-    price_tests.empty? ? "False" : price_tests.last.active.to_s.capitalize
+    price_tests.empty? ? "Inactive" : price_test_active_true_to_active_conversion #price_tests.last.active.to_s.capitalize
   end
   alias_method :has_active_price_test, :has_active_price_test?
   
   def price_test_completion_percentage
     price_tests.any? ? price_tests.last.completion_percentage : 0
   end
-  
+
+  def price_test_active_true_to_active_conversion
+    price_tests.last.active == true ? "Active" : "Inactive"
+  end
+
   def as_json(options={})
     super(:methods => [:variants, :has_active_price_test, :price_test_completion_percentage])
   end
+
 end

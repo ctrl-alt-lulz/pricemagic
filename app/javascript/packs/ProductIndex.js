@@ -127,20 +127,30 @@ class ProductIndex extends React.Component {
       'marginTop': '35px'
     };
     const steps = [{
-                title: 'Trigger Action',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Initial Setup and Configuration',
+                text: 'Connect your Google Analytics Account to get started, ' +
+                      'make sure you have enabled enhanced e-commerce on your Google Account. ' +
+                      "You'll also need a subscription to create price tests, go to settings to sign up. " +
+                      "Your products are loading into the app in the background, if they haven't " +
+                      "shown up yet please wait a few minutes and refresh the page.",
                 selector: '.joyride_step1',
                 position: 'top',
                 type: 'hover',
       }, {
-                title: 'Product Index',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Bulk Price Test Creation and Deletion',
+                text: 'Set a percentage range boundary for your price tests, and the number of test points ' +
+                      'within this boundary, ie. 50% higher and 25% lower for a product with a base price of ' + 
+                      '$100 would test prices between $75 and $150. Select the products below by clicking the ' +
+                      'checkbox and then press "Start Price Test". Likewise, select any products currently being ' +
+                      'tested and click "Destroy Price Test" to end them early.',
                 selector: '.joyride_step2',
                 position: 'top',
                 type: 'hover',
       }, {
-                title: 'Prorr32r3 Index',
-                text: 'It can be `click` (default) or `hover` <i>(reverts to click on touch devices</i>.',
+                title: 'Products',
+                text: "Click each product title to  "+
+                " view analytics data and create price tests that show " +
+                "a preview of what your test prices will be.",
                 selector: '.joyride_step3',
                 position: 'top',
                 type: 'hover',
@@ -163,7 +173,7 @@ class ProductIndex extends React.Component {
               <ActionList
                 items={[
                   {content: 'Account', url: '/recurring_charges'},
-                  {content: 'Configuration', url: '/configurations'}
+                  {content: 'FAQ', url: '/faq'}
                 ]}
               />
             </Popover>
@@ -175,7 +185,7 @@ class ProductIndex extends React.Component {
       <Joyride
         ref={c => (this.joyride = c)}
         steps={steps}
-        run={true} // or some other boolean for when you want to start it
+        run={this.props.run_walkthrough} // or some other boolean for when you want to start it
         debug={false}
         showStepsProgress={true}
         showSkipButton={true}
@@ -191,7 +201,7 @@ class ProductIndex extends React.Component {
         <DashboardActionList handleSettingsToggle={this.handleSettingsToggle} />
         </div>
           <div style={divStyleForm}>
-          <div className='joyride_step3'>
+          <div className='joyride_step2'>
           <PriceTestForm 
             percent_increase = {percent_increase}
             percent_decrease = {percent_decrease}
@@ -205,7 +215,7 @@ class ProductIndex extends React.Component {
             onEndDigitChange = {this.handleEndDigitChange}
             onSubmitPriceTest = {this.handleBulkSubmit}
             onSubmitDestroyPriceTest = {this.handleBulkDestroySubmit}
-            price_test_active = {false}
+            price_test_active = {this.props.has_subscription}
           />
           </div>
           </div>
@@ -229,7 +239,7 @@ class ProductIndex extends React.Component {
             </FormLayout>
           </Card.Section>
           <Card.Section>
-          <div className='joyride_step2'>
+          <div className='joyride_step3'>
             <ProductIndexTable 
               products={this.state.products} 
               selected={selected}
@@ -249,19 +259,6 @@ class ProductIndex extends React.Component {
       </Layout>
       </div>
     );  
-  }
-  updatePriceTests() {
-    $.ajax( {
-      url: '/update_price_tests_statuses/',
-      dataType: 'json',
-      data: { id: this.props.shop_id },
-      success: function(data) {
-        console.log('success')
-        this.setState({ products: data });
-      }.bind(this),
-      error: function(data) {
-      }.bind(this)
-    });
   }
   searchProducts() {
     $.ajax( {
@@ -315,6 +312,20 @@ class ProductIndex extends React.Component {
       }.bind(this)
     });
   }
+  createRecurringCharge() {
+      $.ajax( {
+          type: "POST",
+          dataType: "json",
+          url: '/recurring_charges',
+          data: {},
+          success: function(response) {
+              window.top.location.href = response.redirect_url
+          }.bind(this),
+          error: function(response) {
+              console.log('fail')
+          }.bind(this)
+      });
+    }
 }
   
 document.addEventListener('DOMContentLoaded', () => {
