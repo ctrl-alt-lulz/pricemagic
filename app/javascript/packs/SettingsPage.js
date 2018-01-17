@@ -68,16 +68,13 @@ export default class SettingsPage extends React.Component {
   }
   
   connectAccountPlan() {
-  const linkStyle = {
-      color: 'white',
-    };
     return (
       <Layout.AnnotatedSection
         title="Subscription Status"
         description="Begin your subscription with PriceMagic."
       >
         <AccountConnection
-          action={{content: <RecurringChargesLink />}}
+          action={{content: <RecurringChargesLink color='white'/>}}
           details="No account connected"
           termsOfService={<p>By clicking Connect, you are accepting PriceMagic’s Terms and Conditions.</p>}
         />
