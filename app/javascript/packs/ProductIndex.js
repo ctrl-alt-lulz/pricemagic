@@ -312,20 +312,6 @@ class ProductIndex extends React.Component {
       }.bind(this)
     });
   }
-  createRecurringCharge() {
-      $.ajax( {
-          type: "POST",
-          dataType: "json",
-          url: '/recurring_charges',
-          data: {},
-          success: function(response) {
-              window.top.location.href = response.redirect_url
-          }.bind(this),
-          error: function(response) {
-              console.log('fail')
-          }.bind(this)
-      });
-    }
 }
   
 document.addEventListener('DOMContentLoaded', () => {
