@@ -32,7 +32,8 @@ export default class SettingsPage extends React.Component {
         description="Connect to your Google Analytics account."
       >
         <AccountConnection
-          action={{content: <a href="/google_auth" data-method="get" style={linkStyle} rel="noopener noreferrer" target="_blank">Connect</a>}}
+          //action={{content: <a href="/google_auth" data-method="get" style={linkStyle} rel="noopener noreferrer" target="_blank">Connect</a>}}
+          action={{content: <p>Connect</p>, url:'/google_auth'}}
           details="No account connected"
           termsOfService={<p>By clicking Connect, you are accepting Google’s <Link url="https://www.google.com/analytics/terms/us.html">Terms and Conditions</Link>.</p>}
         />
@@ -98,7 +99,9 @@ export default class SettingsPage extends React.Component {
                                href={'/recurring_charges/' + charges['id']}
                                data-confirm="Ending your PriceMagic subscription will
                                deactivate all price tests, are you sure you want to
-                               continue?">Unsubscribe</a>}}
+                               continue?">Unsubscribe</a>
+
+                  }}
           accountName="Subscription Status"
           title={"Subscription Plan Info"}
           details={charges['charge_data']['terms']}
