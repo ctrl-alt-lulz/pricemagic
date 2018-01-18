@@ -1,6 +1,4 @@
 class RecurringChargesController < ShopifyApp::AuthenticatedController
-  #before_action :redirect_to_root, if: :current_charge?, only: :create
-  skip_before_filter :confirm_billing
 
   def index
     @recurring_charges_info = ShopifyAPI::RecurringApplicationCharge.current
@@ -31,7 +29,7 @@ class RecurringChargesController < ShopifyApp::AuthenticatedController
       redirect_to root_url, notice: "Successfully Activated!"
     else
       DestroyHangingRecurringChargeWorker.perform_async(current_shop.id)
-      redirect_to root_url, notice: "Did Not Activated!"
+      redirect_to billings_path, notice: "Did Not Activated!"
     end
   end
   

@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
 
 
   def initiate_charge
-    @recurring_charge = RecurringCharge.new(recurring_charge_params)
+    @recurring_charge = current_shop.recurring_charges.new(recurring_charge_params)
     if @recurring_charge.save
       respond_to do |format|
         format.html { render :text => "<script>window.top.location.href='#{ @recurring_charge.confirmation_url }';</script>" }

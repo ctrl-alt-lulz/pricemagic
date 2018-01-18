@@ -1,6 +1,6 @@
 class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :convert_percent_to_float, only: :update
-  before_filter :instantiate_price_test, :check_subscription_status, only: [:show, :index]
+  before_filter :instantiate_price_test, only: [:show, :index]
   before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
   before_filter :confirm_billing
@@ -73,6 +73,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
   private
 
   def confirm_billing
+    cookies[:billing_declined] = true
     initiate_charge unless current_charge?
   end
 
@@ -93,7 +94,4 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @collections ||=  current_shop.products.find(params[:id]).collections.map(&:title)
   end
 
-  def check_subscription_status
-    #redirect_to recurring_charges_path unless current_shop.has_subscription?
-  end
 end

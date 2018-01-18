@@ -49,6 +49,7 @@ class RecurringCharge < Charge
 
   def update_charge_data(params)
     recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.find(params[:charge_id])
+    charge_data['status'] = "active"
     if recurring_application_charge.status.eql? "accepted"
       recurring_application_charge.activate
       self.update_attributes!(charge_data: charge_data.merge(recurring_application_charge.attributes))
