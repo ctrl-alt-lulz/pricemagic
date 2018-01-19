@@ -33,7 +33,6 @@ export default class SettingsPage extends React.Component {
       >
         <AccountConnection
           action={{content: <a href="/google_auth" data-method="get" style={linkStyle} rel="noopener noreferrer" target="_blank">Connect</a>}}
-          //action={{content: <p>Connect</p>, url:'/google_auth'}}
           details="No account connected"
           termsOfService={<p>By clicking Connect, you are accepting Google’s <Link url="https://www.google.com/analytics/terms/us.html">Terms and Conditions</Link>.</p>}
         />
