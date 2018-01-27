@@ -13,6 +13,10 @@ class Product < ActiveRecord::Base
   # ## TODO change name to be more descriptive
   # ## Should be singular, most_recent_google_metric?
 
+  def delete_collects
+    shop.collects.where(product_id: id).destroy_all
+  end
+
   def variant_unit_cost_hash
     hash = Hash.new
     variants.each {|var| hash[var.id] = var.unit_cost}
