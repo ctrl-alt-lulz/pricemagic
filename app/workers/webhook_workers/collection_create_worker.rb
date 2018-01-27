@@ -1,6 +1,6 @@
 class CollectionCreateWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 15
+  sidekiq_options retry: 3
 
   def perform(shop_id)
     shop = Shop.find(shop_id)

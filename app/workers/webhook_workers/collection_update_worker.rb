@@ -1,6 +1,6 @@
 class CollectionUpdateWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 15
+  sidekiq_options retry: 3
 
   def perform(shop_id, shopify_collection_id, title)
     shop = Shop.find(shop_id)

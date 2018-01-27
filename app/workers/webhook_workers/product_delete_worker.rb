@@ -1,6 +1,6 @@
 class ProductDeleteWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 15
+  sidekiq_options retry: 3
 
   def perform(shopify_product_id, shop_id)
     shop = Shop.find(shop_id)

@@ -1,6 +1,6 @@
 class NewProductWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 15
+  sidekiq_options retry: 3
 
   def perform(shopify_product_id, title, id, product_type, tags, variants)
     shop = Shop.find(id)
