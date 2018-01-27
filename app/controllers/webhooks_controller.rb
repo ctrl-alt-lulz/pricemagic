@@ -17,7 +17,7 @@ class WebhooksController < ApplicationController
     variants = params[:variants]
     title = params[:title]
     ext_shopify_variant_id_array =  variants.map{|variant| variant[:id].to_s}
-    unless shop.recurring_charges.nil?
+    unless shop.recurring_charges.last.nil?
       UpdateProductWorker.perform_async(shopify_product_id, title, shop.id, ext_shopify_variant_id_array)
     end
   end
