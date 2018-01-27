@@ -66,6 +66,12 @@ export default class FAQpage extends React.Component {
                                 you should need in general.</p>
                         </TextContainer>
                     </Layout.AnnotatedSection>
+                    <Layout.AnnotatedSection>
+                        <TextContainer>
+                            <Heading>How can I contact you with any other questions?</Heading>
+                            <p> Feel free to email us at <a href="mailto:thelannistergroup@gmail.com?bcc=ageorge010@vt.edu" target="_blank">thelannistergroup@gmail.com</a>.</p>
+                        </TextContainer>
+                    </Layout.AnnotatedSection>
                 </Layout>
             </Page>
         );
