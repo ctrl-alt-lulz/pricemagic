@@ -35,5 +35,5 @@ class UpdateProductWorker
   #     shop.products.find_by(shopify_product_id: shopify_product_id).delete_collects
   #     shop.seed_collects!
   #   end
-  # end
+  end
 end
