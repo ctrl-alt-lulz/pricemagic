@@ -3,7 +3,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :instantiate_price_test, only: [:show, :index]
   before_filter :define_collection, only: :show
   before_filter :define_product, only: [:show, :update]
-  before_filter :confirm_billing
 
   def index
     Shop.includes(:products, :collections).where(shopify_domain: session['shopify_domain']).first
@@ -71,11 +70,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
   
   private
-
-  def confirm_billing
-    cookies[:billing_declined] = true
-    initiate_charge unless current_charge?
-  end
 
   def define_product
      @product = current_shop.products.find(params[:id])

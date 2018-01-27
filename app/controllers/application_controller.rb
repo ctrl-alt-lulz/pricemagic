@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
       end
     else
       respond_to do |format|
-        format.html { redirect_to faq_path, notice: 'Something went wrong' }
+        format.html { redirect_to billings_path, notice: 'Something went wrong' }
         format.json { render json: { success: false, errors: @recurring_charge.errors.full_messages }, status: 201 }
       end
     end
