@@ -1,7 +1,7 @@
 # removed bulk import because of random attributes error, fix if time allows
 module ShopifySeeds
   def seed_products!
-    shop = self.with_shopify!
+    self.with_shopify!
     products = (1..(ShopifyAPI::Product.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
@@ -18,7 +18,7 @@ module ShopifySeeds
   
   def seed_variants!
     ## Move variant code here so you get reuse inside of your workers
-    shop = self.with_shopify!
+    self.with_shopify!
     products = (1..(ShopifyAPI::Product.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
@@ -43,25 +43,35 @@ module ShopifySeeds
   
   #collections must be defined first
   def seed_collects!
-    shop = self.with_shopify!
+    self.with_shopify!
     c = (1..(ShopifyAPI::Collect.count.to_f/250.0).ceil).flat_map do |page|
       ShopifyAPI::Collect.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
+    shopify_collect_ids    = c.map(&:id)
+    shopify_product_ids    = c.map(&:product_id)
+    shopify_collection_ids = c.map(&:collection_id)
+
+    collects    = Collect.where(shopify_collect_id: shopify_collect_ids).pluck(:shopify_collect_id, :id)
+    collect_ids = Hash[collects]
+
+    products    = Product.where(shopify_product_id: shopify_product_ids).pluck(:shopify_product_id, :id)
+    product_ids = Hash[products]
+
+    collections    = Collection.where(shopify_collection_id: shopify_collection_ids).pluck(:shopify_collection_id, :id)
+    collection_ids = Hash[collections]
+    col = []
     c.each do |collect|
-      next if Collect.find_by(shopify_collect_id: collect.id)
-      product = Product.find_by(shopify_product_id: collect.product_id.to_s)
-      collection = Collection.find_by(shopify_collection_id: collect.collection_id.to_s)
-      col = Collect.new(shopify_collect_id: collect.id,
+      next if collect_ids[collect.id.to_s]
+      col << Collect.new(shopify_collect_id: collect.id,
                         position: collect.position,
-                        product_id: product.id,
-                        collection_id: collection.id)  
-      col.save
-      puts col.errors.inspect if col.errors.any?
+                        product_id: product_ids[collect.product_id.to_s],
+                        collection_id: collection_ids[collect.collection_id.to_s])
     end
+    Collect.import col
   end
   
   def seed_collections!
-    shop = self.with_shopify!
+    self.with_shopify!
     sc = (1..(ShopifyAPI::SmartCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::SmartCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
