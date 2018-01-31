@@ -8,7 +8,6 @@ module ShopifySeeds
     local_products = Product.where(shopify_product_id: shopify_product_ids).pluck(:shopify_product_id, :id)
     product_ids = Hash[local_products]
     product_array = []
-    # create local products
     products.map do |product|
       next if product_ids[product.id.to_s]
       product_array << Product.new(title: product.title, shopify_product_id: product.id,
@@ -24,6 +23,8 @@ module ShopifySeeds
     products = (1..(ShopifyAPI::Product.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
+    variant_array = []
+    ## TODO figure out how to get product below optimized
     products.each do |product|
       shopify_product = Product.where(shopify_product_id: product.id.to_s).first
       product.variants.each do |variant|
@@ -32,15 +33,14 @@ module ShopifySeeds
         if !pv.nil? && shopify_product.variants.any? 
           pv.update_attributes(variant_title: variant.title.to_s, 
                                variant_price: variant.price.to_s)
-        else 
-          shopify_product.variants.new(shopify_variant_id: variant.id.to_s,
+        else
+          variant_array << shopify_product.variants.new(shopify_variant_id: variant.id.to_s,
                                     variant_title: variant.title.to_s, 
                                     variant_price: variant.price.to_s)
         end
-        shopify_product.save
-        puts shopify_product.errors.inspect if shopify_product.errors.any?
       end
     end
+    Variant.import variant_array
   end
   
   #collections must be defined first
