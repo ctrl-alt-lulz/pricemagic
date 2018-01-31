@@ -1,19 +1,21 @@
-# removed bulk import because of random attributes error, fix if time allows
 module ShopifySeeds
   def seed_products!
     self.with_shopify!
     products = (1..(ShopifyAPI::Product.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::Product.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
+    shopify_product_ids = products.map(&:id)
+    local_products = Product.where(shopify_product_id: shopify_product_ids).pluck(:shopify_product_id, :id)
+    product_ids = Hash[local_products]
+    product_array = []
     # create local products
     products.map do |product|
-      next if Product.where(shopify_product_id: product.id).any?
-      new_product = Product.new(title: product.title, shopify_product_id: product.id,
+      next if product_ids[product.id.to_s]
+      product_array << Product.new(title: product.title, shopify_product_id: product.id,
                       product_type: product.product_type, tags: product.tags, 
                       shop_id: id, main_image_src: product.images.first.try(:src))
-      new_product.save
-      puts new_product.errors.inspect if new_product.errors.any?
     end
+    Product.import product_array
   end
   
   def seed_variants!
@@ -65,7 +67,8 @@ module ShopifySeeds
       col << Collect.new(shopify_collect_id: collect.id,
                         position: collect.position,
                         product_id: product_ids[collect.product_id.to_s],
-                        collection_id: collection_ids[collect.collection_id.to_s])
+                        collection_id: collection_ids[collect.collection_id.to_s],
+                        shop_id: id)
     end
     Collect.import col
   end
@@ -75,24 +78,33 @@ module ShopifySeeds
     sc = (1..(ShopifyAPI::SmartCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::SmartCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
+    shopify_sc_ids = sc.map(&:id)
+    collection_ids = Collection.where(shopify_collection_id: shopify_sc_ids).pluck(:shopify_collection_id, :id)
+    collection_ids = Hash[collection_ids]
+    scol = []
     sc.map do |collect|
-      next if Collection.find_by(shopify_collection_id: collect.id)
-      col = Collection.new(title: collect.title, 
+      next if collection_ids[collect.id.to_s]
+      scol << Collection.new(title: collect.title,
                         shopify_collection_id: collect.id,
-                        collection_type: "Smart")  
-      col.save
-      puts col.errors.inspect if col.errors.any?
+                        collection_type: "Smart",
+                        shop_id: id)
     end
+    Collection.import scol
+
     cc = (1..(ShopifyAPI::CustomCollection.count.to_f/150.0).ceil).flat_map do |page|
       ShopifyAPI::CustomCollection.find(:all, :params => {:page => page.to_i, :limit => 150})
     end
+    shopify_cc_ids = cc.map(&:id)
+    collection_ids = Collection.where(shopify_collection_id: shopify_cc_ids).pluck(:shopify_collection_id, :id)
+    collection_ids = Hash[collection_ids]
+    ccol = []
     cc.map do |collect|
-      next if Collection.find_by(shopify_collection_id: collect.id)
-      col = Collection.new(title: collect.title, 
+      next if collection_ids[collect.id.to_s]
+      ccol << Collection.new(title: collect.title,
                         shopify_collection_id: collect.id,
-                        collection_type: "Custom")  
-      col.save
-      puts col.errors.inspect if col.errors.any?
+                        collection_type: "Custom",
+                        shop_id: id)
     end
+    Collection.import ccol
   end
 end
