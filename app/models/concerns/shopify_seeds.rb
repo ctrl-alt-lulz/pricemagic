@@ -30,12 +30,12 @@ module ShopifySeeds
       product.variants.each do |variant|
         pv = shopify_product.variants.find_by(shopify_variant_id: variant.id.to_s)
         # updates variant if already exists, otherwise creates new variant
-        if !pv.nil? && shopify_product.variants.any? 
-          pv.update_attributes(variant_title: variant.title.to_s, 
+        if !pv.nil? && shopify_product.variants.any?
+          pv.update_attributes(variant_title: variant.title.to_s,
                                variant_price: variant.price.to_s)
         else
           variant_array << shopify_product.variants.new(shopify_variant_id: variant.id.to_s,
-                                    variant_title: variant.title.to_s, 
+                                    variant_title: variant.title.to_s,
                                     variant_price: variant.price.to_s)
         end
       end

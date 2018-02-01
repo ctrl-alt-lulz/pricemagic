@@ -5,11 +5,9 @@ class Product < ActiveRecord::Base
   has_many :metrics, ->{ order(:created_at) }, dependent: :destroy 
   has_many :collects, dependent: :destroy
   has_many :collections, through: :collects
-  # Other validations
-  # TODO add validation to make sure shopify_product_id is unique
-  
+
   validates :shop_id, presence: true
-  
+  validates :shopify_product_id, uniqueness: true
   # ## TODO change name to be more descriptive
   # ## Should be singular, most_recent_google_metric?
 
