@@ -38,7 +38,7 @@ class RecurringCharge < Charge
         name: "Paid Price Test Subscription",
         price: 19.99,
         return_url: Rails.configuration.public_url + 'recurring_charges_activate',
-        test: ENV['SHOPIFY_CHARGE_TEST'],
+        test: check_plan_type, #ENV['SHOPIFY_CHARGE_TEST'],
         trial_days: 14,
         terms: "$19.99 per month for unlimited tests"
       ).attributes
@@ -60,7 +60,14 @@ class RecurringCharge < Charge
   end
   
   private
-  
+
+  def check_plan_type
+    if ShopifyAPI::Shop.current.attributes["plan_name"] == "affiliate"
+      Shop.find(shop_id).update_attributes(affiliate: true)
+      return true
+    end
+  end
+
   ## TODO create better handling to ensure someone's shopify recurring charge 
   ## is destroyed on rescue
   def destroy_on_shopify!
