@@ -10,6 +10,7 @@ ShopifyApp.configure do |config|
     { topic: 'collections/create', address: Rails.configuration.public_url + 'webhooks/collections/create', format: 'json'},
     { topic: 'collections/delete', address: Rails.configuration.public_url + 'webhooks/collections/delete', format: 'json'},
     { topic: 'collections/update', address: Rails.configuration.public_url + 'webhooks/collections/update', format: 'json'},
-    { topic: 'app/uninstalled', address: Rails.configuration.public_url + 'webhooks/app/uninstalled', format: 'json'}
+    { topic: 'app/uninstalled', address: Rails.configuration.public_url + 'webhooks/app/uninstalled', format: 'json'},
+    { topic: 'shop/update', address: Rails.configuration.public_url + 'webhooks/shop/update', format: 'json'}
   ]
 end
