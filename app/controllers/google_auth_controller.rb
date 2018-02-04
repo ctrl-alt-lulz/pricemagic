@@ -55,7 +55,8 @@ class GoogleAuthController < ApplicationController
   private 
   
   def find_google_account_id(service)
-    domain = strip_to_base_url(current_shop.shopify_domain)
+    current_shop.with_shopify!
+    domain = strip_to_base_url(ShopifyAPI::Shop.current.domain)
     service.list_management_account_summaries.items.map do |item|
       url = item.web_properties[0].website_url
       url = strip_to_base_url(url)
