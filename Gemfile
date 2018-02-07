@@ -30,6 +30,7 @@ gem "activerecord-import", ">= 0.2.0"
 gem 'webpacker', '~> 2.0'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'aws-sdk-ses', '~> 1'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'byebug'
