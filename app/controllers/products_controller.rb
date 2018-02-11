@@ -6,20 +6,17 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :confirm_billing
 
   def index
-    Shop.includes(:products, :collections).where(shopify_domain: session['shopify_domain']).first
-    #current_shop.includes(:products, :collections)
-    @shop = current_shop
-    @run_walkthrough = @shop.run_walkthrough?
-    @collections = @shop.collections
-    @products = @shop.products
+    @shop ||= current_shop
+    @run_walkthrough ||= @shop.run_walkthrough?
+    @collections ||= @shop.collections
+    @pt_data ||= @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
+    @products ||= map_products(@shop.products.includes(:price_tests).order('title ASC'))
     if params[:term]
-      @products = @products.where('title iLIKE ?', '%' + params[:term] + '%')
+      @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
       if params[:collection].present?
-        products_col = @collections.find(params[:collection]).products
-        @products = @products.merge(products_col)
+        @products = map_products(@collections.find(params[:collection]).products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
       end
     end
-    @products = @products.includes(:price_tests, :variants)
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
     respond_to do |format|
       format.html # default html response
@@ -93,4 +90,22 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @collections ||=  current_shop.products.find(params[:id]).collections.map(&:title)
   end
 
+  def is_active(active)
+    active ? "Running" : "Inactive"
+  end
+
+  def map_products(products)
+    products.pluck(:id, :title, :active).map do |item|
+      {
+        id: item[0],
+        title: item[1],
+        active: is_active(item[2]),
+        price_test_completion_percentage: nil2zero(@pt_data[item[0]])
+      }
+    end
+  end
+
+  def nil2zero(value)
+    value.nil? ? 0.0 : value
+  end
 end

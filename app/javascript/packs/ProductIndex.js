@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import PriceTestForm from './PriceTestForm.js';
-import PriceTestContainer from './PriceTestContainer.js';
 import ProductIndexTable from './ProductIndexTable.js';
 import Joyride from 'react-joyride';
 import { Card, Select, Button, TextField, FormLayout, Layout,  
