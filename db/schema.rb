@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131045702) do
+ActiveRecord::Schema.define(version: 20180202043952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,11 +84,12 @@ ActiveRecord::Schema.define(version: 20180131045702) do
   end
 
   create_table "shops", force: :cascade do |t|
-    t.string   "shopify_domain", null: false
-    t.string   "shopify_token",  null: false
+    t.string   "shopify_domain",                 null: false
+    t.string   "shopify_token",                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "shop_email"
+    t.boolean  "affiliate",      default: false
   end
 
   add_index "shops", ["shopify_domain"], name: "index_shops_on_shopify_domain", unique: true, using: :btree

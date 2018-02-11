@@ -51,6 +51,12 @@ class WebhooksController < ApplicationController
     DestroyRecurringChargesWorker.perform_async(shop.id)
   end
 
+  def shop_update
+    head :ok
+    plan_name = params[:plan_name]
+    ShopUpdateWorker.perform_async(shop.id, plan_name)
+  end
+
   private
 
   def verify_webhook
