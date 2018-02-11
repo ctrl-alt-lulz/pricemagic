@@ -10,7 +10,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @run_walkthrough ||= @shop.run_walkthrough?
     @collections ||= @shop.collections
     @pt_data ||= @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
-    @products ||= map_products(@shop.products.includes(:price_tests).order('title ASC'))
+    @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
     if params[:term]
       @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
       if params[:collection].present?
