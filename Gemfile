@@ -16,7 +16,7 @@ gem 'puma'
 gem 'web-console', '~> 2.0'
 gem 'mini_racer', platforms: :ruby
 gem 'devise'
-gem "administrate"
+gem 'administrate'
 
 # Assets / views
 gem 'kaminari'
@@ -26,7 +26,7 @@ gem 'shopify_app'
 gem 'sidekiq'
 gem 'sidekiq-scheduler', '~> 2.1.7'
 gem 'google-api-client', '~> 0.11'
-gem "activerecord-import", ">= 0.2.0"
+gem 'activerecord-import', '>= 0.2.0'
 gem 'webpacker', '~> 2.0'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'aws-sdk-ses', '~> 1'
@@ -43,7 +43,7 @@ end
 
 group :development do
   gem 'spring'
-
+  gem 'bullet'
   # thin server, better than default webrick, use in conjunction with ngrok
   gem 'thin'
 end

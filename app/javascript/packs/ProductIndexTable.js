@@ -21,7 +21,7 @@ export default class ProductIndexTable extends React.Component {
     function CreateItem(product) {
       return { 
         title: <a href={'/products/' + product.id} >{product.title}</a>,
-        price_test_status: product.has_active_price_test,
+        price_test_status: product.active,
         price_test_completion_percentage: product.price_test_completion_percentage
       }
     }
