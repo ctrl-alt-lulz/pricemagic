@@ -41,11 +41,11 @@ class Shop < ActiveRecord::Base
 
   def latest_access_token
     return unless users.with_access_token.any?
-    users.with_access_token.first.google_access_token
+    users.try(:with_access_token).try(:first).try(:google_access_token)
   end
   
   def latest_refresh_token
-    users.with_refresh_token.first.google_refresh_token
+    users.try(:with_refresh_token).try(:first).try(:google_refresh_token)
   end
   
   def google_profile_id
