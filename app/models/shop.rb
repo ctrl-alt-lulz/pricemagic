@@ -40,7 +40,7 @@ class Shop < ActiveRecord::Base
   end
 
   def latest_access_token
-    return unless users.with_access_token.any?
+    return unless users.try(:with_access_token).try(:any?)
     users.try(:with_access_token).try(:first).try(:google_access_token)
   end
   
