@@ -36,11 +36,11 @@ class RecurringCharge < Charge
     begin
       self.charge_data = ShopifyAPI::RecurringApplicationCharge.create(
         name: "Paid Price Test Subscription",
-        price: 19.99,
+        price: 14.99,
         return_url: Rails.configuration.public_url + 'recurring_charges_activate',
         test: check_plan_type,
         trial_days: 14,
-        terms: "$19.99 per month for unlimited tests"
+        terms: "$14.99 per month for unlimited tests"
       ).attributes
     rescue => e
       puts e.inspect
