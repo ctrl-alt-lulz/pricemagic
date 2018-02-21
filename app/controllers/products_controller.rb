@@ -6,10 +6,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :confirm_billing
 
   def index
-    @shop ||= current_shop
-    @run_walkthrough ||= @shop.run_walkthrough?
-    @collections ||= @shop.collections
-    @pt_data ||= @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
+    @shop = current_shop
+    @run_walkthrough = @shop.run_walkthrough?
+    @collections = @shop.collections
+    @pt_data = @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
     @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
     if params[:term]
       @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
