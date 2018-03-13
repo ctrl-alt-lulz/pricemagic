@@ -44,6 +44,7 @@ class GoogleAuthController < ApplicationController
     uri.query = URI.encode_www_form(params)
     response = Net::HTTP.get(uri)
     shop = GoogleAuth::Destroy.call(current_shop)
+    StopPriceTestsWorker.perform(current_shop.id)
     if shop.errors.empty?
       redirect_to recurring_charges_path, notice: 'Google removed!'
     else
