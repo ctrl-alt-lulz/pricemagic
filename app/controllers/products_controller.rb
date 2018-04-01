@@ -10,11 +10,22 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @run_walkthrough = @shop.run_walkthrough?
     @collections = @shop.collections
     @pt_data = @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
+    puts @pt_data
+    puts '*'*50
     @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
+    puts @products.count
+    puts @products.uniq
+    puts @products.count
     if params[:term]
       @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
+      puts @products.count
+      puts @products.uniq
+      puts @products.count
       if params[:collection].present?
         @products = map_products(@collections.find(params[:collection]).products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
+        puts @products.count
+        puts @products.uniq
+        puts @products.count
       end
     end
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
