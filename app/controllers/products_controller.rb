@@ -109,7 +109,7 @@ class ProductsController < ShopifyApp::AuthenticatedController
         active: is_active(item[2]),
         price_test_completion_percentage: nil2zero(@pt_data[item[0]])
       }
-      if is_active(item[2])
+      if item[2]
         flag = true
       end
     end
