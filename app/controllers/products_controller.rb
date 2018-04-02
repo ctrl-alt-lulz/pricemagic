@@ -97,21 +97,13 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def map_products(products)
-    flag = false
     products.pluck(:id, :title, :active).map do |item|
-      if flag == true
-        flag = false
-        continue
-      end
       {
         id: item[0],
         title: item[1],
         active: is_active(item[2]),
         price_test_completion_percentage: nil2zero(@pt_data[item[0]])
       }
-      if item[2]
-        flag = true
-      end
     end
   end
 
