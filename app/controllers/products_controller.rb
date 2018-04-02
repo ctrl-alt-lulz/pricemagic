@@ -10,8 +10,6 @@ class ProductsController < ShopifyApp::AuthenticatedController
     @run_walkthrough = @shop.run_walkthrough?
     @collections = @shop.collections
     @pt_data = @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
-    puts @pt_data
-    puts '*'*50
     @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
     if params[:term]
       @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
@@ -97,14 +95,24 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def map_products(products)
-    products.pluck(:id, :title, :active).map do |item|
-      {
+    flag = true
+    output = []
+    products.pluck(:id, :title, :active).each do |item|
+      if flag == true
+        flag = false
+        next
+      end
+      output.push({
         id: item[0],
         title: item[1],
         active: is_active(item[2]),
         price_test_completion_percentage: nil2zero(@pt_data[item[0]])
-      }
+      })
+      if item[2] == true
+        flag = true
+      end
     end
+    return output
   end
 
   def nil2zero(value)
