@@ -13,19 +13,10 @@ class ProductsController < ShopifyApp::AuthenticatedController
     puts @pt_data
     puts '*'*50
     @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
-    puts @products.count
-    puts @products.uniq
-    puts @products.count
     if params[:term]
       @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
-      puts @products.count
-      puts @products.uniq
-      puts @products.count
       if params[:collection].present?
         @products = map_products(@collections.find(params[:collection]).products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
-        puts @products.count
-        puts @products.uniq
-        puts @products.count
       end
     end
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
@@ -106,13 +97,21 @@ class ProductsController < ShopifyApp::AuthenticatedController
   end
 
   def map_products(products)
+    flag = false
     products.pluck(:id, :title, :active).map do |item|
+      if flag == true
+        flag = false
+        continue
+      end
       {
         id: item[0],
         title: item[1],
         active: is_active(item[2]),
         price_test_completion_percentage: nil2zero(@pt_data[item[0]])
       }
+      if is_active(item[2])
+        flag = true
+      end
     end
   end
 
