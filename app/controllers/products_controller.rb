@@ -6,17 +6,20 @@ class ProductsController < ShopifyApp::AuthenticatedController
   before_filter :confirm_billing
 
   def index
+    #Shop.includes(:products, :collections).where(shopify_domain: session['shopify_domain']).first
+    #current_shop.includes(:products, :collections)
     @shop = current_shop
     @run_walkthrough = @shop.run_walkthrough?
     @collections = @shop.collections
-    @pt_data = @shop.price_tests.where(active: true).map {|pt| [pt.product_id, pt.completion_percentage]}.to_h
-    @products = map_products(@shop.products.includes(:price_tests).order('title ASC'))
+    @products = @shop.products
     if params[:term]
-      @products = map_products(@shop.products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
+      @products = @products.where('title iLIKE ?', '%' + params[:term] + '%')
       if params[:collection].present?
-        @products = map_products(@collections.find(params[:collection]).products.includes(:price_tests).where('title iLIKE ?', '%' + params[:term] + '%'))
+        products_col = @collections.find(params[:collection]).products
+        @products = @products.merge(products_col)
       end
     end
+    @products = @products.includes(:price_tests, :variants)
     #@products = current_shop.products.search(params) ## TODO self.search inside Product.rb
     respond_to do |format|
       format.html # default html response
@@ -94,28 +97,28 @@ class ProductsController < ShopifyApp::AuthenticatedController
     active ? "Running" : "Inactive"
   end
 
-  def map_products(products)
-    flag = true
-    output = []
-    products.pluck(:id, :title, :active).each do |item|
-      if flag == true
-        flag = false
-        next
-      end
-      output.push({
-        id: item[0],
-        title: item[1],
-        active: is_active(item[2]),
-        price_test_completion_percentage: nil2zero(@pt_data[item[0]])
-      })
-      if item[2] == true
-        flag = true
-      end
-    end
-    return output
-  end
-
-  def nil2zero(value)
-    value.nil? ? 0.0 : value
-  end
+  # def map_products(products)
+  #   flag = true
+  #   output = []
+  #   products.pluck(:id, :title, :active).each do |item|
+  #     if flag == true
+  #       flag = false
+  #       next
+  #     end
+  #     output.push({
+  #       id: item[0],
+  #       title: item[1],
+  #       active: is_active(item[2]),
+  #       price_test_completion_percentage: nil2zero(@pt_data[item[0]])
+  #     })
+  #     if item[2] == true
+  #       flag = true
+  #     end
+  #   end
+  #   return output
+  # end
+  #
+  # def nil2zero(value)
+  #   value.nil? ? 0.0 : value
+  # end
 end
