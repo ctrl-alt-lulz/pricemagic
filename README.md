@@ -21,3 +21,17 @@ http://demacmedia.com/blog/shopify-pp
 
 - turbolinks disabled by default
 - don't need all that AJAX jazz happening inside the Shopify admin panel -- messes with deep-linking
+
+## ENV set up
+- You can test it locally using ngrok or cloud9, but you'll need to set up google and shopify developer accounts to set it up.
+
+SHOPIFY_PUBLIC_KEY=
+SHOPIFY_SECRET_KEY=
+GOOGLE_API_CLIENT_ID=
+GOOGLE_API_CLIENT_SECRET=
+SHOPIFY_CHARGE_TEST=
+SES_SMTP_USERNAME=
+SES_SMTP_PASSWORD=
+NGROK_PUBLIC_URL= 
+CLOUD9_PUBLIC_URL=
+DEV_BILLING_URI=#{ngrok-url}/recurring_charges/
